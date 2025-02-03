@@ -1,94 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Alert, Spinner } from 'reactstrap';
+import React, { useState } from 'react';
+import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Spinner } from 'reactstrap';
 import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
 
-//redux
 import { useSelector, useDispatch } from "react-redux";
 
-import { Link } from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import withRouter from "../../Components/Common/withRouter";
-// Formik validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-// actions
-import { loginUser, socialLogin, resetLoginFlag } from "../../slices/thunks";
+import { loginUser } from "../../slices/thunks";
 
-import logoLight from "../../assets/images/logo-light.png";
-import { createSelector } from 'reselect';
-//import images
 
 const Login = (props: any) => {
     const dispatch: any = useDispatch();
+    const isAuthenticated = useSelector((state: any) => state.Authentication.isAuthenticated)
 
-    const selectLayoutState = (state: any) => state;
-    const loginpageData = createSelector(
-        selectLayoutState,
-        (state) => ({
-            user: state.Account.user,
-            error: state.Login.error,
-            errorMsg: state.Login.errorMsg,
-        })
-    );
-    // Inside your component
-    const {
-        user, error, errorMsg
-    } = useSelector(loginpageData);
-
-    const [userLogin, setUserLogin] = useState<any>([]);
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
 
     const [loader, setLoader] = useState<boolean>(false);
 
-
-    useEffect(() => {
-        if (user && user) {
-            const updatedUserData = process.env.REACT_APP_DEFAULTAUTH === "firebase" ? user.multiFactor.user.email : user.email;
-            const updatedUserPassword = process.env.REACT_APP_DEFAULTAUTH === "firebase" ? "" : user.confirm_password;
-            setUserLogin({
-                email: updatedUserData,
-                password: updatedUserPassword
-            });
-        }
-    }, [user]);
-
     const validation: any = useFormik({
-        // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
 
         initialValues: {
-            email: userLogin.email || "admin@themesbrand.com" || '',
-            password: userLogin.password || "123456" || '',
+            username: '',
+            password: '',
         },
         validationSchema: Yup.object({
-            email: Yup.string().required("Please Enter Your Email"),
+            email: Yup.string().required("Please Enter Your Username"),
             password: Yup.string().required("Please Enter Your Password"),
         }),
         onSubmit: (values) => {
-            dispatch(loginUser(values, props.router.navigate));
+            dispatch(loginUser(values));
             setLoader(true)
         }
     });
 
-    const signIn = (type: any) => {
-        dispatch(socialLogin(type, props.router.navigate));
-    };
-
-
-    //for facebook and google authentication
-    const socialResponse = (type: any) => {
-        signIn(type);
-    };
-
-
-    useEffect(() => {
-        if (errorMsg) {
-            setTimeout(() => {
-                dispatch(resetLoginFlag());
-                setLoader(false)
-            }, 3000);
-        }
-    }, [dispatch, errorMsg]);
+    if (isAuthenticated) {
+        return <Navigate to="/" />;
+    }
 
     document.title = "Basic SignIn | Velzon - React Admin & Dashboard Template";
     return (
@@ -101,7 +52,8 @@ const Login = (props: any) => {
                                 <div className="text-center mt-sm-5 mb-4 text-white-50">
                                     <div>
                                         <Link to="/" className="d-inline-block auth-logo">
-                                            <img src={logoLight} alt="" height="20" />
+                                            <img src={require("../../assets/images/logo-light.png")}
+                                                 alt="" height="20" />
                                         </Link>
                                     </div>
                                     <p className="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
@@ -117,7 +69,7 @@ const Login = (props: any) => {
                                             <h5 className="text-primary">Welcome Back !</h5>
                                             <p className="text-muted">Sign in to continue to Velzon.</p>
                                         </div>
-                                        {error && error ? (<Alert color="danger"> {error} </Alert>) : null}
+                                        {/*{error && error ? (<Alert color="danger"> {error} </Alert>) : null}*/}
                                         <div className="p-2 mt-4">
                                             <Form
                                                 onSubmit={(e) => {
@@ -195,7 +147,6 @@ const Login = (props: any) => {
                                                             className="btn btn-primary btn-icon me-1"
                                                             onClick={e => {
                                                                 e.preventDefault();
-                                                                socialResponse("facebook");
                                                             }}
                                                         >
                                                             <i className="ri-facebook-fill fs-16" />
@@ -205,7 +156,6 @@ const Login = (props: any) => {
                                                             className="btn btn-danger btn-icon me-1"
                                                             onClick={e => {
                                                                 e.preventDefault();
-                                                                socialResponse("google");
                                                             }}
                                                         >
                                                             <i className="ri-google-fill fs-16" />

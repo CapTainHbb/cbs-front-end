@@ -4,11 +4,13 @@ import { combineReducers } from "redux";
 import LayoutReducer from "./layouts/reducer";
 
 // Authentication
-import LoginReducer from "./auth/login/reducer";
 import AccountReducer from "./auth/register/reducer";
 import ForgetPasswordReducer from "./auth/forgetpwd/reducer";
 import ProfileReducer from "./auth/profile/reducer";
-import AuthenticationReducer from './auth/reducer';
+import AuthenticationReducer from './auth/login/reducer';
+
+// Initial Data
+import InitialDataReducer from './initialData/reducer';
 
 //Calendar
 import CalendarReducer from "./calendar/reducer";
@@ -75,8 +77,8 @@ import APIKeyReducer from "./apiKey/reducer";
 
 const rootReducer = combineReducers({
     Layout: LayoutReducer,
-    Login: LoginReducer,
     Authentication: AuthenticationReducer,
+    InitialData: InitialDataReducer,
     Account: AccountReducer,
     ForgetPassword: ForgetPasswordReducer,
     Profile: ProfileReducer,

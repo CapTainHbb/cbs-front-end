@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
-import { logoutUser } from "../../slices/thunks";
+// import { logoutUser } from "../../slices/thunks";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -23,7 +23,7 @@ const Logout = () => {
   const isUserLogout = useSelector(logoutData);
 
   useEffect(() => {
-    dispatch(logoutUser());
+    // dispatch(logoutUser());
   }, [dispatch]);
 
   if (isUserLogout) {
