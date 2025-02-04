@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, Col, Container, Input, Label, Row, Button, Form, FormFeedback } from 'reactstrap';
+import {Navigate} from 'react-router-dom';
+import {Card, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Spinner} from 'reactstrap';
 
 // Formik validation
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
 import AuthSlider from '../authCarousel';
+import {loginUser} from "../../../slices/auth/login/thunk";
+import {useDispatch, useSelector} from "react-redux";
 
 const CoverSignIn = () => {
-    document.title = "Cover SignIn | Velzon - React Admin & Dashboard Template";
+    document.title = "SignIn | ZALEX - Currency Exchange Accounting & Dashboard";
 
+    const dispatch: any = useDispatch();
+    const isAuthenticated = useSelector((state: any) => state.Authentication.isAuthenticated)
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
+    const [loader, setLoader] = useState<boolean>(false);
 
     const validation: any = useFormik({
         // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
 
         initialValues: {
-            userName: '',
+            username: '',
             password: '',
         },
         validationSchema: Yup.object({
-            userName: Yup.string().required("Please Enter Your Username"),
+            username: Yup.string().required("Please Enter Your Username"),
             password: Yup.string().required("Please Enter Your Password"),
         }),
         onSubmit: (values) => {
-            console.log("values", values)
+            dispatch(loginUser(values));
+            setLoader(true)
+            setTimeout(() => {setLoader(false)}, 5000)
         }
     });
+
+    if (isAuthenticated) {
+        return <Navigate to="/" />;
+    }
 
     return (
         <React.Fragment>
@@ -46,7 +57,7 @@ const CoverSignIn = () => {
                                             <div className="p-lg-5 p-4">
                                                 <div>
                                                     <h5 className="text-primary">Welcome Back !</h5>
-                                                    <p className="text-muted">Sign in to continue to Velzon.</p>
+                                                    <p className="text-muted">Sign in to continue to ZALEX.</p>
                                                 </div>
 
                                                 <div className="mt-4">
@@ -61,23 +72,20 @@ const CoverSignIn = () => {
                                                         <div className="mb-3">
                                                             <Label htmlFor="username" className="form-label">Username</Label>
                                                             <Input type="text" className="form-control" id="username" placeholder="Enter username"
-                                                                name="userName"
+                                                                name="username"
                                                                 onChange={validation.handleChange}
                                                                 onBlur={validation.handleBlur}
-                                                                value={validation.values.userName || ""}
+                                                                value={validation.values.username || ""}
                                                                 invalid={
-                                                                    validation.touched.userName && validation.errors.userName ? true : false
+                                                                    !!(validation.touched.username && validation.errors.username)
                                                                 }
                                                             />
-                                                            {validation.touched.userName && validation.errors.userName ? (
-                                                                <FormFeedback type="invalid">{validation.errors.userName}</FormFeedback>
+                                                            {validation.touched.username && validation.errors.username ? (
+                                                                <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
                                                             ) : null}
                                                         </div>
 
                                                         <div className="mb-3">
-                                                            <div className="float-end">
-                                                                <Link to="/auth-pass-reset-cover" className="text-muted">Forgot password?</Link>
-                                                            </div>
                                                             <Label className="form-label" htmlFor="password-input">Password</Label>
                                                             <div className="position-relative auth-pass-inputgroup mb-3">
                                                                 <Input type={passwordShow ? "text" : "password"} className="form-control pe-5 password-input" placeholder="Enter password" id="password-input"
@@ -86,7 +94,7 @@ const CoverSignIn = () => {
                                                                     onChange={validation.handleChange}
                                                                     onBlur={validation.handleBlur}
                                                                     invalid={
-                                                                        validation.touched.password && validation.errors.password ? true : false
+                                                                        !!(validation.touched.password && validation.errors.password)
                                                                     }
                                                                 />
                                                                 {validation.touched.password && validation.errors.password ? (
@@ -102,27 +110,16 @@ const CoverSignIn = () => {
                                                         </div>
 
                                                         <div className="mt-4">
-                                                            <Button color="success" className="w-100" type="submit">Sign In</Button>
-                                                        </div>
-
-                                                        <div className="mt-4 text-center">
-                                                            <div className="signin-other-title">
-                                                                <h5 className="fs-13 mb-4 title">Sign In with</h5>
-                                                            </div>
-
-                                                            <div>
-                                                                <Button color="primary" className="btn-icon me-1"><i className="ri-facebook-fill fs-16"></i></Button>
-                                                                <Button color="danger" className="btn-icon me-1"><i className="ri-google-fill fs-16"></i></Button>
-                                                                <Button color="dark" className="btn-icon me-1"><i className="ri-github-fill fs-16"></i></Button>
-                                                                <Button color="info" className="btn-icon"><i className="ri-twitter-fill fs-16"></i></Button>
-                                                            </div>
+                                                            <Button color="success"
+                                                                    disabled={loader && true}
+                                                                    className="btn btn-success w-100" type="submit">
+                                                                {loader && <Spinner size="sm"
+                                                                                    className='me-2'> Loading... </Spinner>}
+                                                                Sign In
+                                                            </Button>
                                                         </div>
 
                                                     </Form>
-                                                </div>
-
-                                                <div className="mt-5 text-center">
-                                                    <p className="mb-0">Don't have an account ? <a href="/auth-signup-cover" className="fw-semibold text-primary text-decoration-underline"> Signup</a> </p>
                                                 </div>
                                             </div>
                                         </Col>
@@ -138,7 +135,7 @@ const CoverSignIn = () => {
                         <Row>
                             <Col lg={12}>
                                 <div className="text-center">
-                                    <p className="mb-0">&copy; {new Date().getFullYear()} Velzon. Crafted with <i className="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                                    <p className="mb-0">&copy; {new Date().getFullYear()} ZALEX. Crafted with <i className="mdi mdi-heart text-danger"></i> by Captainhb</p>
                                 </div>
                             </Col>
                         </Row>

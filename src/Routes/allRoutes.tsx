@@ -186,9 +186,7 @@ import Offlinepage from "../pages/AuthenticationInner/Errors/Offlinepage";
 import APIKey from "../pages/APIKey/index";
 
 // //login
-import Login from "../pages/Authentication/Login";
 import ForgetPasswordPage from "../pages/Authentication/ForgetPassword";
-import Logout from "../pages/Authentication/Logout";
 import Register from "../pages/Authentication/Register";
 
 //Charts
@@ -244,6 +242,7 @@ import SlopeCharts from "pages/Charts/ApexCharts/SlopeCharts";
 import BlogListView from "pages/Pages/Blogs/ListView";
 import BlogGridView from "pages/Pages/Blogs/GridView";
 import PageBlogOverview from "pages/Pages/Blogs/Overview";
+import CreditorsAndDebtors from "../pages/Reports/CreditorsAndDebtors";
 
 
 
@@ -259,6 +258,9 @@ const authProtectedRoutes = [
   { path: "/dashboard-nft", component: <DashboardNFT /> },
   { path: "/dashboard-job", component: <DashboardJob /> },
   { path: "/dashboard-blog", component: <DashboardBlog /> },
+
+  // reports
+  { path: "/reports-creditors-and-debtors", component: <CreditorsAndDebtors /> },
 
   // apps
   { path: "/apps-calendar", component: <Calendar /> },
@@ -469,8 +471,8 @@ const authProtectedRoutes = [
 
 const publicRoutes = [
   // Authentication Page
-  { path: "/logout", component: <Logout /> },
-  { path: "/login", component: <Login /> },
+  { path: "/logout", component: <CoverLogout /> },
+  { path: "/login", component: <CoverSignIn /> },
   { path: "/forgot-password", component: <ForgetPasswordPage /> },
   { path: "/register", component: <Register /> },
 

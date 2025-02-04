@@ -45,6 +45,9 @@ const Navdata = () => {
     const [isVerification, setIsVerification] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
 
+    // Reports
+    const [isReports, setIsReports] = useState<boolean>(false);
+
     // Pages
     const [isProfile, setIsProfile] = useState<boolean>(false);
     const [isLanding, setIsLanding] = useState<boolean>(false);
@@ -78,6 +81,9 @@ const Navdata = () => {
         document.body.classList.remove('twocolumn-panel');
         if (iscurrentState !== 'Dashboard') {
             setIsDashboard(false);
+        }
+        if (iscurrentState !== 'Reports') {
+            setIsReports(false);
         }
         if (iscurrentState !== 'Apps') {
             setIsApps(false);
@@ -123,6 +129,7 @@ const Navdata = () => {
         history,
         iscurrentState,
         isDashboard,
+        isReports,
         isApps,
         isAuth,
         isPages,
@@ -204,6 +211,26 @@ const Navdata = () => {
                     parentId: "dashboard",
                     badgeColor: "success",
                     badgeName: "New",
+                },
+            ],
+        },
+        {
+            id: "reports",
+            label: "Reports",
+            icon: "ri-numbers-line",
+            stateVariables: isReports,
+            click: function (e: any) {
+                e.preventDefault();
+                setIsReports(!isReports);
+                setIscurrentState('Reports');
+                updateIconSidebar(e);
+            },
+            subItems: [
+                {
+                    id: "analytics",
+                    label: "Creditors And Debtors",
+                    link: "/reports-creditors-and-debtors",
+                    parentId: "dashboard",
                 },
             ],
         },

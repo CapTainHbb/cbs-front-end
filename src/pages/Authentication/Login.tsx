@@ -28,12 +28,13 @@ const Login = (props: any) => {
             password: '',
         },
         validationSchema: Yup.object({
-            email: Yup.string().required("Please Enter Your Username"),
+            username: Yup.string().required("Please Enter Your Username"),
             password: Yup.string().required("Please Enter Your Password"),
         }),
         onSubmit: (values) => {
             dispatch(loginUser(values));
             setLoader(true)
+            setTimeout(() => {setLoader(false)}, 5000)
         }
     });
 
@@ -67,7 +68,7 @@ const Login = (props: any) => {
                                     <CardBody className="p-4">
                                         <div className="text-center mt-2">
                                             <h5 className="text-primary">Welcome Back !</h5>
-                                            <p className="text-muted">Sign in to continue to Velzon.</p>
+                                            <p className="text-muted">Sign in to continue to ZALEX.</p>
                                         </div>
                                         {/*{error && error ? (<Alert color="danger"> {error} </Alert>) : null}*/}
                                         <div className="p-2 mt-4">
@@ -80,21 +81,21 @@ const Login = (props: any) => {
                                                 action="#">
 
                                                 <div className="mb-3">
-                                                    <Label htmlFor="email" className="form-label">Email</Label>
+                                                    <Label htmlFor="username" className="form-label">Username</Label>
                                                     <Input
-                                                        name="email"
+                                                        name="username"
                                                         className="form-control"
-                                                        placeholder="Enter email"
-                                                        type="email"
+                                                        placeholder="Enter username"
+                                                        type="text"
                                                         onChange={validation.handleChange}
                                                         onBlur={validation.handleBlur}
-                                                        value={validation.values.email || ""}
+                                                        value={validation.values.username || ""}
                                                         invalid={
-                                                            validation.touched.email && validation.errors.email ? true : false
+                                                            !!(validation.touched.username && validation.errors.username)
                                                         }
                                                     />
-                                                    {validation.touched.email && validation.errors.email ? (
-                                                        <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                                                    {validation.touched.username && validation.errors.username ? (
+                                                        <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
                                                     ) : null}
                                                 </div>
 
@@ -113,7 +114,7 @@ const Login = (props: any) => {
                                                             onChange={validation.handleChange}
                                                             onBlur={validation.handleBlur}
                                                             invalid={
-                                                                validation.touched.password && validation.errors.password ? true : false
+                                                                !!(validation.touched.password && validation.errors.password)
                                                             }
                                                         />
                                                         {validation.touched.password && validation.errors.password ? (
@@ -136,43 +137,10 @@ const Login = (props: any) => {
                                                         Sign In
                                                     </Button>
                                                 </div>
-
-                                                <div className="mt-4 text-center">
-                                                    <div className="signin-other-title">
-                                                        <h5 className="fs-13 mb-4 title">Sign In with</h5>
-                                                    </div>
-                                                    <div>
-                                                        <Link
-                                                            to="#"
-                                                            className="btn btn-primary btn-icon me-1"
-                                                            onClick={e => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
-                                                            <i className="ri-facebook-fill fs-16" />
-                                                        </Link>
-                                                        <Link
-                                                            to="#"
-                                                            className="btn btn-danger btn-icon me-1"
-                                                            onClick={e => {
-                                                                e.preventDefault();
-                                                            }}
-                                                        >
-                                                            <i className="ri-google-fill fs-16" />
-                                                        </Link>
-                                                        <Button color="dark" className="btn-icon"><i className="ri-github-fill fs-16"></i></Button>{" "}
-                                                        <Button color="info" className="btn-icon"><i className="ri-twitter-fill fs-16"></i></Button>
-                                                    </div>
-                                                </div>
                                             </Form>
                                         </div>
                                     </CardBody>
                                 </Card>
-
-                                <div className="mt-4 text-center">
-                                    <p className="mb-0">Don't have an account ? <Link to="/register" className="fw-semibold text-primary text-decoration-underline"> Signup </Link> </p>
-                                </div>
-
                             </Col>
                         </Row>
                     </Container>

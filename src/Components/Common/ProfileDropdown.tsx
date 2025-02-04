@@ -1,38 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useCallback} from 'react';
 import { Link } from 'react-router-dom';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { createSelector } from 'reselect';
 import { useSelector } from 'react-redux';
+import axiosInstance from '../../helpers/axios_instance';
 
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
 
 const ProfileDropdown = () => {
 
-    const profiledropdownData = createSelector(
-        (state: any) => state.Profile,
-        (user) => user.user
+    const userProfileDataSelector = createSelector(
+        (state: any) => state.InitialData,
+        (initialData) => initialData.userProfileData
     );
     // Inside your component
-    const user = useSelector(profiledropdownData);
+    const userProfileData = useSelector(userProfileDataSelector);
 
-    const [userName, setUserName] = useState("Admin");
-
-    useEffect(() => {
-        const authUser = sessionStorage.getItem("authUser");
-        if (authUser) {
-            const obj = JSON.parse(authUser);
-            setUserName(
-                process.env.REACT_APP_DEFAULTAUTH === "fake"
-                    ? obj.username === undefined
-                        ? user.first_name || obj.data.first_name
-                        : "Admin"
-                    : process.env.REACT_APP_DEFAULTAUTH === "firebase"
-                        ? obj.email || "Admin"
-                        : "Admin"
-            );
-        }
-    }, [userName, user]);
+    const onClickLogout = useCallback(async (e: any) => {
+        axiosInstance.post('/users/logout/', {})
+        .then((response) => {
+            window.location.assign('/logout');
+            })
+        .catch(error => {
+            console.log(error);
+        }).finally(() => {
+            window.location.assign('/logout');
+        })
+    }, [])
 
     //Dropdown Toggle
     const [isProfileDropdown, setIsProfileDropdown] = useState(false);
@@ -47,13 +42,17 @@ const ProfileDropdown = () => {
                         <img className="rounded-circle header-profile-user" src={avatar1}
                             alt="Header Avatar" />
                         <span className="text-start ms-xl-2">
-                            <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text"> {userName || "Admin"}</span>
-                            <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Founder</span>
+                            <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
+                                {userProfileData.user.username}
+                            </span>
+                            <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
+                                {userProfileData.role}
+                            </span>
                         </span>
                     </span>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-end">
-                    <h6 className="dropdown-header">Welcome {userName}!</h6>
+                    <h6 className="dropdown-header">Welcome {userProfileData.user.username}!</h6>
                     <DropdownItem className='p-0'>
                         <Link to="/profile" className="dropdown-item">
                             <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
@@ -102,11 +101,11 @@ const ProfileDropdown = () => {
                         </Link>
                     </DropdownItem>
                     <DropdownItem className='p-0'>
-                        <Link to="/logout" className="dropdown-item">
+                        <button  onClick={onClickLogout} className="dropdown-item">
                             <i
                                 className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                                     className="align-middle" data-key="t-logout">Logout</span>
-                        </Link>
+                        </button>
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>

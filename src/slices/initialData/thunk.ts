@@ -35,7 +35,6 @@ export const fetchInitialData = () => async (dispatch: any) => {
         customers,
         users,
     ] = await Promise.all(endpoints);
-
     dispatch(setUserProfileData(userProfileData.data));
     dispatch(setCurrencies(currencies.data));
     dispatch(setReferenceCurrency(referenceCurrency.data));

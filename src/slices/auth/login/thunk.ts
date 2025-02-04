@@ -1,12 +1,17 @@
 import {loginSuccess, loginFailed} from "./reducer";
 import axiosInstance from '../../../helpers/axios_instance';
+import {fetchInitialData} from "../../initialData/thunk";
+import {setInitialDataIsLoading} from "../../initialData/reducer";
+
 export const checkIsUserAuthenticated = () => async (dispatch : any) => {
     axiosInstance.post('/users/token/verify/', {})
         .then(response => {
-            dispatch(loginSuccess);
+            dispatch(loginSuccess({}));
+            dispatch(fetchInitialData());
         })
         .catch(error => {
-            dispatch(loginFailed);
+            dispatch(loginFailed({}));
+            dispatch(setInitialDataIsLoading(false))
         })
 };
 
@@ -20,7 +25,7 @@ export const loginUser = (values: any) => async (dispatch: any) => {
     // toast.success(t('LoginSuccess'), {
     //   id: loadingToastId,
     // });
-    dispatch(loginSuccess)
+    dispatch(loginSuccess({}))
   }).catch(error => {
     // toast.error(t("LoginFailed"), {
     //   id: loadingToastId,

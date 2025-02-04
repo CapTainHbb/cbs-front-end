@@ -12,7 +12,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {createSelector} from "reselect";
 import Spinners from "../Components/Common/Spinner";
 import {checkIsUserAuthenticated} from "../slices/auth/login/thunk";
-import {fetchInitialData} from "../slices/initialData/thunk";
 
 const Index = () => {
     const isAuthenticated = useSelector((state: any) => state.Authentication.isAuthenticated)
@@ -37,8 +36,8 @@ const Index = () => {
 
     useEffect(() => {
         dispatch(checkIsUserAuthenticated());
-        dispatch(fetchInitialData());
     }, [dispatch]);
+
 
     if (isAuthenticated === null || initialDataIsLoading) {
         return <Spinners />;
