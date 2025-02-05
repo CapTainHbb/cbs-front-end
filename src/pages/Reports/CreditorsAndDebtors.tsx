@@ -4,12 +4,13 @@ import {t} from "i18next";
 import {ColumnDef} from "@tanstack/table-core";
 import CustomTableContainer from "./CustomTableContainer";
 import {useSelector} from "react-redux";
-import {Currency, CurrencyAccount, getCurrencyNameById, PartyType} from "./utils";
+import {Currency, CurrencyAccount, getCurrencyNameById} from "./utils";
 import IndeterminateCheckbox from "./IndetermineCheckbox";
 import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
 import BalanceAmount from "./BalanceAmount";
 import CreditorsAndDebtorsExtraHeader from "./CreditorsAndDebtorsExtraHeader";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
+import { PartyType, partyTypeOptions } from './SelectPartyType';
 
 
 interface Filters {
@@ -18,26 +19,11 @@ interface Filters {
 }
 
 
-export const partyTypeOptions: PartyType[] = [
-    {
-        id: 1,
-        name: ("debtor"),
-        translated_name: "بدهکار",
-    },
-    {
-        id: 2,
-        name: ("creditor"),
-        translated_name: "بستانکار",
-    },
-]
-
-
 const CreditorsAndDebtors = () => {
-    const [data, setData] = useState([]);
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const [currency, setCurrency] =
-        useState<Currency | undefined>(currencies.find((c: Currency) => c.name === "USD"));
-    const [partyType, setPartyType] = useState<PartyType | undefined>(partyTypeOptions[0]);
+        useState<Currency>(currencies.find((c: Currency) => c.name === "USD"));
+    const [partyType, setPartyType] = useState<PartyType>(partyTypeOptions[0]);
 
     const filters: Filters = useMemo(() => {
         return {
@@ -108,7 +94,8 @@ const CreditorsAndDebtors = () => {
                     <Col lg={12}>
                         <Card>
                             <CardHeader>
-                                <CreditorsAndDebtorsExtraHeader currency={currency} setCurrency={setCurrency}
+                                <CreditorsAndDebtorsExtraHeader currency={currency} 
+                                setCurrency={(newOption: Currency) => setCurrency(newOption)}
                                 partyType={partyType} setPartyType={setPartyType} />
                             </CardHeader>
                             <CardBody>
@@ -116,7 +103,6 @@ const CreditorsAndDebtors = () => {
                                     <CustomTableContainer
                                         loadItemsApi='statistics-information/creditors-and-debtors/'
                                         columns={(columns || [])}
-                                        items={(data || [])}
                                         filters={filters}
                                     />
                                 </React.Fragment >

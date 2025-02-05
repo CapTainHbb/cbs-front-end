@@ -74,8 +74,9 @@ export const useFetchDataFromApi = ({loadItemsApi, loadMethod, onFetchDataSucces
         } else {
             returnedPromise = axiosInstance.post(loadItemsApi, request_data)
         }
-
-        returnedPromise.then(response => onFetchDataSuccess(response.data))
+        returnedPromise.then(response => {
+            onFetchDataSuccess(response.data)
+        })
             .catch(error => {
                 console.error(error)
             }).finally(async () => {

@@ -17,83 +17,30 @@ import {Row, Table} from "reactstrap";
 
 
 export interface TableContextType<T, F = any> {
-    isTableFullScreen: boolean;
-    setIsTableFullScreen: any;
-    isChangePageAvailable: boolean;
-    setIsChangePageAvailable: any;
-    isNumberOfRowsPerPageAvailable: boolean;
-    setIsNumberOfRowsPerPageAvailable: any;
-    itemsChanged?: boolean;
-    setItemsChanged?: any;
-    items: T[];
-    setItems?: any;
-    itemsAreLoading?: boolean;
-    setItemsAreLoading?: any;
-    pagination?: PaginationState;
-    setPagination?: any;
-    filters?: F;
     table?: any;
-    exportToXlsxCallback: any;
     onUpdateTable?: any;
 }
 
 export const TableContext = createContext<TableContextType<any, any>>({
-    items: [],
-    isTableFullScreen: false,
-    setIsTableFullScreen: undefined,
-    isChangePageAvailable: false,
-    setIsChangePageAvailable: undefined,
-    isNumberOfRowsPerPageAvailable: false,
-    setIsNumberOfRowsPerPageAvailable: undefined,
-    pagination: undefined,
-    setPagination: undefined,
-    filters: undefined,
-    itemsChanged: false,
-    setItemsChanged: undefined,
     table: undefined,
-    exportToXlsxCallback: undefined,
     onUpdateTable: undefined,
-    itemsAreLoading: undefined,
-    setItemsAreLoading: undefined,
 });
 
 interface Props<T, F> {
     loadItemsApi?: string;
     loadMethod?: "GET" | "POST";
-    children?: ReactNode;
     headerExtraComponent?: ReactNode;
-    items?: T[],
-    setItems?: any,
     filters?: F,
-    itemsChanged?: boolean,
-    setItemsChanged?: any;
-    isChangePageAvailable?: boolean;
     columns: ColumnDef<T>[] | any;
-    onDoubleClickRow?: any;
-    onRowsSelection?: any;
-    updateRowColorApi?: string;
     initialColumnsVisibility?: any;
-    exportToXlsxCallback?: any;
-    footerComponent?: any;
-    hasFullScreen?: boolean;
-    onApplyFilter?: any;
-    dataAccessName?: string;
 }
 
-const CustomTableContainer = <T,F,>({ children, loadItemsApi = "",
+const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          loadMethod = "POST",
-                         headerExtraComponent, items, setItems,
+                         headerExtraComponent,
                          filters,
-                         onDoubleClickRow,
-                         onRowsSelection,
-                         itemsChanged, setItemsChanged,
-                         updateRowColorApi, initialColumnsVisibility,
-                         columns, exportToXlsxCallback,
-                         footerComponent,
-                         hasFullScreen = true,
-                         onApplyFilter,
-                         dataAccessName,
-                         isChangePageAvailable: inputIsChangePageAvailable = false,
+                         initialColumnsVisibility,
+                         columns,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -105,30 +52,19 @@ const CustomTableContainer = <T,F,>({ children, loadItemsApi = "",
     const [pageCount, setPageCount] = useState(1);
     const [columnVisibility, setColumnVisibility] = useState<any>(initialColumnsVisibility)
     const [expanded, setExpanded] = useState<ExpandedState>({})
-    const [data, setData] = useState<any>([])
+    const [data, setData] = useState<any>([]);
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
 
     const onFetchDataSuccess = useCallback((data: any) => {
-        if(data?.data) {
-            setData(data?.data);
-        } else if(dataAccessName) {
-            setData(data?.[dataAccessName])
-        } else {
-            setData(data)
-        }
+        setData(data?.data)
         setRowCount(data?.total_rows);
         setPageCount(data?.total_pages);
         setPagination({ pageIndex: data?.current_page - 1, pageSize: data?.page_size });
-    }, [dataAccessName]);
-    const {itemsAreLoading, setItemsAreLoading, fetchData} =
+    }, []);
+    const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
+    
     useEffect(() => {
-        if(loadItemsApi === "") {
-            setData(items);
-            setRowCount(items?.length)
-        }
-    }, [items, loadItemsApi, setRowCount]);
-    useEffect(() => {
-        onApplyFilter?.();
         fetchData({
             pagination: {
                 page: pagination?.pageIndex + 1,
@@ -137,7 +73,7 @@ const CustomTableContainer = <T,F,>({ children, loadItemsApi = "",
             filters: filters
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemsChanged, loadItemsApi]);
+    }, [itemsChanged, loadItemsApi, filters]);
 
     const table = useReactTable({
         data,
@@ -163,32 +99,6 @@ const CustomTableContainer = <T,F,>({ children, loadItemsApi = "",
         getSubRows: (row: any) => row?.children,
     })
 
-    const {handleRowClick, isAnyRowSelected} = useAdvancedRowClick({
-        table, rowSelection, setRowSelection, onRowsSelection});
-
-    // const onColorSelected = useCallback(async (color: Color) => {
-    //     try {
-    //         const selectedRows = new Set(table.getSelectedRowModel().rows.map(row => row.original.id));
-    //
-    //         const updatedData = await Promise.all(
-    //             data.map(async (row: any) => {
-    //                 if (!selectedRows.has(row.id)) return row;
-    //
-    //                 // Update color if the row is selected
-    //                 await axiosInstance.put(`${updateRowColorApi}${row.id}/`, {
-    //                     color: color.colorCode,
-    //                 });
-    //
-    //                 return { ...row, highlight_color: color.colorCode || '' };
-    //             })
-    //         );
-    //
-    //         setData(updatedData);
-    //     } catch (error) {
-    //         console.error("Failed to update row colors:", error);
-    //     }
-    // }, [data, table, updateRowColorApi]);
-
     const onUpdateTable = useCallback(() => {
         setItemsChanged?.(!itemsChanged);
     }, [itemsChanged, setItemsChanged])
@@ -198,130 +108,126 @@ const CustomTableContainer = <T,F,>({ children, loadItemsApi = "",
 
     return (
         <Fragment>
-            <div className={'table-responsive table-card mb-3'}>
-                <TableExtraHeaderContainer>
-                    {headerExtraComponent}
-                </TableExtraHeaderContainer>
-                <Table>
-                    <thead className={"table-light"}>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th
-                                    key={header.id} // Pass key separately here
-                                    colSpan={header.colSpan}
-                                    style={{
-                                        width: header.getSize(),
-                                    }}
-                                >
-                                    <div className={'h-full'}>
-                                        {header.isPlaceholder ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </div>
-                                    <div
-                                        {...{
-                                            onDoubleClick: () => header.column.resetSize(),
-                                            onMouseDown: header.getResizeHandler(),
-                                            onTouchStart: header.getResizeHandler(),
-                                            className: `resizer  ${
-                                                table.options.columnResizeDirection
-                                            } ${
-                                                header.column.getIsResizing() ? 'isResizing' : ''
-                                            }`,
-                                        }}
-                                    />
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                    </thead>
-
-                    <tbody>
-                    {itemsAreLoading && Array.from({length: 10},
-                        (_, index) => (
-                            <tr key={index}>
-                                {
-                                    table.getAllLeafColumns()
-                                        .filter(column => column.getIsVisible())
-                                        .map(column => {
-                                            return (
-                                                <td key={column.id} style={{
-                                                    width: column.getSize(),
-                                                }}>
-                                                    <RectLoader/>
-                                                </td>
-                                            )
-                                        })
-                                }
-                            </tr>
-                        ))
-                    }
-                    {!itemsAreLoading && table.getRowModel().rows.map(row => {
-                        // Access the `hideCondition` from the column's meta
-                        const shouldHide = columns.some((column: any) =>
-                            column.meta?.hideCondition?.(row)
-                        );
-
-                        if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
-                        return (
-                            <tr key={row.id}
-                                className={`${onDoubleClickRow ? 'cursor-pointer' : ''}`}
-                                style={{
-                                    background: row.original?.highlight_color ? row.original.highlight_color :
-                                        (rowSelection[row.id] ? '#bec9d1' : ''),
-                                }}
-                                onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
-                                onClick={(e: any) => handleRowClick(row.id, e)}
-                            >
-                                {row.getVisibleCells().map(cell => (
-                                    <td
-                                        key={cell.id}
+            <TableContext.Provider value={{
+                table, onUpdateTable
+            }} >
+                <div className={'table-responsive table-card mb-3'}>
+                    <TableExtraHeaderContainer>
+                        {headerExtraComponent}
+                    </TableExtraHeaderContainer>
+                    <Table>
+                        <thead className={"table-light"}>
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map(header => (
+                                    <th
+                                        key={header.id} // Pass key separately here
+                                        colSpan={header.colSpan}
                                         style={{
-                                            width: cell.column.getSize(),
+                                            width: header.getSize(),
                                         }}
                                     >
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
-                                    </td>
+                                        <div className={'h-full'}>
+                                            {header.isPlaceholder ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </div>
+                                        <div
+                                            {...{
+                                                onDoubleClick: () => header.column.resetSize(),
+                                                onMouseDown: header.getResizeHandler(),
+                                                onTouchStart: header.getResizeHandler(),
+                                                className: `resizer  ${
+                                                    table.options.columnResizeDirection
+                                                } ${
+                                                    header.column.getIsResizing() ? 'isResizing' : ''
+                                                }`,
+                                            }}
+                                        />
+                                    </th>
                                 ))}
                             </tr>
-                        )
-                    })}
-                    </tbody>
-                </Table>
-            </div>
-            <Row className="align-items-center mt-2 g-3 text-center text-sm-start">
-                <div className="col-sm">
-                    <div className="text-muted">Showing<span className="fw-semibold ms-1">{pagination.pageSize}</span> of <span className="fw-semibold">{data.length}</span> Results
-                    </div>
-                </div>
-                <div className="col-sm-auto">
-                    <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">
-                        <li className={!table.getCanPreviousPage() ? "page-item disabled" : "page-item"}>
-                            <Link to="#" className="page-link" onClick={table.previousPage}>Previous</Link>
-                        </li>
-                        {pageOptions.map((item, key) => (
-                            <li key={key} className="page-item">
-                                <Link
-                                    to="#"
-                                    className={table.getState().pagination.pageIndex === item ? "page-link active" : "page-link"}
-                                    onClick={() => table.setPageIndex(item)}
-                                >
-                                    {item + 1}
-                                </Link>
-                            </li>
                         ))}
-                        <li className={!table.getCanNextPage() ? "page-item disabled" : "page-item"}>
-                            <Link to="#" className="page-link" onClick={table.nextPage}>Next</Link>
-                        </li>
-                    </ul>
+                        </thead>
+
+                        <tbody>
+                        {itemsAreLoading && Array.from({length: 10},
+                            (_, index) => (
+                                <tr key={index}>
+                                    {
+                                        table.getAllLeafColumns()
+                                            .filter(column => column.getIsVisible())
+                                            .map(column => {
+                                                return (
+                                                    <td key={column.id} style={{
+                                                        width: column.getSize(),
+                                                    }}>
+                                                        <RectLoader/>
+                                                    </td>
+                                                )
+                                            })
+                                    }
+                                </tr>
+                            ))
+                        }
+                        {!itemsAreLoading && table.getRowModel().rows.map(row => {
+                            // Access the `hideCondition` from the column's meta
+                            const shouldHide = columns.some((column: any) =>
+                                column.meta?.hideCondition?.(row)
+                            );
+
+                            if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
+                            return (
+                                <tr key={row.id}>                          
+                                    {row.getVisibleCells().map(cell => (
+                                        <td
+                                            key={cell.id}
+                                            style={{
+                                                width: cell.column.getSize(),
+                                            }}
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </Table>
                 </div>
-            </Row>
+                <Row className="align-items-center mt-2 g-3 text-center text-sm-start">
+                    <div className="col-sm">
+                        <div className="text-muted">Showing<span className="fw-semibold ms-1">{pagination.pageSize}</span> of <span className="fw-semibold">{data.length}</span> Results
+                        </div>
+                    </div>
+                    <div className="col-sm-auto">
+                        <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">
+                            <li className={!table.getCanPreviousPage() ? "page-item disabled" : "page-item"}>
+                                <Link to="#" className="page-link" onClick={table.previousPage}>Previous</Link>
+                            </li>
+                            {pageOptions.map((item, key) => (
+                                <li key={key} className="page-item">
+                                    <Link
+                                        to="#"
+                                        className={table.getState().pagination.pageIndex === item ? "page-link active" : "page-link"}
+                                        onClick={() => table.setPageIndex(item)}
+                                    >
+                                        {item + 1}
+                                    </Link>
+                                </li>
+                            ))}
+                            <li className={!table.getCanNextPage() ? "page-item disabled" : "page-item"}>
+                                <Link to="#" className="page-link" onClick={table.nextPage}>Next</Link>
+                            </li>
+                        </ul>
+                    </div>
+                </Row>
+            </TableContext.Provider>
         </Fragment>
     );
 };

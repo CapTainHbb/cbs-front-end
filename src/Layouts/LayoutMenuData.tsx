@@ -227,11 +227,17 @@ const Navdata = () => {
             },
             subItems: [
                 {
-                    id: "analytics",
+                    id: "creditors-and-debtors",
                     label: "Creditors And Debtors",
                     link: "/reports-creditors-and-debtors",
                     parentId: "dashboard",
                 },
+                {
+                    id: "income-cost-profit",
+                    label: "Income Cost And Profit",
+                    link: "/reports-income-cost-profit",
+                    parentId: "dashboard",
+                }
             ],
         },
         {

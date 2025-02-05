@@ -1,8 +1,7 @@
-import React, {useContext} from 'react';
-import ColumnFilterButton from "./ColumnFilterButton";
-import UpdateTableButton from "./UpdateTableButton";
-import ApplyFilterButton from "./ApplyFilterButton";
-import {TableContext} from "./CustomTableContainer";
+import React from 'react';
+import ColumnFilterButton from "./Buttons/ColumnFilterButton";
+import UpdateTableButton from "./Buttons/UpdateTableButton";
+import ApplyFilterButton from "./Buttons/ApplyFilterButton";
 
 
 interface Props {
@@ -10,18 +9,13 @@ interface Props {
 }
 
 const TableExtraHeaderContainer : React.FC<Props> = ({ children}) => {
-    const tableContext = useContext(TableContext)
-
-
     return (
         <div>
-            <div className="d-flex w-48 justify-content-between">
-                {tableContext?.filters && <ApplyFilterButton/>}
-                <UpdateTableButton/>
-                <ColumnFilterButton/>
-            </div>
             {children &&
                 <div className='w-100 h-100'>
+                    {<ApplyFilterButton/>}
+                <UpdateTableButton/>
+                <ColumnFilterButton/>
                     {children}
                 </div>
             }

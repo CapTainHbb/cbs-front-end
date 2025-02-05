@@ -243,6 +243,7 @@ import BlogListView from "pages/Pages/Blogs/ListView";
 import BlogGridView from "pages/Pages/Blogs/GridView";
 import PageBlogOverview from "pages/Pages/Blogs/Overview";
 import CreditorsAndDebtors from "../pages/Reports/CreditorsAndDebtors";
+import IncomeCostProfit from "pages/Reports/IcomeCostProfit/IncomeCostProfit";
 
 
 
@@ -261,6 +262,7 @@ const authProtectedRoutes = [
 
   // reports
   { path: "/reports-creditors-and-debtors", component: <CreditorsAndDebtors /> },
+  { path: "/reports-income-cost-profit", component: <IncomeCostProfit />},
 
   // apps
   { path: "/apps-calendar", component: <Calendar /> },

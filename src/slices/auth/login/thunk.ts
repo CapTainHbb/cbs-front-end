@@ -26,6 +26,7 @@ export const loginUser = (values: any) => async (dispatch: any) => {
     //   id: loadingToastId,
     // });
     dispatch(loginSuccess({}))
+    dispatch(fetchInitialData())
   }).catch(error => {
     // toast.error(t("LoginFailed"), {
     //   id: loadingToastId,
