@@ -1,6 +1,7 @@
 import BalanceAmount from "./BalanceAmount";
 import CreditorDebtorAmount from "./CreditorDebtorAmount";
-import { determinePartyType, getBalanceByCurrencyId } from "./utils";
+import { determinePartyType } from "./utils";
+import {getBalanceByCurrencyId} from "../../helpers/currency";
 
 export const CurrencyCell = (currencyId: number | undefined)  => (info: any)  => { // Use JSX.Element for components
     const { flow_type, currency_accounts } = info.row.original;

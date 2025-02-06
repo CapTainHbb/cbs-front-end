@@ -1,5 +1,3 @@
-import BalanceAmount from "./BalanceAmount";
-import CreditorDebtorAmount from "./CreditorDebtorAmount";
 import { CurrencyCell } from "./CurrencyCell";
 import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
 
@@ -15,32 +13,6 @@ export const defaultCompanyProfile = {
     phone: "",
     website: "",
     fax: "",
-}
-
-export interface FinancialAccount {
-    id?: number;
-    name: string;
-    code: string;
-    parent_group: number;
-    full_code?: string;
-    full_name?: string;
-    customer?: number;
-    is_confidential: boolean;
-}
-
-export const defaultFinancialAccount : FinancialAccount = {
-    id: undefined,
-    name: "",
-    code: "",
-    parent_group: -1,
-    customer: undefined,
-    is_confidential: false,
-}
-
-export interface CurrencyAccount {
-    financial_account: FinancialAccount;
-    balance: number;
-    currency: number;
 }
 
 export interface Currency {
@@ -73,24 +45,14 @@ export const formatNumber = (number: any) => {
 };
 
 
-export const getBalanceByCurrencyId = (currencyAccounts: CurrencyAccount[], currencyId: number | undefined) => {
-    return currencyAccounts.find((account) => account.currency === currencyId)?.balance || 0
-}
 
-export const getCurrencyById  = (currencies: Currency[], currencyId: number | undefined) => {
-    return currencies.find((currency: Currency) => currency?.id === currencyId)
-}
-
-
-export const getCurrencyNameById = (currencies: Currency[], currencyId: number | undefined) => {
-    return getCurrencyById(currencies, currencyId)?.name
-}
 
 
 
 export const determinePartyType = (flowType: string) => {
     return flowType === "incoming" ? "creditor" : "debtor";
 }
+
 
 
 export const currencyColumns = (currencies: Currency[]) => {

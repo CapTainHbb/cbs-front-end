@@ -42,7 +42,7 @@ const Filter = ({
 };
 
 // Global Filter
-const DebouncedInput = ({
+export const DebouncedInput = ({
   value: initialValue,
   onChange,
   debounce = 500,

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {isA} from "@jest/expect-utils";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -8,6 +9,7 @@ const Navdata = () => {
     const [isApps, setIsApps] = useState<boolean>(false);
     const [isAuth, setIsAuth] = useState<boolean>(false);
     const [isPages, setIsPages] = useState<boolean>(false);
+    const [isBilling, setIsBilling] = useState<boolean>(false);
     const [isBaseUi, setIsBaseUi] = useState<boolean>(false);
     const [isAdvanceUi, setIsAdvanceUi] = useState<boolean>(false);
     const [isForms, setIsForms] = useState<boolean>(false);
@@ -16,6 +18,7 @@ const Navdata = () => {
     const [isIcons, setIsIcons] = useState<boolean>(false);
     const [isMaps, setIsMaps] = useState<boolean>(false);
     const [isMultiLevel, setIsMultiLevel] = useState<boolean>(false);
+
 
     // Apps
     const [isCalendar, setCalendar] = useState<boolean>(false);
@@ -212,32 +215,6 @@ const Navdata = () => {
                     badgeColor: "success",
                     badgeName: "New",
                 },
-            ],
-        },
-        {
-            id: "reports",
-            label: "Reports",
-            icon: "ri-numbers-line",
-            stateVariables: isReports,
-            click: function (e: any) {
-                e.preventDefault();
-                setIsReports(!isReports);
-                setIscurrentState('Reports');
-                updateIconSidebar(e);
-            },
-            subItems: [
-                {
-                    id: "creditors-and-debtors",
-                    label: "Creditors And Debtors",
-                    link: "/reports-creditors-and-debtors",
-                    parentId: "dashboard",
-                },
-                {
-                    id: "income-cost-profit",
-                    label: "Income Cost And Profit",
-                    link: "/reports-income-cost-profit",
-                    parentId: "dashboard",
-                }
             ],
         },
         {
@@ -599,6 +576,50 @@ const Navdata = () => {
                 },
             ],
         },
+        {
+            id: "reports",
+            label: "Reports",
+            icon: "ri-numbers-line",
+            stateVariables: isReports,
+            click: function (e: any) {
+                e.preventDefault();
+                setIsReports(!isReports);
+                setIscurrentState('Reports');
+                updateIconSidebar(e);
+            },
+            subItems: [
+                {
+                    id: "creditors-and-debtors",
+                    label: "Creditors And Debtors",
+                    link: "/reports-creditors-and-debtors",
+                    parentId: "dashboard",
+                },
+                {
+                    id: "income-cost-profit",
+                    label: "Income Cost And Profit",
+                    link: "/reports-income-cost-profit",
+                    parentId: "dashboard",
+                }
+            ],
+        },
+        {
+            label: "Accounting",
+            isHeader: true,
+        },
+        {
+            id: "billing",
+            label: "Billing",
+            icon: "ri-file-paper-2-fill",
+            link: '/accounting-billing',
+            click: function (e: any) {
+                e.preventDefault();
+                setIsBilling(!isBilling);
+                setIscurrentState('Billing');
+                updateIconSidebar(e);
+            },
+            stateVariables: isBilling,
+        },
+
         {
             label: "pages",
             isHeader: true,

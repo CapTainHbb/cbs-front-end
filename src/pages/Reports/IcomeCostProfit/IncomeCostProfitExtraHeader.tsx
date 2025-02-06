@@ -1,6 +1,7 @@
 import React from 'react'
 import { Col, Label, Row } from 'reactstrap';
 import Flatpickr from "react-flatpickr";
+import {getFormattedDate} from "../../../helpers/date";
 
 interface Props {
     fromDate: string;
@@ -10,7 +11,8 @@ interface Props {
 }
 
 const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate, toDate, onChangeToDate }) => {
-  return (
+
+    return (
     <React.Fragment>
       <Row>
         <Col lg={6} >
@@ -18,7 +20,7 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
             <Label className="form-label mb-0">From Date</Label>
             <Flatpickr
               className="form-control"
-              onChange={onChangeFromDate}
+              onChange={(e: any) => onChangeFromDate(getFormattedDate(e?.[0]))}
               value={fromDate}
               options={{
                 dateFormat: "Y-m-d",
@@ -33,7 +35,7 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
             <Label className="form-label mb-0">To Date</Label>
             <Flatpickr
               className="form-control"
-              onChange={onChangeToDate}
+              onChange={(e: any) => onChangeToDate(getFormattedDate(e?.[0]))}
               value={toDate}
               options={{
                 dateFormat: "Y-m-d",

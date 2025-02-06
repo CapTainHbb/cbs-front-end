@@ -11,8 +11,10 @@ const BalanceAmount: React.FC<Props> = ({ amount }) => {
         return <p>0</p>
     }
     return (
-        <p className={`py-0.5 select-text ${amount > 0? 'text-creditor-amount': (amount < 0? 'text-debtor-amount': '')}`}
-        >
+        <p
+           style={{
+               color: amount > 0 ? '#006800' : '#c60000'
+           }}>
             {formatNumber(abs(amount))}
         </p>
     );

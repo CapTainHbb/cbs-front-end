@@ -4,13 +4,15 @@ import {t} from "i18next";
 import {ColumnDef} from "@tanstack/table-core";
 import CustomTableContainer from "./CustomTableContainer";
 import {useSelector} from "react-redux";
-import {Currency, CurrencyAccount, getCurrencyNameById} from "./utils";
+import {Currency} from "./utils";
 import IndeterminateCheckbox from "./IndetermineCheckbox";
 import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
 import BalanceAmount from "./BalanceAmount";
 import CreditorsAndDebtorsExtraHeader from "./CreditorsAndDebtorsExtraHeader";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { PartyType, partyTypeOptions } from './SelectPartyType';
+import {getCurrencyNameById} from "../../helpers/currency";
+import {CurrencyAccount} from "../Accounting/types";
 
 
 interface Filters {

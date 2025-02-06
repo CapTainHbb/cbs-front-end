@@ -11,6 +11,7 @@ import BalanceAmount from '../BalanceAmount';
 import CurrencyNameAndFlag from '../CurrencyNameAndFlag';
 import { currencyColumns } from '../utils';
 import { useSelector } from 'react-redux';
+import {getFormattedToday} from "../../../helpers/date";
 
 export interface Filters {
   from_date: string;
@@ -18,8 +19,8 @@ export interface Filters {
 }
 
 const IncomeCostProfit = () => {
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
+  const [fromDate, setFromDate] = useState<string>(getFormattedToday());
+  const [toDate, setToDate] = useState<string>(getFormattedToday());
 
   const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
@@ -66,10 +67,10 @@ const columns = useMemo<ColumnDef<ReportItemType>[]>(
                 amount={info.row.original.exchanged_amounts}
 
             />,
-            header: () => <div className="d-flex">
+            header: () => <Col lg={12}>
                 <p>{t("ExchangedTotalAmount")}</p>
                 <CurrencyNameAndFlag currencyName={referenceCurrency?.name} />
-            </div>,
+            </Col>,
             size: 50,
         },
         ...currencyColumns(referenceCurrencies),

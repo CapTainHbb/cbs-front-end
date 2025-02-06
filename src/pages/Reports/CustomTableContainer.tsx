@@ -9,7 +9,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 
-import {useAdvancedRowClick, useFetchDataFromApi} from "./hooks";
+import {useFetchDataFromApi} from "./hooks";
 import i18n from "i18next";
 import RectLoader from "./RectLoader";
 import {Link} from "react-router-dom";
@@ -80,6 +80,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         columns,
         columnResizeMode: "onChange",
         columnResizeDirection: i18n.language === 'fa'? "rtl": 'ltr',
+        enableColumnResizing: true,
         getCoreRowModel: getCoreRowModel(),
         rowCount,
         pageCount,
@@ -124,7 +125,9 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                         key={header.id} // Pass key separately here
                                         colSpan={header.colSpan}
                                         style={{
-                                            width: header.getSize(),
+                                            width: `${header.getSize()}px`, // Ensure it applies the size
+                                            minWidth: `${header.column.columnDef.minSize}px`,
+                                            maxWidth: `${header.column.columnDef.maxSize}px`,
                                         }}
                                     >
                                         <div className={'h-full'}>
