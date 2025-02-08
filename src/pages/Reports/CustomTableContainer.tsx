@@ -33,6 +33,7 @@ interface Props<T, F> {
     filters?: F,
     columns: ColumnDef<T>[] | any;
     initialColumnsVisibility?: any;
+    onDoubleClickRow?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -41,6 +42,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          filters,
                          initialColumnsVisibility,
                          columns,
+                         onDoubleClickRow,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -183,7 +185,10 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                             if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
                             return (
-                                <tr key={row.id}>                          
+                                <tr key={row.id}
+                                style={{cursor: onDoubleClickRow !== undefined? 'pointer': ''}}
+                                onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
+                                >                          
                                     {row.getVisibleCells().map(cell => (
                                         <td
                                             key={cell.id}

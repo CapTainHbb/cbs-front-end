@@ -14,6 +14,7 @@ import SelectTransactionType from "../SelectTransactionType";
 import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
 import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
 import BillingExtraHeader from "./BillingExtraHeader";
+import { useSearchParams } from 'react-router-dom';
 
 export interface Filters {
     financial_account?: number,
@@ -38,8 +39,15 @@ export interface Filters {
 const Billing = () => {
 
     const currencies = useSelector((state: any) => state.InitialData.currencies);
+    const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts)
+    const [searchParams] = useSearchParams();
+    const financial_account_id = useMemo(() => {
+        return Number(searchParams.get("financial_account"))
+    }, [searchParams])
 
-    const [financialAccount, setFinancialAccount] = useState<FinancialAccount | undefined>(undefined);
+    const [financialAccount, setFinancialAccount] = useState<FinancialAccount | undefined>(
+        financialAccounts?.find((item: any) => item?.id === financial_account_id)
+    );
     const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
     const [dateTo, setDateTo] = useState<string | undefined>(undefined);
     const [timeFrom, setTimeFrom] = useState<string | undefined>(undefined);
@@ -347,7 +355,6 @@ const Billing = () => {
                         </div>,
                     size: 90,
                 },
-
                 {
                     accessorKey: 'balance',
                     cell: info => <BalanceAmount amount={Number(info.getValue())} />,

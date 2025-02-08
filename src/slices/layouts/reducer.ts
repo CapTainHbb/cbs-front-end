@@ -30,7 +30,7 @@ export interface LayoutState {
 }
 
 export const initialState: LayoutState = {
-  layoutType: LAYOUT_TYPES.VERTICAL,
+  layoutType: LAYOUT_TYPES.HORIZONTAL,
   layoutModeType: LAYOUT_MODE_TYPES.LIGHTMODE,
   leftSidebarType: LAYOUT_SIDEBAR_TYPES.DARK,
   layoutWidthType: LAYOUT_WIDTH_TYPES.FLUID,

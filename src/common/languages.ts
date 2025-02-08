@@ -6,9 +6,14 @@ import flagrussia from "../assets/images/flags/russia.svg";
 import flagchina from "../assets/images/flags/china.svg";
 import flagfrench from "../assets/images/flags/french.svg";
 import flagarabic from "../assets/images/flags/ae.svg";
+import flagpersian from "../assets/images/flags/ir.svg";
 
 
 const languages = {
+  fa: {
+    label: "فارسی",
+    flag: flagpersian
+  },
   sp: {
     label: "Española",
     flag: flagspain,

@@ -157,8 +157,9 @@ const HorizontalLayout = (props : any) => {
                                                         {!subItem.isChildItem ? (
                                                             <li className="nav-item">
                                                                 <Link
-                                                                    to={subItem.link ? subItem.link : "/#"}
+                                                                    to={subItem.link ? subItem.link : undefined}
                                                                     className="nav-link"
+                                                                    onClick={subItem.onClick?.()}
                                                                 >
                                                                     {props.t(subItem.label)}
                                                                 </Link>

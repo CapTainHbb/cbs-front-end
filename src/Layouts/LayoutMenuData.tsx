@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {isA} from "@jest/expect-utils";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -9,7 +8,6 @@ const Navdata = () => {
     const [isApps, setIsApps] = useState<boolean>(false);
     const [isAuth, setIsAuth] = useState<boolean>(false);
     const [isPages, setIsPages] = useState<boolean>(false);
-    const [isBilling, setIsBilling] = useState<boolean>(false);
     const [isBaseUi, setIsBaseUi] = useState<boolean>(false);
     const [isAdvanceUi, setIsAdvanceUi] = useState<boolean>(false);
     const [isForms, setIsForms] = useState<boolean>(false);
@@ -50,6 +48,11 @@ const Navdata = () => {
 
     // Reports
     const [isReports, setIsReports] = useState<boolean>(false);
+
+    // Accounting
+    const [isBilling, setIsBilling] = useState<boolean>(false);
+    const [isGeneralLedger, setIsGeneralLedger] = useState<boolean>(false);
+    const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
 
     // Pages
     const [isProfile, setIsProfile] = useState<boolean>(false);
@@ -619,7 +622,49 @@ const Navdata = () => {
             },
             stateVariables: isBilling,
         },
-
+        {
+            id: "general-ledger",
+            label: "General Ledger",
+            icon: "ri-book-2-fill",
+            link: '/accounting-general-ledger',
+            click: function (e: any) {
+                e.preventDefault();
+                setIsGeneralLedger(!isGeneralLedger);
+                setIscurrentState('General Ledger');
+                updateIconSidebar(e);
+            },
+            stateVariables: isBilling,
+        },
+        {
+            id: "create-new-document",
+            label: "Create New Document",
+            icon: "ri-file-add-fill",
+            click: function (e: any) {
+                e.preventDefault();
+                setIsCreateNewDocument(!isCreateNewDocument);
+                setIscurrentState('Create New Document');
+                updateIconSidebar(e);
+            },
+            stateVariables: isCreateNewDocument,
+            subItems: [
+                {
+                    id: "direct-currency-transfer",
+                    label: "Direct Currency Transfer",
+                    parentId: "create-new-document",
+                    onClick: <CreateDirectCurrencyTransfer />
+                },
+                {
+                    id: "buy-and-sell-cash",
+                    label: "Buy and Sell Cash",
+                    parentId: "create-new-document",
+                },
+                {
+                    id: "local-payments",
+                    label: "Local Payments",
+                    parentId: "create-new-document",
+                }
+            ],
+        },
         {
             label: "pages",
             isHeader: true,
