@@ -5,20 +5,31 @@ import CustomTableContainer from 'pages/Reports/CustomTableContainer'
 import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox'
 import { ReportItemType } from 'pages/Reports/types'
 import { currencyColumns } from 'pages/Reports/utils'
-import React, { useCallback, useMemo } from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
+import GeneralLedgerExtraHeader from "./GeneralLedgerExtraHeader";
+import {CurrencyAccount} from "../types";
+import BalanceAmount from "../../Reports/BalanceAmount";
+import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
 
 const GeneralLedger = () => {
 
     const referenceCurrencies = useSelector((state: any)=> state.InitialData.referenceCurrencies);
+    const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const [hideSmallAmounts, setHideSmallAmounts] = useState(true);
     
     const group_id = useMemo(() => {
         return Number(searchParams.get("group_id"))
     }, [searchParams])
+
+    const isSmallAmountAccount = useCallback((currencyAccounts: CurrencyAccount[]) => {
+        const totalAmount = currencyAccounts.reduce((sum, account) => sum + (account?.balance || 0), 0);
+        return hideSmallAmounts && !totalAmount;
+    }, [hideSmallAmounts]);
 
     const determineGroupLinkText = useCallback((row_data: any) => {
         let linkText = ""
@@ -60,18 +71,33 @@ const GeneralLedger = () => {
             {
                 accessorKey: 'name',
                 cell: (info) => info.getValue(),
-                header: () => <span>{t("AccountName")}</span>,
+                header: () => <span>{t("Account Name")}</span>,
                 size: 100
             },
             {
                 accessorKey: 'code',
                 cell: (info) => info.getValue(),
-                header: () => <span>{t("AccountCode")}</span>,
+                header: () => <span>{t("Account Code")}</span>,
                 size: 20
+            },
+            {
+                id: 'exchanged_amounts',
+                cell: (info) =>  <BalanceAmount
+                    amount={info.row.original.exchanged_amounts}
+
+                />,
+                header: () => <div className="flex flex-col">
+                    <p>{t("Exchanged Total Amount")}</p>
+                    <CurrencyNameAndFlag currencyName={referenceCurrency?.name} />
+                </div>,
+                meta: {
+                    hideCondition: (row: any) => isSmallAmountAccount(row.original.currency_accounts), // Hide rows where age is less than 25
+                },
+                size: 20,
             },
             ...currencyColumns(referenceCurrencies),
         ]
-    }, [determineGroupLinkText, referenceCurrencies])
+    }, [determineGroupLinkText, referenceCurrencies, hideSmallAmounts])
     
     const handleDoubleClickRow = useCallback((inp: any) => {
         navigate(determineGroupLinkText(inp));
@@ -81,10 +107,11 @@ const GeneralLedger = () => {
     <React.Fragment>
         <div className='page-content'>
             <Container fluid>
-                <BreadCrumb title={"General Ledger"} pageTitle={"General Ledger"} />
+                <BreadCrumb title={t("General Ledger")} pageTitle={t("General Ledger")} />
                 <Col lg={12}>
                     <Card>
                         <CardHeader>
+                            <GeneralLedgerExtraHeader checked={hideSmallAmounts} setChecked={setHideSmallAmounts} />
                         </CardHeader>
                         <CardBody>
                             <React.Fragment >

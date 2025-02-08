@@ -20,6 +20,7 @@ import LightDark from '../Components/Common/LightDark';
 import { changeSidebarVisibility } from '../slices/thunks';
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from 'reselect';
+import {t} from "i18next";
 
 const Header = ({ onChangeLayoutMode, layoutModeType, headerClass } : any) => {
     const dispatch : any = useDispatch();
@@ -125,7 +126,7 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass } : any) => {
                                     <Form className="p-3">
                                         <div className="form-group m-0">
                                             <div className="input-group">
-                                                <input type="text" className="form-control" placeholder="Search ..."
+                                                <input type="text" className="form-control" placeholder={t("Search ...")}
                                                     aria-label="Recipient's username" />
                                                 <button className="btn btn-primary" type="submit"><i
                                                     className="mdi mdi-magnify"></i></button>

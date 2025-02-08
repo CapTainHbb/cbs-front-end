@@ -63,21 +63,23 @@ const CreditorsAndDebtors = () => {
                     size: 10
                 },
                 {
-                    header: t("AccountName"),
+                    header: t("Account Name"),
                     cell: info => info.row.original.financial_account.name,
-                    size: 60,
+                    size: 20,
                 },
                 {
-                    header: t("AccountNumber"),
+                    header: t("Account Number"),
                     cell: info => info.row.original.financial_account.full_code,
                     size: 60,
                 },
                 {
-                    header: t("CurrencyType"),
+                    header: t("Currency Type"),
                     cell: info => <CurrencyNameAndFlag currencyName={
                         getCurrencyNameById(currencies, info.row.original.currency)
                     } />,
-                    size: 20,
+                    minSize: 10,  // Ensure the column doesn't shrink below this size
+                    maxSize: 10,  // Prevent resizing beyond this size
+                    width: 10     // Explicitly set the width
                 },
                 {
                     header: t("Balance"),
@@ -92,7 +94,7 @@ const CreditorsAndDebtors = () => {
         <React.Fragment>
             <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title={"Creditors And Debtors"} pageTitle={"Reports"} />
+                    <BreadCrumb title={t("Creditors And Debtors")} pageTitle={t("Reports")} />
                     <Col lg={12}>
                         <Card>
                             <CardHeader>

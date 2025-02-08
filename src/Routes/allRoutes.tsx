@@ -246,7 +246,7 @@ import CreditorsAndDebtors from "../pages/Reports/CreditorsAndDebtors";
 import IncomeCostProfit from "pages/Reports/IcomeCostProfit/IncomeCostProfit";
 import Billing from "../pages/Accounting/Billing/Billing";
 import GeneralLedger from "pages/Accounting/GeneralLedger/GeneralLedger";
-import CreateDirectCurrencyTransfer from "pages/Accounting/create-transaction/CreateDirectCurrencyTransfer";
+import UsersActivityHistory from "../pages/ManageUsers/UsersActivityHistory";
 
 
 
@@ -270,6 +270,9 @@ const authProtectedRoutes = [
   // accounting
   { path: '/accounting-billing', component: <Billing />},
   { path: '/accounting-general-ledger', component: <GeneralLedger />},
+
+  // manage users
+  { path: "/manage-users-user-activity-history", component: <UsersActivityHistory />},
 
   // apps
   { path: "/apps-calendar", component: <Calendar /> },

@@ -11,5 +11,5 @@ export const determineCreditorOrDebtor = (balance: number) => {
 };
 
 export const determineCurrencyTextColor = (balance: number) => {
-    return balance > 0 ? '#006800' : (balance < 0? '#c60000': '')
+    return balance > 0 ? '#008e00' : (balance < 0? '#ec0000': '')
 }

@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
+import {Badge, Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../../Reports/CustomTableContainer";
 import {ColumnDef} from "@tanstack/table-core";
@@ -87,25 +87,52 @@ const Billing = () => {
         }
     }, [currency, transactionType, financialAccount])
 
+    const getTransactionBriefCell = useCallback((info: any) => {
+        const { document_type, transaction_type } = info.row.original;
+
+        if (document_type !== "main") {
+            if (document_type === 'interest' || document_type === 'standalone-interest') {
+                return <span className={'badge rounded-pill bg-success-subtle text-success'}>{t(String(info.getValue()))}</span>;
+            } else if (document_type === 'cost' || document_type === 'standalone-cost') {
+                return <span className={"badge rounded-pill bg-danger-subtle text-danger"}>{t(String(info.getValue()))}</span>;
+            }
+        } else {
+            switch (transaction_type) {
+                case 'direct-currency-transfer':
+                    return <p className="badge bg-primary-subtle text-primary">{t(String(info.getValue()))}</p>;
+                case 'sell-cash':
+                    return <p className="badge bg-secandary-subtle text-secandary">{t(String(info.getValue()))}</p>;
+                case 'buy-cash':
+                    return <p className="badge bg-warning-subtle text-warning">{t(String(info.getValue()))}</p>;
+                case 'local-payments':
+                    return <p className="badge bg-info-subtle text-info">{t(String(info.getValue()))}</p>;
+                default:
+                    return null;
+            }
+        }
+
+        return null;
+    }, [])
+
     const getTransactionTypeCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;
 
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <p className="p-1 bg-creditor">{t("ReceivedFees")}</p>;
+                return <span className={'badge rounded-pill bg-success-subtle text-success'}>{t("Received Fees")}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <p className="p-1 bg-debtor">{t("PaidFees")}</p>;
+                return <span className={'badge rounded-pill bg-danger-subtle text-danger'}>{t("Paid Fees")}</span>;
             }
         } else {
             switch (transaction_type) {
                 case 'direct-currency-transfer':
-                    return <p className="p-1 bg-blue-200">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-primary-subtle text-primary">{t(String(info.getValue()))}</p>;
                 case 'sell-cash':
-                    return <p className="p-1 bg-rose-200">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-secondary-subtle text-secondary">{t(String(info.getValue()))}</p>;
                 case 'buy-cash':
-                    return <p className="p-1 bg-green-300">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-warning-subtle text-warning">{t(String(info.getValue()))}</p>;
                 case 'local-payments':
-                    return <p className="p-1 bg-orange-200">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-info-subtle text-info">{t(String(info.getValue()))}</p>;
                 default:
                     return null;
             }
@@ -146,7 +173,7 @@ const Billing = () => {
                     id: 'account_name',
                     header: () =>
                         <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("AccountName")}</span>
+                            <span className={'header-item-title'}>{t("Account Name")}</span>
                         </div>,
                     cell: info => info.row.original.financial_account?.name,
                     size: 60,
@@ -155,7 +182,7 @@ const Billing = () => {
                     id: 'created_by',
                     header: () =>
                         <div className={'header-item-container'}>
-                            <span className={'header-item-title'}>{t("CreatedBy")}</span>
+                            <span className={'header-item-title'}>{t("Created By")}</span>
                         </div>,
                     cell: info => info.row.original?.created_by,
                     size: 60
@@ -170,9 +197,9 @@ const Billing = () => {
                         return row.getCanExpand() ?
                             <div
                                 data-bs-toggle="tooltip"
-                                title={row.getIsExpanded() ? t("CloseSubTransaction") : t("OpenSubTransaction")}
+                                title={row.getIsExpanded() ? t("Close SubTransaction") : t("Open SubTransaction")}
                                 style={{
-                                    transform: row.getIsExpanded() ? 'rotate(90deg)' : 'rotate(0deg)',
+                                    transform: row.getIsExpanded() ? 'rotate(90deg)' : 'rotate(180deg)',
                                     transition: 'transform 0.3s ease-in-out'
                                 }}
                                 onClick={row.getToggleExpandedHandler()}
@@ -193,7 +220,7 @@ const Billing = () => {
                         </div>,
                     header: () =>
                         <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("TransactionType")}</span>
+                            <span className={'header-item-title'}>{t("Transaction Type")}</span>
                             <SelectTransactionType
                                 onTransactionTypeChange={setTransactionType}
                                 transactionType={filters?.transaction_type}
@@ -206,7 +233,7 @@ const Billing = () => {
                     cell: info => info.getValue(),
                     header: () =>
                         <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("DocumentNumber")}</span>
+                            <span className={'header-item-title'}>{t("Document Number")}</span>
                             {/*<DebouncedInput type="number"*/}
                             {/*             fromName={'transaction_id_from'}*/}
                             {/*             toName={'transaction_id_to'}*/}
@@ -229,7 +256,7 @@ const Billing = () => {
                         </span>,
                     header: () =>
                         <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("TransactionId")}</span>
+                            <span className={'header-item-title'}>{t("Transaction Id")}</span>
                             {/*<DebouncedInput  type={'text'} className='filter-component'*/}
                             {/*                 value={filters.user_specified_id}*/}
                             {/*                 onChange={handleFilterValueChange}*/}
@@ -296,11 +323,11 @@ const Billing = () => {
                         <span
                               data-tooltip-content={info.row.original.transaction_brief}
                               data-tooltip-id="global-tooltip">
-                            {info.row.original.transaction_brief}
+                            {getTransactionBriefCell(info)}
                         </span>,
                     header: () =>
                         <div className={'header-item-container'}>
-                            <span className={'header-item-title'} >{t("TransactionBrief")}</span>
+                            <span className={'header-item-title'} >{t("Transaction Brief")}</span>
                         </div>,
                     size: 250
                 },
@@ -309,7 +336,7 @@ const Billing = () => {
                     cell: info => <CurrencyNameAndFlag currencyName={info.row.original.currency?.name} />,
                     header: () =>
                         <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("CurrencyType")}</span>
+                            <span className={'header-item-title'}>{t("Currency Type")}</span>
                             <SelectCurrency currency={currency} onCurrencyChange={(item: any) => setCurrency(item)}/>
                         </div>,
                     size: 50
@@ -385,7 +412,7 @@ const Billing = () => {
         <React.Fragment>
             <div className='page-content'>
                 <Container fluid>
-                    <BreadCrumb title={"Billing"} pageTitle={"Billing"} />
+                    <BreadCrumb title={t("Billing")} pageTitle={t("Billing")} />
                     <Col lg={12}>
                         <Card>
                             <CardHeader>

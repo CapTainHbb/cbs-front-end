@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import Select from "react-select";
+import {t} from "i18next";
 
 export interface PartyType {
     id: number;
@@ -27,7 +28,7 @@ const SelectPartyType: React.FC<Props> = ({ partyType,  onPartyTypeChange}) => {
   
     const options = useMemo(() => {
         return partyTypeOptions.map((item: PartyType) => ({
-          label: item.name,
+          label: t(item.name),
           value: item  
         }))
     }, [])

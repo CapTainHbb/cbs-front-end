@@ -19,7 +19,7 @@ const CreditorDebtorAmount : React.FC<Props> = ({ party_type, type, amount }) =>
     return (
         <p
             style={{
-                color: type==='creditor' && amount > 0 ? '#006800' : '#c60000'
+                color: type==='creditor' && amount > 0 ? '#008e00' : '#ec0000'
             }}>
             {formatNumber(abs(amount))}
         </p>

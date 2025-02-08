@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import {useSelector} from "react-redux";
 import {Currency, formatNumber} from "../Reports/utils";
 import {Col, Label, Row} from "reactstrap";
-import {determineCreditorOrDebtor, determineCurrencyTextColor} from "./utils";
+import {determineCurrencyTextColor} from "./utils";
 import {abs} from "mathjs";
 
 
@@ -26,7 +26,9 @@ const CurrencyAmount: React.FC<Props> = ({ amount,
     return (
         <Row className="align-items-center">
             <Col xs="auto">
-                <Label style={{color: determineCurrencyTextColor(amount || 0)}}>{formatNumber(abs(amount || 0))}</Label>
+                <Label style={{color: determineCurrencyTextColor(amount || 0)}}>
+                    {formatNumber(abs(amount || 0))}
+                </Label>
             </Col>
             <Col xs="auto" className="d-flex align-items-center">
                 <img

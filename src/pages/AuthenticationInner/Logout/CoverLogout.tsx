@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, Col, Container, Row } from 'reactstrap';
 
 import AuthSlider from '../authCarousel';
+import {t} from "i18next";
 
 const CoverLogout = () => {
     document.title = "Log Out ---  | ZALEX - Currency Exchange Accounting & Dashboard";
@@ -23,10 +24,10 @@ const CoverLogout = () => {
                                                 <i className="ri-cup-line display-5 text-success"></i>
 
                                                 <div className="mt-4 pt-2">
-                                                    <h5>You are Logged Out</h5>
-                                                    <p className="text-muted">Thank you for using <span className="fw-semibold">ZALEX</span> Financial Software</p>
+                                                    <h5>{t("You are Logged Out")}</h5>
+                                                    <p className="text-muted">{t("Thank you for using")} <span className="fw-semibold">ZALEX</span> Financial Software</p>
                                                     <div className="mt-4">
-                                                        <Link to="/login" className="btn btn-success w-100">Sign In</Link>
+                                                        <Link to="/login" className="btn btn-success w-100">{t("Sign In")}</Link>
                                                     </div>
                                                 </div>
                                             </div>

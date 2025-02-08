@@ -13,7 +13,7 @@ const BalanceAmount: React.FC<Props> = ({ amount }) => {
     return (
         <p
            style={{
-               color: amount > 0 ? '#006800' : '#c60000'
+               color: amount > 0 ? '#008e00' : '#ec0000'
            }}>
             {formatNumber(abs(amount))}
         </p>

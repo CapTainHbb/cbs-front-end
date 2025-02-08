@@ -53,13 +53,15 @@ const columns = useMemo<ColumnDef<ReportItemType>[]>(
                     />
                 </div>
             ),
-            size: 10,
+            minSize: 5,  // Ensure the column doesn't shrink below this size
+            maxSize: 5,  // Prevent resizing beyond this size
+            width: 5     // Explicitly set the width
         },
         {
             id: "type",
             cell: (info) => t(info.row.original.name),
-            header: () => <span>{t("Type")}</span>,
-            size: 40,
+            header: () => <span>{t("Report Type")}</span>,
+            minSize: 40,
         },
         {
             id: 'exchanged_amounts',
@@ -68,7 +70,7 @@ const columns = useMemo<ColumnDef<ReportItemType>[]>(
 
             />,
             header: () => <Col lg={12}>
-                <p>{t("ExchangedTotalAmount")}</p>
+                <p>{t("Exchanged Total Amount")}</p>
                 <CurrencyNameAndFlag currencyName={referenceCurrency?.name} />
             </Col>,
             size: 50,
@@ -82,7 +84,7 @@ const columns = useMemo<ColumnDef<ReportItemType>[]>(
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <BreadCrumb title={"Income Cost Profit"} pageTitle={"Reports"} />
+          <BreadCrumb title={t("Income Cost And Profit")} pageTitle={t("Reports")} />
           <Col lg={12}>
             <Card>
                 <CardHeader>

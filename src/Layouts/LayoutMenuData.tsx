@@ -54,6 +54,12 @@ const Navdata = () => {
     const [isGeneralLedger, setIsGeneralLedger] = useState<boolean>(false);
     const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
 
+    // Manage
+    const [isManageUsers, setIsManageUsers] = useState<boolean>(false);
+    const [isManageCurrencies, setIsManageCurrencies] = useState<boolean>(false);
+    const [isManageFinancialAccounts, setIsManageFinancialAccounts] = useState<boolean>(false);
+    const [isManageCompanyProfile, setIsManageCompanyProfile] = useState<boolean>(false);
+
     // Pages
     const [isProfile, setIsProfile] = useState<boolean>(false);
     const [isLanding, setIsLanding] = useState<boolean>(false);
@@ -651,7 +657,6 @@ const Navdata = () => {
                     id: "direct-currency-transfer",
                     label: "Direct Currency Transfer",
                     parentId: "create-new-document",
-                    onClick: <CreateDirectCurrencyTransfer />
                 },
                 {
                     id: "buy-and-sell-cash",
@@ -664,6 +669,87 @@ const Navdata = () => {
                     parentId: "create-new-document",
                 }
             ],
+        },
+        {
+            label: "Manage",
+            isHeader: true,
+        },
+        {
+            id: "manage-users",
+            label: "Manage Users",
+            icon: "ri-team-fill",
+            click: function (e: any) {
+                e.preventDefault();
+                setIsManageUsers(!isManageUsers);
+                setIscurrentState('Manage Users');
+                updateIconSidebar(e);
+            },
+            stateVariables: isManageUsers,
+            subItems: [
+                {
+                    id: "user-activity-history",
+                    label: "Users Activity History",
+                    link: "/manage-users-user-activity-history",
+                    parentId: "manage-users",
+                },
+                {
+                    id: "users-list",
+                    label: "Users List",
+                    link: "/manage-users-users-list",
+                    parentId: "manage-users",
+                },
+                {
+                    id: "create-user",
+                    label: "Create User",
+                    link: "/manage-users-create-user",
+                    parentId: "manage-users",
+                },
+                {
+                    id: "users-permission",
+                    label: "Users Permission",
+                    link: "/manage-users-users-permission",
+                    parentId: "manage-users",
+                }
+            ]
+        },
+        {
+            id: "manage-currencies",
+            label: "Manage Currencies",
+            link: "/manage-currencies",
+            icon: "ri-currency-fill",
+            click: function (e: any) {
+                e.preventDefault();
+                setIsManageCurrencies(!isManageCurrencies);
+                setIscurrentState('Manage Currencies');
+                updateIconSidebar(e);
+            },
+            stateVariables: isManageCurrencies,
+        },
+        {
+            id: "manage-financial-accounts",
+            label: "Manage Financial Accounts",
+            link: "/manage-financial-accounts",
+            icon: "ri-bank-fill",
+            click: function (e: any) {
+                e.preventDefault();
+                setIsManageFinancialAccounts(!isManageFinancialAccounts);
+                setIscurrentState('Manage Financial Accounts');
+                updateIconSidebar(e);
+            },
+            stateVariables: isManageFinancialAccounts,
+        },
+        {
+            id: "manage-company-profile",
+            label: "Manage Company Profile",
+            link: "/manage-company-profile",
+            icon: "ri-building-fill",
+            click: function (e: any) {
+                e.preventDefault();
+                setIsManageCompanyProfile(!isManageCompanyProfile);
+                setIscurrentState('Manage Company Profile');
+                updateIconSidebar(e);
+            },
+            stateVariables: isManageCompanyProfile,
         },
         {
             label: "pages",

@@ -14,7 +14,7 @@ const HorizontalLayout = (props : any) => {
     const navData = navdata().props.children;
     let menuItems = [];
     let splitMenuItems : Array<any> = [];
-    let menuSplitContainer = 6;
+    let menuSplitContainer = 10;
     navData.forEach(function (value : any, key : number) {
         if (value['isHeader']) {
             menuSplitContainer++;

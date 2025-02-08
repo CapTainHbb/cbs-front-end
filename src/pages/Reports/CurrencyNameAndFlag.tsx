@@ -6,11 +6,11 @@ interface Props {
 
 const CurrencyNameAndFlag : React.FC<Props> = ({ currencyName }) => {
     return (
-        <div className="d-flex justify-items-evenly items-center gap-3" dir={'ltr'}>
-            <img style={{ width: '25px', height: '25px' }} 
-            src={`/flags/${currencyName}.svg`} 
-            alt={currencyName} />
+        <div className="d-flex justify-items-center gap-1 items-center">
             <p>{currencyName && (currencyName)}</p>
+            <img style={{ width: '25px', height: '25px' }}
+            src={`/flags/${currencyName}.svg`}
+            alt={currencyName} />
         </div>
     );
 };

@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import AuthSlider from '../authCarousel';
 import {loginUser} from "../../../slices/auth/login/thunk";
 import {useDispatch, useSelector} from "react-redux";
+import {t} from "i18next";
 
 const CoverSignIn = () => {
     document.title = "SignIn | ZALEX - Currency Exchange Accounting & Dashboard";
@@ -56,8 +57,8 @@ const CoverSignIn = () => {
                                         <Col lg={6}>
                                             <div className="p-lg-5 p-4">
                                                 <div>
-                                                    <h5 className="text-primary">Welcome Back !</h5>
-                                                    <p className="text-muted">Sign in to continue to ZALEX.</p>
+                                                    <h5 className="text-primary">{t("Welcome Back")}!</h5>
+                                                    <p className="text-muted">{t("Sign in to continue to ZALEX")}.</p>
                                                 </div>
 
                                                 <div className="mt-4">
@@ -70,8 +71,8 @@ const CoverSignIn = () => {
                                                         action="#">
 
                                                         <div className="mb-3">
-                                                            <Label htmlFor="username" className="form-label">Username</Label>
-                                                            <Input type="text" className="form-control" id="username" placeholder="Enter username"
+                                                            <Label htmlFor="username" className="form-label">{t("Username")}</Label>
+                                                            <Input type="text" className="form-control" id="username" placeholder={t("Enter username")}
                                                                 name="username"
                                                                 onChange={validation.handleChange}
                                                                 onBlur={validation.handleBlur}
@@ -86,9 +87,9 @@ const CoverSignIn = () => {
                                                         </div>
 
                                                         <div className="mb-3">
-                                                            <Label className="form-label" htmlFor="password-input">Password</Label>
+                                                            <Label className="form-label" htmlFor="password-input">{t("Password")}</Label>
                                                             <div className="position-relative auth-pass-inputgroup mb-3">
-                                                                <Input type={passwordShow ? "text" : "password"} className="form-control pe-5 password-input" placeholder="Enter password" id="password-input"
+                                                                <Input type={passwordShow ? "text" : "password"} className="form-control pe-5 password-input" placeholder={t("Enter password")} id="password-input"
                                                                     name="password"
                                                                     value={validation.values.password || ""}
                                                                     onChange={validation.handleChange}
@@ -106,7 +107,7 @@ const CoverSignIn = () => {
 
                                                         <div className="form-check">
                                                             <Input className="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                                                            <Label className="form-check-label" htmlFor="auth-remember-check">Remember me</Label>
+                                                            <Label className="form-check-label" htmlFor="auth-remember-check">{t("Remember me")}</Label>
                                                         </div>
 
                                                         <div className="mt-4">
@@ -115,7 +116,7 @@ const CoverSignIn = () => {
                                                                     className="btn btn-success w-100" type="submit">
                                                                 {loader && <Spinner size="sm"
                                                                                     className='me-2'> Loading... </Spinner>}
-                                                                Sign In
+                                                                {t("Sign In")}
                                                             </Button>
                                                         </div>
 

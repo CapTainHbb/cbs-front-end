@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 
 import {useFetchDataFromApi} from "./hooks";
-import i18n from "i18next";
+import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
 import {Link} from "react-router-dom";
 import {Row, Table} from "reactstrap";
@@ -210,13 +210,13 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                 </div>
                 <Row className="align-items-center mt-2 g-3 text-center text-sm-start">
                     <div className="col-sm">
-                        <div className="text-muted">Showing<span className="fw-semibold ms-1">{pagination.pageSize}</span> of <span className="fw-semibold">{data.length}</span> Results
+                        <div className="text-muted">{t("Showing")}<span className="fw-semibold ms-1">{pagination.pageSize}</span> {t("of")} <span className="fw-semibold">{data.length}</span> {t("Results")}
                         </div>
                     </div>
                     <div className="col-sm-auto">
                         <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">
                             <li className={!table.getCanPreviousPage() ? "page-item disabled" : "page-item"}>
-                                <Link to="#" className="page-link" onClick={table.previousPage}>Previous</Link>
+                                <Link to="#" className="page-link" onClick={table.previousPage}>{t("Previous")}</Link>
                             </li>
                             {pageOptions.map((item, key) => (
                                 <li key={key} className="page-item">
@@ -230,7 +230,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 </li>
                             ))}
                             <li className={!table.getCanNextPage() ? "page-item disabled" : "page-item"}>
-                                <Link to="#" className="page-link" onClick={table.nextPage}>Next</Link>
+                                <Link to="#" className="page-link" onClick={table.nextPage}>{t("Next")}</Link>
                             </li>
                         </ul>
                     </div>
