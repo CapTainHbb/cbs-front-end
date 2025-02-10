@@ -1,5 +1,6 @@
 import axios from 'axios';
-import i18n from 'i18next';
+import i18n, {t} from 'i18next';
+import {toast} from "react-toastify";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -29,6 +30,11 @@ AxiosInstance.interceptors.response.use(
         return response;
     },
     async error => {
+        if (error.response && error.response.status === 401) {
+            setTimeout(() => {
+                toast.error(t("Your Session Is Expired"));
+            }, 0);
+        }
         return Promise.reject(error);
     }
 );

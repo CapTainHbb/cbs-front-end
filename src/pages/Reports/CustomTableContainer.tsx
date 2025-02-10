@@ -34,6 +34,8 @@ interface Props<T, F> {
     columns: ColumnDef<T>[] | any;
     initialColumnsVisibility?: any;
     onDoubleClickRow?: any;
+    itemsChanged: boolean;
+    setItemsChanged: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -43,6 +45,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          initialColumnsVisibility,
                          columns,
                          onDoubleClickRow,
+                         itemsChanged,
+                         setItemsChanged
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -55,7 +59,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const [columnVisibility, setColumnVisibility] = useState<any>(initialColumnsVisibility)
     const [expanded, setExpanded] = useState<ExpandedState>({})
     const [data, setData] = useState<any>([]);
-    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
 
     const onFetchDataSuccess = useCallback((data: any) => {
         setData(data?.data)

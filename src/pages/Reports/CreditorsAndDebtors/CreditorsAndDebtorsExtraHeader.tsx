@@ -1,8 +1,8 @@
 import React from 'react';
-import {Currency} from "./utils";
+import {Currency} from "../utils";
 import {Col, Label, Row} from "reactstrap";
-import SelectCurrency from "./SelectCurrency/SelectCurrency";
-import SelectPartyType, { PartyType } from './SelectPartyType';
+import SelectCurrency from "../SelectCurrency/SelectCurrency";
+import SelectPartyType, { PartyType } from '../SelectPartyType';
 import {t} from "i18next";
 
 

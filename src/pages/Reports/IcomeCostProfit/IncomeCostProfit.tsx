@@ -25,14 +25,16 @@ const IncomeCostProfit = () => {
   const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
 
-  const filters: Filters = useMemo(() => {
-    return {
-        from_date: fromDate,
-        to_date: toDate,
-    }
-}, [fromDate, toDate])
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
-const columns = useMemo<ColumnDef<ReportItemType>[]>(
+  const filters: Filters = useMemo(() => {
+        return {
+            from_date: fromDate,
+            to_date: toDate,
+        }
+    }, [fromDate, toDate])
+
+    const columns = useMemo<ColumnDef<ReportItemType>[]>(
     () => [
         {
             id: "select",
@@ -96,6 +98,8 @@ const columns = useMemo<ColumnDef<ReportItemType>[]>(
                 <CardBody>
                     <React.Fragment >
                         <CustomTableContainer
+                            itemsChanged={itemsChanged}
+                            setItemsChanged={setItemsChanged}
                             loadItemsApi='statistics-information/income-cost-profit/'
                             columns={(columns || [])}
                             filters={filters}

@@ -18,7 +18,7 @@ export default function IndeterminateCheckbox({
         <input
             type="checkbox"
             ref={ref}
-            className={className + ' cursor-pointer'}
+            className={'form-check-input contactCheckBox'}
             style={{ width: '20px', height: '20px' }}
             {...rest}
         />

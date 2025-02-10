@@ -242,11 +242,12 @@ import SlopeCharts from "pages/Charts/ApexCharts/SlopeCharts";
 import BlogListView from "pages/Pages/Blogs/ListView";
 import BlogGridView from "pages/Pages/Blogs/GridView";
 import PageBlogOverview from "pages/Pages/Blogs/Overview";
-import CreditorsAndDebtors from "../pages/Reports/CreditorsAndDebtors";
+import CreditorsAndDebtors from "../pages/Reports/CreditorsAndDebtors/CreditorsAndDebtors";
 import IncomeCostProfit from "pages/Reports/IcomeCostProfit/IncomeCostProfit";
 import Billing from "../pages/Accounting/Billing/Billing";
 import GeneralLedger from "pages/Accounting/GeneralLedger/GeneralLedger";
 import UsersActivityHistory from "../pages/ManageUsers/UsersActivityHistory";
+import UsersList from "pages/ManageUsers/UsersList";
 
 
 
@@ -273,6 +274,7 @@ const authProtectedRoutes = [
 
   // manage users
   { path: "/manage-users-user-activity-history", component: <UsersActivityHistory />},
+  { path: "/manage-users-users-list", component: <UsersList />},
 
   // apps
   { path: "/apps-calendar", component: <Calendar /> },

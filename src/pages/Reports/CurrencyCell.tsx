@@ -1,5 +1,5 @@
 import BalanceAmount from "./BalanceAmount";
-import CreditorDebtorAmount from "./CreditorDebtorAmount";
+import CreditorDebtorAmount from "./CreditorsAndDebtors/CreditorDebtorAmount";
 import { determinePartyType } from "./utils";
 import {getBalanceByCurrencyId} from "../../helpers/currency";
 

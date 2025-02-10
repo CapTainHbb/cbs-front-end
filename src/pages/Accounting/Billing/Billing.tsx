@@ -6,7 +6,7 @@ import {ColumnDef} from "@tanstack/table-core";
 import IndeterminateCheckbox from "../../Reports/IndetermineCheckbox";
 import {t} from "i18next";
 import BalanceAmount from "../../Reports/BalanceAmount";
-import CreditorDebtorAmount from "../../Reports/CreditorDebtorAmount";
+import CreditorDebtorAmount from "../../Reports/CreditorsAndDebtors/CreditorDebtorAmount";
 import {FinancialAccount, Party} from "../types";
 import {useSelector} from "react-redux";
 import {Currency} from "../../Reports/utils";
@@ -44,6 +44,8 @@ const Billing = () => {
     const financial_account_id = useMemo(() => {
         return Number(searchParams.get("financial_account"))
     }, [searchParams])
+
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
     const [financialAccount, setFinancialAccount] = useState<FinancialAccount | undefined>(
         financialAccounts?.find((item: any) => item?.id === financial_account_id)
@@ -427,6 +429,8 @@ const Billing = () => {
                                         loadItemsApi='/transactions/'
                                         columns={(columns || [])}
                                         filters={filters}
+                                        itemsChanged={itemsChanged}
+                                        setItemsChanged={setItemsChanged}
                                     />
                                 </React.Fragment >
                             </CardBody>

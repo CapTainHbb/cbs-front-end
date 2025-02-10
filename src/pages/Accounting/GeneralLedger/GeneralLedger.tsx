@@ -21,7 +21,9 @@ const GeneralLedger = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [hideSmallAmounts, setHideSmallAmounts] = useState(true);
-    
+
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
+
     const group_id = useMemo(() => {
         return Number(searchParams.get("group_id"))
     }, [searchParams])
@@ -120,6 +122,8 @@ const GeneralLedger = () => {
                                     loadMethod='GET'
                                     columns={(columns || [])}
                                     onDoubleClickRow={handleDoubleClickRow}
+                                    itemsChanged={itemsChanged}
+                                    setItemsChanged={setItemsChanged}
                                 />
                             </React.Fragment >
                         </CardBody>

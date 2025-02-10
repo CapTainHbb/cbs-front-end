@@ -2,17 +2,17 @@ import React, {useMemo, useState} from 'react';
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import {t} from "i18next";
 import {ColumnDef} from "@tanstack/table-core";
-import CustomTableContainer from "./CustomTableContainer";
+import CustomTableContainer from "../CustomTableContainer";
 import {useSelector} from "react-redux";
-import {Currency} from "./utils";
-import IndeterminateCheckbox from "./IndetermineCheckbox";
-import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
-import BalanceAmount from "./BalanceAmount";
+import {Currency} from "../utils";
+import IndeterminateCheckbox from "../IndetermineCheckbox";
+import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
+import BalanceAmount from "../BalanceAmount";
 import CreditorsAndDebtorsExtraHeader from "./CreditorsAndDebtorsExtraHeader";
-import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { PartyType, partyTypeOptions } from './SelectPartyType';
-import {getCurrencyNameById} from "../../helpers/currency";
-import {CurrencyAccount} from "../Accounting/types";
+import BreadCrumb from "../../../Components/Common/BreadCrumb";
+import { PartyType, partyTypeOptions } from '../SelectPartyType';
+import {getCurrencyNameById} from "../../../helpers/currency";
+import {CurrencyAccount} from "../../Accounting/types";
 
 
 interface Filters {
@@ -26,6 +26,8 @@ const CreditorsAndDebtors = () => {
     const [currency, setCurrency] =
         useState<Currency>(currencies.find((c: Currency) => c.name === "USD"));
     const [partyType, setPartyType] = useState<PartyType>(partyTypeOptions[0]);
+
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
 
     const filters: Filters = useMemo(() => {
         return {
@@ -108,6 +110,8 @@ const CreditorsAndDebtors = () => {
                                         loadItemsApi='statistics-information/creditors-and-debtors/'
                                         columns={(columns || [])}
                                         filters={filters}
+                                        itemsChanged={itemsChanged}
+                                        setItemsChanged={setItemsChanged}
                                     />
                                 </React.Fragment >
                             </CardBody>

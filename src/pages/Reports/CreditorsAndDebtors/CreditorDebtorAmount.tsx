@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatNumber } from './utils';
+import { formatNumber } from '../utils';
 import {abs} from "mathjs";
 
 interface Props {

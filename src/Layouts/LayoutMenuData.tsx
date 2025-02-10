@@ -699,12 +699,6 @@ const Navdata = () => {
                     parentId: "manage-users",
                 },
                 {
-                    id: "create-user",
-                    label: "Create User",
-                    link: "/manage-users-create-user",
-                    parentId: "manage-users",
-                },
-                {
                     id: "users-permission",
                     label: "Users Permission",
                     link: "/manage-users-users-permission",

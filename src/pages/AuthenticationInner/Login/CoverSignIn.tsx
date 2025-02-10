@@ -28,8 +28,8 @@ const CoverSignIn = () => {
             password: '',
         },
         validationSchema: Yup.object({
-            username: Yup.string().required("Please Enter Your Username"),
-            password: Yup.string().required("Please Enter Your Password"),
+            username: Yup.string().required(t("Please Enter Your Username")),
+            password: Yup.string().required(t("Please Enter Your Password")),
         }),
         onSubmit: (values) => {
             dispatch(loginUser(values));
