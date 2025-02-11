@@ -204,8 +204,8 @@ const UsersActivityHistory = () => {
         <React.Fragment>
             <div className='page-content'>
                 <Container fluid>
-                    <BreadCrumb title={t("User Activity History")}
-                                pageTitle={t("User Activity History")} />
+                    <BreadCrumb title={t("Users Activity History")}
+                                pageTitle={t("Users Activity History")} />
                     <Col lg={12}>
                         <Card>
                             <CardHeader>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {t} from "i18next";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -158,7 +159,7 @@ const Navdata = () => {
 
     const menuItems: any = [
         {
-            label: "Menu",
+            label: t("Menu"),
             isHeader: true,
         },
         {
@@ -612,7 +613,7 @@ const Navdata = () => {
             ],
         },
         {
-            label: "Accounting",
+            label: t("Accounting"),
             isHeader: true,
         },
         {
@@ -671,7 +672,7 @@ const Navdata = () => {
             ],
         },
         {
-            label: "Manage",
+            label: t("Manage"),
             isHeader: true,
         },
         {

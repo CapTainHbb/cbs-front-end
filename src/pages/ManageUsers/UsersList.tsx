@@ -260,7 +260,6 @@ const UsersList = () => {
       .catch(error => {
           toast.error(normalizeDjangoError(error.response.data))
       })
-
   }, [itemsChanged, toggle, validation])
 
   const onClickDelete = useCallback(async (user: UserProfile) => {
@@ -421,7 +420,7 @@ const UsersList = () => {
                 </ul>
               );
             },
-          },
+           },
         ]
     )
 }, [onClickDelete, onClickEditUser, onClickResetPassword])
@@ -464,7 +463,7 @@ const UsersList = () => {
               </Card>
             </Col>
             <Col xxl={9}>
-              <Card id="contact-list">
+              <Card id="users-list">
                   <CardBody className='pt-0'>
                     <div>
                       <CustomTableContainer
@@ -755,79 +754,79 @@ const UsersList = () => {
             </Col>
 
             <Col xxl={3}>
-            <Card id="contact-view-detail">
-            <CardBody className="text-center">
-              <div className="position-relative d-inline-block">
-                <img
-                  src={info?.profile_photo || dummyImg}
-                  // process.env.REACT_APP_API_URL + "/images/users/" +
-                  alt=""
-                  className="avatar-lg rounded-circle img-thumbnail"
-                />
-                <span className="contact-active position-absolute rounded-circle bg-success">
-                  <span className="visually-hidden"></span>
-                </span>
-              </div>
-              <h5 className="mt-4 mb-1">{info?.user.first_name} {info?.user.last_name}</h5>
-              <ul className="list-inline mb-0">
-                <li className="list-inline-item avatar-xs">
-                  <Link
-                    to="#"
-                    className="avatar-title bg-warning-subtle text-warning fs-15 rounded"
-                  >
-                    <i className="ri-question-answer-line"></i>
-                  </Link>
-                </li>
-              </ul>
-            </CardBody>
-            <CardBody>
-              <div className="table-responsive table-card">
-                <Table className="table table-borderless mb-0">
-                    {info && <tbody>
-                    <tr>
-                      <td className="fw-medium">
-                        {t("User Name")}
-                      </td>
-                      <td>{info?.user?.username}</td>
-                    </tr>
-                    <tr>
-                      <td className="fw-medium">
-                        {t("Role")}
-                      </td>
-                      <td>{t(info?.role)}</td>
-                    </tr>
-                    <tr>
-                      <td className="fw-medium">
-                        {t("Email")}
-                      </td>
-                      <td>{info?.user?.email}</td>
-                    </tr>
-                    <tr>
-                      <td className="fw-medium">
-                        {t("Status")}
-                      </td>
-                      <td>
-                        {<span className={`badge bg-${info?.user?.is_active? 'success': 'danger'}-subtle text-${info?.user?.is_active? 'success': 'danger'} me-1`}>
-                          {info?.user?.is_active? t("Active"): t("Inactive")}
-                          </span>}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="fw-medium">
-                        {t("Date Joined")}
-                      </td>
-                      {info?.user?.date_joined &&
-                          <td>
-                            {handleValidDate(info?.user?.date_joined)}{" "}
-                            <small className="text-muted">{handleValidTime(info?.user?.date_joined)}</small>
-                          </td>
-                      }
-                    </tr>
-                  </tbody>}
-                </Table>
-              </div>
-            </CardBody>
-            </Card>
+                <Card id="contact-view-detail">
+                    <CardBody className="text-center">
+                      <div className="position-relative d-inline-block">
+                        <img
+                          src={info?.profile_photo || dummyImg}
+                          // process.env.REACT_APP_API_URL + "/images/users/" +
+                          alt=""
+                          className="avatar-lg rounded-circle img-thumbnail"
+                        />
+                        <span className="contact-active position-absolute rounded-circle bg-success">
+                          <span className="visually-hidden"></span>
+                        </span>
+                      </div>
+                      <h5 className="mt-4 mb-1">{info?.user.first_name} {info?.user.last_name}</h5>
+                      <ul className="list-inline mb-0">
+                        <li className="list-inline-item avatar-xs">
+                          <Link
+                            to="#"
+                            className="avatar-title bg-warning-subtle text-warning fs-15 rounded"
+                          >
+                            <i className="ri-question-answer-line"></i>
+                          </Link>
+                        </li>
+                      </ul>
+                    </CardBody>
+                    <CardBody>
+                      <div className="table-responsive table-card">
+                        <Table className="table table-borderless mb-0">
+                            {info && <tbody>
+                            <tr>
+                              <td className="fw-medium">
+                                {t("User Name")}
+                              </td>
+                              <td>{info?.user?.username}</td>
+                            </tr>
+                            <tr>
+                              <td className="fw-medium">
+                                {t("Role")}
+                              </td>
+                              <td>{t(info?.role)}</td>
+                            </tr>
+                            <tr>
+                              <td className="fw-medium">
+                                {t("Email")}
+                              </td>
+                              <td>{info?.user?.email}</td>
+                            </tr>
+                            <tr>
+                              <td className="fw-medium">
+                                {t("Status")}
+                              </td>
+                              <td>
+                                {<span className={`badge bg-${info?.user?.is_active? 'success': 'danger'}-subtle text-${info?.user?.is_active? 'success': 'danger'} me-1`}>
+                                  {info?.user?.is_active? t("Active"): t("Inactive")}
+                                  </span>}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="fw-medium">
+                                {t("Date Joined")}
+                              </td>
+                              {info?.user?.date_joined &&
+                                  <td>
+                                    {handleValidDate(info?.user?.date_joined)}{" "}
+                                    <small className="text-muted">{handleValidTime(info?.user?.date_joined)}</small>
+                                  </td>
+                              }
+                            </tr>
+                          </tbody>}
+                        </Table>
+                      </div>
+                    </CardBody>
+                </Card>
             </Col>
           </Row>
         </Container>

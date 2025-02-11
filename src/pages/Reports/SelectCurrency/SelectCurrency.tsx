@@ -15,7 +15,7 @@ const SelectCurrency: React.FC<Props> = ({ currency, onCurrencyChange }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies)
 
     const options = useMemo(() => {
-        let result = currencies.map((item: Currency) => ({
+        let result = currencies?.map((item: Currency) => ({
             label: <CurrencyOption currency={item} />,
             value: item,
             searchText: `${item.name} ${item.alternative_name}` // Custom property for searching
