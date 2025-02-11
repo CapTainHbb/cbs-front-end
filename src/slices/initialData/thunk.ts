@@ -46,7 +46,7 @@ export const fetchInitialData = () => async (dispatch: any) => {
     // defaultLocalPayments.currency = localCurrency.data;
     // defaultCreateLocalPayments.currency = localCurrency.data;
     dispatch(setCustomers(customers.data));
-    dispatch(setUsers(users.data));
+    dispatch(setUsers(users.data.data));
     dispatch(setInitialDataIsLoading(false));
 
     // if(!process.env.REACT_APP_BACKEND_RESOURCE_API_URL) {

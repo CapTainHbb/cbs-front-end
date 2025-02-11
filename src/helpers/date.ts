@@ -8,6 +8,7 @@ export const getFormattedDateTime = (date: Date): any => {
     return {time: formatted_time, date: formatted_date}
 }
 
+
 export const getToday = (): Date => {
     return new Date();
 }

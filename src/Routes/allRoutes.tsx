@@ -248,6 +248,7 @@ import Billing from "../pages/Accounting/Billing/Billing";
 import GeneralLedger from "pages/Accounting/GeneralLedger/GeneralLedger";
 import UsersActivityHistory from "../pages/ManageUsers/UsersActivityHistory";
 import UsersList from "pages/ManageUsers/UsersList";
+import CurrencyList from "../pages/ManageCurrencies/CurrencyList";
 
 
 
@@ -275,6 +276,7 @@ const authProtectedRoutes = [
   // manage users
   { path: "/manage-users-user-activity-history", component: <UsersActivityHistory />},
   { path: "/manage-users-users-list", component: <UsersList />},
+  { path: "/manage-currencies", component: <CurrencyList />},
 
   // apps
   { path: "/apps-calendar", component: <Calendar /> },
