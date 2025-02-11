@@ -48,7 +48,7 @@ const ResetPasswordModal: React.FC<Props> = ({ show,
                 toast.success(t("Password Reset Successfully"));
             })
             .catch(error => {
-                toast.error(normalizeDjangoError(error.response.data))
+                toast.error(normalizeDjangoError(error))
             })
     }, [activeUserProfile]);
 

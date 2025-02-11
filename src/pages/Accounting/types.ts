@@ -62,7 +62,22 @@ export const defaultFinancialAccount : FinancialAccount = {
 }
 
 export interface CurrencyAccount {
-    financial_account: FinancialAccount;
+    financial_account: any;
     balance: number;
+    initial_balance: number;
     currency: number;
+}
+
+export interface AccountGroup {
+    id: number;
+    name: string;
+    code: string;
+    type: string;
+    full_code: string;
+    parent_group: any;
+    group_level: number;
+    children: number[];
+    financial_accounts: any[];
+    full_name: string;
+    currency_accounts?: any[];
 }

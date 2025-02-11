@@ -258,7 +258,7 @@ const UsersList = () => {
           setItemsChanged(!itemsChanged);
       })
       .catch(error => {
-          toast.error(normalizeDjangoError(error.response.data))
+          toast.error(normalizeDjangoError(error))
       })
   }, [itemsChanged, toggle, validation])
 

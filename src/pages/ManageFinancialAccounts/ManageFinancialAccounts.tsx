@@ -1,129 +1,150 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import DeleteModal from "../../Components/Common/DeleteModal";
+
 import {
     Card,
     CardBody,
     CardHeader,
     Col,
-    Container, DropdownItem,
-    DropdownMenu,
-    DropdownToggle, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader,
-    Row, Table,
-    UncontrolledDropdown
+    Container, DropdownItem, DropdownMenu, DropdownToggle,
+    Form, FormFeedback,
+    Input,
+    Label,
+    Modal,
+    ModalBody, ModalFooter,
+    ModalHeader,
+    Row, Table, UncontrolledDropdown
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {t} from "i18next";
 import CustomTableContainer from "../Reports/CustomTableContainer";
-import {Currency} from "../Reports/utils";
-import {ColumnDef} from "@tanstack/react-table";
+import {AccountGroup, FinancialAccount} from "../Accounting/types";
 import IndeterminateCheckbox from "../Reports/IndetermineCheckbox";
-import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
+import {ColumnDef} from "@tanstack/react-table";
+import FinancialAccountViewDetail from "./FinancialAccountViewDetail";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import axiosInstance from "../../helpers/axios_instance";
-import {toast, ToastContainer} from "react-toastify";
-import {normalizeDjangoError} from "../../helpers/error";
-import DeleteModal from "../../Components/Common/DeleteModal";
-import ReferenceCurrencyModal from "./ReferenceCurrencyModal";
-import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
+import SelectAccountGroup from "./SelectAccountGroup";
+import {toast, ToastContainer} from "react-toastify";
+import axiosInstance from "../../helpers/axios_instance";
+import {normalizeDjangoError} from "../../helpers/error";
 
-const ManageCurrencies = () => {
-    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
-    const [activeCurrency, setActiveCurrency] = useState<Currency | null>(null);
-    const [modal, setModal] = useState<boolean>(false);
+interface Filters {
+    name?: string;
+    fullCode?: string;
+    code?: string;
+    parentGroup?: number;
+}
+
+const ManageFinancialAccounts = () => {
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
-    const [referenceCurrencyModal, setReferenceCurrencyModal] = useState<boolean>(false);
+    const [modal, setModal] = useState<boolean>(false);
+    const [activeFinancialAccount, setActiveFinancialAccount] = useState<FinancialAccount | null>(null);
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
+
+    const [name, setName] = useState(undefined);
+    const [fullCode, setFullCode] = useState(undefined);
+    const [code] = useState(undefined);
+    // const [parentGroup] = useState<AccountGroup | undefined>(undefined);
+
+    const accountGroups = useSelector((state: any) => state.InitialData.accountGroups);
+
+    const [info, setInfo] = useState<FinancialAccount | null>(null);
+
+    const findAccountGroupById = useCallback((id: any): AccountGroup => {
+        return accountGroups.find((accountGroup: AccountGroup) => accountGroup.id === id)
+    }, [accountGroups]);
+
+    const validation: any = useFormik({
+        // enableReinitialize : use this flag when initial values needs to be changed
+        enableReinitialize: true,
+
+        initialValues: {
+            id: (activeFinancialAccount && activeFinancialAccount.id) || '',
+            // profilePhoto: (activeFinancialAccount && activeFinancialAccount.profile_photo) || '',
+            name: (activeFinancialAccount && activeFinancialAccount.name) || '',
+            parentGroup: (activeFinancialAccount && findAccountGroupById(activeFinancialAccount.parent_group)) || null,
+            customer: null,
+            isConfidential: false,
+        },
+        validationSchema: Yup.object({
+            name: Yup.string().required(t("Please Enter Name")),
+            parentGroup: Yup.mixed().required(t("Please select parent group")),
+        }),
+        onSubmit: (values) => {
+            if (isEdit) {
+                // @ts-ignore
+                // handleEditUser(updatedUserProfile);
+                validation.resetForm();
+            } else {
+                handleAddFinancialAccount({
+                    name: values.name,
+                    parent_group: values.parentGroup?.id,
+                    is_confidential: values.isConfidential,
+                });
+            }
+        },
+    });
 
     const toggle = useCallback(() => {
         if (modal) {
             setModal(false);
-            setActiveCurrency(null);
+            setActiveFinancialAccount(null);
         } else {
             setModal(true);
         }
     }, [modal]);
 
-    const validation: any = useFormik({
-        // enableReinitialize : use this flag when initial values needs to be changed
-        enableReinitialize: true,
-        initialValues: {
-            id: (activeCurrency && activeCurrency.id) || '',
-            name: (activeCurrency && activeCurrency.name) || '',
-            alternativeName: (activeCurrency && activeCurrency.alternative_name) || '',
-        },
-        validationSchema: Yup.object({
-            name: Yup.string().required(t("Please Enter Name")),
-            alternativeName: Yup.string().required(t("Please Enter Alternative Name")),
-        }),
-        onSubmit: (values) => {
-            if (isEdit) {
-                const updatedCurrency: Currency = {
-                    id: Number(values["id"]),
-                    name: values["name"],
-                    alternative_name: values["alternativeName"],
-                }
-                handleEditCurrency(updatedCurrency);
-                validation.resetForm();
-            } else {
-                const newCurrency: Currency = {
-                    name: values["name"],
-                    alternative_name: values['alternativeName'],
-                }
-                handleAddCurrency(newCurrency);
-            }
-        },
-    });
+    const filters : Filters = useMemo(() => {
+        return {
+            name: name,
+            full_code: fullCode,
+            code: code,
+            // parent_group: parentGroup?.id,
+        }
+    }, [code, fullCode, name])
 
-    const handleEditCurrency = useCallback(async (currency: Currency) => {
-        axiosInstance.put(`/currencies/${currency?.id}/`, currency)
+    const onAccountGroupChange = useCallback((selectionOption: AccountGroup) => {
+        validation.setFieldValue("parentGroup", selectionOption);
+    }, []);
+
+    const handleAddFinancialAccount = useCallback((data: any) => {
+        axiosInstance.post("/accounts/financial-accounts/create/", data)
             .then(response => {
-                toast.success(t("Currency Edit Successfully"));
-                validation.resetForm();
+                toast.success(t("Financial account created successfully"));
                 toggle();
                 setItemsChanged(!itemsChanged);
             })
             .catch(error => {
                 toast.error(normalizeDjangoError(error))
             })
-    }, [itemsChanged, toggle, validation]);
+    }, [])
 
-    const handleAddCurrency = useCallback(async (currency: Currency) => {
-        axiosInstance.post("/currencies/create/", currency)
-            .then(response => {
-                toast.success(t("Currency Created Successfully"));
-                validation.resetForm();
-                toggle();
-                setItemsChanged(!itemsChanged);
-            })
-            .catch(error => {
-                toast.error(normalizeDjangoError(error))
-            })
-    }, [itemsChanged, toggle, validation])
-
-    const onClickEdit = useCallback((currency: Currency) => {
-        setActiveCurrency(currency);
+    const onClickEdit = useCallback((financialAccount: FinancialAccount) => {
+        setActiveFinancialAccount(financialAccount);
         setIsEdit(true);
         toggle();
     }, []);
 
-    const onClickDelete = useCallback((currency: Currency) => {
-        setActiveCurrency(currency);
+    const onClickDelete = useCallback((financialAccount: FinancialAccount) => {
+        setActiveFinancialAccount(financialAccount);
         setDeleteModal(true);
+        setItemsChanged(!itemsChanged);
     }, [itemsChanged]);
 
-    const handleDeleteCurrency = useCallback(async (id: number | undefined) => {
-        axiosInstance.delete(`/currencies/${id}/`).then(response => {
-            toast.success(t('Currency Delete Success'));
-            setItemsChanged(!itemsChanged);
+    const handleDeleteFinancialAccount = useCallback((id: any) => {
+        axiosInstance.delete(`/accounts/financial-accounts/${id}/`).then(response => {
+            toast.success(t('Financial account delete success'))
             setDeleteModal(false);
+            setItemsChanged(!itemsChanged)
         }).catch(error => {
-            toast.error(t("Currency Delete Failed"))
+            toast.error(t("Financial account delete failed"))
         })
-    }, [setItemsChanged, itemsChanged]);
+    }, [itemsChanged]);
 
-    const columns = useMemo<ColumnDef<Currency>[]>(() => {
+    const columns = useMemo<ColumnDef<FinancialAccount>[]>(() => {
         return (
             [
                 {
@@ -155,13 +176,25 @@ const ManageCurrencies = () => {
                     accessorKey: 'name',
                     cell: info => info.getValue(),
                     header: () =>
-                        <span>{t("Currency Type")}</span>,
+                        <div className='header-item-container'>
+                            <span>{t("Account Name")}</span>
+                            {/*<DebouncedInput*/}
+                            {/*    className='filter-component'*/}
+                            {/*    value={name}*/}
+                            {/*    onChange={(e: any) => setName(e.target.value)} />*/}
+                        </div>
                 },
                 {
-                    id: "flag",
-                    cell: (info) => <CurrencyNameAndFlag currencyName={info.row.original?.name} /> ,
-                    header: () => <span>{t("Flag")}</span>,
-                    size: 10
+                    accessorKey: 'full_code',
+                    cell: info => info.getValue(),
+                    header: () =>
+                        <div className='header-item-container'>
+                            <span>{t("Financial Account Code")}</span>
+                            {/*<DebouncedInput*/}
+                            {/*    className='filter-component'*/}
+                            {/*    value={fullCode}*/}
+                            {/*    onChange={(e: any) => setFullCode(e.target.value)} />*/}
+                        </div>
                 },
                 {
                     header: t("Action"),
@@ -178,6 +211,12 @@ const ManageCurrencies = () => {
                                             <i className="ri-more-fill align-middle"></i>
                                         </DropdownToggle>
                                         <DropdownMenu className="dropdown-menu-end">
+                                            <DropdownItem className="dropdown-item" href="#"
+                                                          onClick={() => { setInfo(cellProps.row.original); }}
+                                            >
+                                                <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
+                                                {t("View")}
+                                            </DropdownItem>
                                             <DropdownItem
                                                 className="dropdown-item edit-item-btn"
                                                 href="#"
@@ -203,20 +242,19 @@ const ManageCurrencies = () => {
                 },
             ]
         )
-    }, [t])
+    }, [])
 
     return (
         <React.Fragment>
             <div className='page-content'>
                 <DeleteModal
                     show={deleteModal}
-                    onDeleteClick={() => handleDeleteCurrency(activeCurrency?.id)}
+                    onDeleteClick={() => handleDeleteFinancialAccount(activeFinancialAccount?.id)}
                     onCloseClick={() => setDeleteModal(false)}
                 />
-                <ReferenceCurrencyModal show={referenceCurrencyModal} onCloseClick={() => setReferenceCurrencyModal(false)} />
 
                 <Container fluid>
-                    <BreadCrumb title={t("Manage Currencies")} pageTitle={t("Manage Currencies")} />
+                    <BreadCrumb title={t("Manage Financial Accounts")} pageTitle={t("Manage Financial Accounts")} />
                     <Row>
                         <Col lg={12}>
                             <Card>
@@ -226,12 +264,12 @@ const ManageCurrencies = () => {
                                             <button
                                                 className="btn btn-primary add-btn"
                                                 onClick={() => {
-                                                    setActiveCurrency(null);
+                                                    setActiveFinancialAccount(null);
                                                     setIsEdit(false);
                                                     setModal(true);
                                                 }}
                                             >
-                                                <i className="ri-add-fill me-1 align-bottom"></i> {t("Add Currency")}
+                                                <i className="ri-add-fill me-1 align-bottom"></i> {t("Add financial account")}
                                             </button>
                                         </div>
                                     </div>
@@ -241,15 +279,17 @@ const ManageCurrencies = () => {
                         <Col xxl={9}>
                             <Card className='currencies-list'>
                                 <CardBody>
-                                    <CustomTableContainer loadItemsApi={'/currencies/'}
-                                                          loadMethod={"GET"}
+                                    <CustomTableContainer loadItemsApi={'/accounts/financial-accounts/'}
+                                                          loadMethod={"POST"}
                                                           columns={columns}
                                                           itemsChanged={itemsChanged}
-                                                          setItemsChanged={setItemsChanged} />
+                                                          setItemsChanged={setItemsChanged}
+                                                          filters={filters}
+                                    />
 
                                     <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
                                         <ModalHeader className="bg-primary-subtle p-3" toggle={toggle}>
-                                            {isEdit ? t("Edit Currency") : t("Add Currency")}
+                                            {isEdit ? t("Edit financial account") : t("Add financial account")}
                                         </ModalHeader>
 
                                         <Form className="tablelist-form" onSubmit={validation.handleSubmit}>
@@ -261,13 +301,13 @@ const ManageCurrencies = () => {
                                                             htmlFor="name-field"
                                                             className="form-label"
                                                         >
-                                                            {t("Currency Name")}
+                                                            {t("Financial Account Name")}
                                                         </Label>
                                                         <Input
                                                             name="name"
                                                             id="name-field"
                                                             className="form-control"
-                                                            placeholder={t("Enter Currency Name")}
+                                                            placeholder={t("Enter financial account name")}
                                                             type="text"
                                                             validate={{
                                                                 required: { value: true },
@@ -285,39 +325,35 @@ const ManageCurrencies = () => {
                                                     </Col>
                                                     <Col lg={12}>
                                                         <Label
-                                                            htmlFor="alternativename-field"
+                                                            htmlFor="parentgroup-field"
                                                             className="form-label"
                                                         >
-                                                            {t("Alternative Name")}
+                                                            {t("Financial Account Group")}
                                                         </Label>
-                                                        <Input
-                                                            name="alternativeName"
-                                                            id="alternativename-field"
-                                                            className="form-control"
-                                                            placeholder={t("Enter Alternative Name")}
-                                                            type="text"
-                                                            validate={{
-                                                                required: { value: true },
-                                                            }}
-                                                            onChange={validation.handleChange}
-                                                            onBlur={validation.handleBlur}
-                                                            value={validation.values.alternativeName || ""}
-                                                            invalid={
-                                                                !!(validation.touched.alternativeName && validation.errors.alternativeName)
-                                                            }
+                                                        <SelectAccountGroup accountGroup={validation.parentGroup}
+                                                                            onChangeAccountGroup={onAccountGroupChange}
                                                         />
-                                                        {validation.touched.alternativeName && validation.errors.alternativeName ? (
-                                                            <FormFeedback type="invalid">{validation.errors.alternativeName}</FormFeedback>
+                                                        {validation.touched.parentGroup &&
+                                                        validation.errors.parentGroup ? (
+                                                            <FormFeedback type="invalid">
+                                                                {validation.errors.parentGroup}
+                                                            </FormFeedback>
                                                         ) : null}
                                                     </Col>
                                                 </Row>
                                             </ModalBody>
+                                            {!isEdit &&
+                                            <div>
+
+                                            </div>}
                                             <ModalFooter>
                                                 <div className="hstack gap-2 justify-content-end">
                                                     <button type="button" className="btn btn-light" onClick={() => {
                                                         setModal(false);
                                                     }}> {t("Close")} </button>
-                                                    <button type="submit" className="btn btn-success" id="add-btn"> {isEdit ? t("Edit Currency") : t("Add Currency")} </button>
+                                                    <button type="submit" className="btn btn-success" id="add-btn">
+                                                        {isEdit ? t("Edit financial account") : t("Add financial account")}
+                                                    </button>
                                                 </div>
                                             </ModalFooter>
                                         </Form>
@@ -327,52 +363,7 @@ const ManageCurrencies = () => {
                             </Card>
                         </Col>
                         <Col xxl={3}>
-                            <Card id="contact-view-detail">
-                                <CardBody className="text-center">
-                                    <div className="position-relative d-inline-block">
-                                        <img
-                                            src={`/flags/${referenceCurrency.name}.svg`}
-                                            alt=""
-                                            className="avatar-lg  img-thumbnail"
-                                        />
-                                        <span className="contact-active position-absolute bg-success">
-                                            <span className="visually-hidden"></span>
-                                        </span>
-                                    </div>
-                                    <h5 className="mt-4 mb-2">{t("Reference Currency")}</h5>
-                                    <ul className="list-inline mb-0">
-                                        <li className="list-inline-item avatar-xs">
-                                            <Link
-                                                to="#"
-                                                className="avatar-title bg-warning-subtle text-warning fs-15 rounded"
-                                                onClick={() => {setReferenceCurrencyModal(true)}}
-                                            >
-                                                <i className="ri-pencil-fill"></i>
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </CardBody>
-                                <CardBody>
-                                    <div className="table-responsive table-card">
-                                        <Table className="table table-borderless mb-0">
-                                            <tbody>
-                                            <tr>
-                                                <td className="fw-medium">
-                                                    {t("Currency Name")}
-                                                    </td>
-                                                    <td>{referenceCurrency?.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="fw-medium">
-                                                        {t("Currency Alternative Name")}
-                                                    </td>
-                                                    <td>{referenceCurrency?.alternative_name}</td>
-                                                </tr>
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                </CardBody>
-                            </Card>
+                            <FinancialAccountViewDetail financialAccount={info} />
                         </Col>
                     </Row>
                 </Container>
@@ -381,4 +372,4 @@ const ManageCurrencies = () => {
     );
 };
 
-export default ManageCurrencies;
+export default ManageFinancialAccounts;
