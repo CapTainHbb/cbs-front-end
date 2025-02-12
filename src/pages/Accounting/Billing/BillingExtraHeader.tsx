@@ -33,7 +33,7 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
     }, [financialAccounts])
 
     return (
-        <Row>
+        <Row className="flex-md-row flex-column">
             <Col>
                 <Label>{t("Financial Account")}</Label>
                 <Select
@@ -45,7 +45,7 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
             </Col>
             <Col>
                 <Label>{t("Currency Type")}</Label>
-                <SelectCurrency currency={currency} onCurrencyChange={(item: any) => setCurrency(item)}/>
+                <SelectCurrency currency={currency} onCurrencyChange={(item: any) => setCurrency(item)} />
             </Col>
             <Col>
                 <Label>{t("Transaction Type")}</Label>
@@ -54,10 +54,11 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
                     transactionType={transactionType}
                 />
             </Col>
-            <Col>
+            <Col style={{ maxHeight: "250px", overflowY: "auto" }}>
                 <FinancialAccountViewDetail financialAccount={financialAccount} forceUpdate={itemsChanged} />
             </Col>
         </Row>
+
     );
 };
 

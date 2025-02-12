@@ -30,7 +30,6 @@ import {toast, ToastContainer} from "react-toastify";
 import axiosInstance from "../../helpers/axios_instance";
 import {normalizeDjangoError} from "../../helpers/error";
 import InitialBalanceForm from "./InitialBalanceForm";
-import {Currency} from "../Reports/utils";
 
 interface Filters {
     name?: string;
@@ -49,7 +48,6 @@ const ManageFinancialAccounts = () => {
     const [name, setName] = useState(undefined);
     const [fullCode, setFullCode] = useState(undefined);
     const [code] = useState(undefined);
-    // const [parentGroup] = useState<AccountGroup | undefined>(undefined);
 
     const accountGroups = useSelector((state: any) => state.InitialData.accountGroups);
     const [initialCurrencyAccounts, setInitialCurrencyAccounts] = useState<CurrencyAccount[]>([]);
@@ -70,31 +68,37 @@ const ManageFinancialAccounts = () => {
         return accountGroups.find((accountGroup: AccountGroup) => accountGroup.id === id)
     }, [accountGroups]);
 
+
     const validation: any = useFormik({
         // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
 
         initialValues: {
-            id: (activeFinancialAccount && activeFinancialAccount.id) || '',
-            // profilePhoto: (activeFinancialAccount && activeFinancialAccount.profile_photo) || '',
-            name: (activeFinancialAccount && activeFinancialAccount.name) || '',
-            parentGroup: (activeFinancialAccount && findAccountGroupById(activeFinancialAccount.parent_group)) || null,
+            id: activeFinancialAccount?.id || '',
+            name: activeFinancialAccount?.name || '',
+            parentGroup: activeFinancialAccount?.parent_group
+                ? findAccountGroupById(activeFinancialAccount.parent_group)?.id
+                : null,
             customer: null,
             isConfidential: false,
         },
         validationSchema: Yup.object({
             name: Yup.string().required(t("Please Enter Name")),
-            parentGroup: Yup.mixed().required(t("Please select parent group")),
+            parentGroup: Yup.number().required(t("Please select parent group")),
         }),
         onSubmit: (values) => {
             if (isEdit) {
-                // @ts-ignore
-                // handleEditUser(updatedUserProfile);
+                handleEditFinancialAccount({
+                    id: activeFinancialAccount?.id,
+                    name: values.name,
+                    parent_group: values.parentGroup,
+                    is_confidential: values.isConfidential
+                });
                 validation.resetForm();
             } else {
                 handleAddFinancialAccount({
                     name: values.name,
-                    parent_group: values.parentGroup?.id,
+                    parent_group: values.parentGroup,
                     is_confidential: values.isConfidential,
                 });
             }
@@ -137,8 +141,8 @@ const ManageFinancialAccounts = () => {
     }, [code, fullCode, name])
 
     const onAccountGroupChange = useCallback((selectionOption: AccountGroup) => {
-        validation.setFieldValue("parentGroup", selectionOption);
-    }, []);
+        validation.setFieldValue("parentGroup", selectionOption?.id);
+    }, [validation]);
 
     const handleAddFinancialAccount = useCallback((data: any) => {
         axiosInstance.post("/accounts/financial-accounts/create/", data)
@@ -149,6 +153,18 @@ const ManageFinancialAccounts = () => {
                 toast.error(normalizeDjangoError(error))
             })
     }, [initialCurrencyAccounts, createCurrencyAccounts])
+
+    const handleEditFinancialAccount = useCallback((data: any) => {
+        axiosInstance.put(`/accounts/financial-accounts/${data?.id}/`, data)
+            .then(response => {
+                toast.success(t("Financial account updated successfully"));
+                toggle();
+                setItemsChanged(!itemsChanged);
+            })
+            .catch(error => {
+                toast.error(normalizeDjangoError(error))
+            })
+    }, [toggle, itemsChanged])
 
     const onClickEdit = useCallback((financialAccount: FinancialAccount) => {
         setActiveFinancialAccount(financialAccount);
@@ -228,49 +244,27 @@ const ManageFinancialAccounts = () => {
                     header: t("Action"),
                     cell: (cellProps: any) => {
                         return (
-                            <ul className="list-inline hstack gap-2 mb-0">
-                                <li className="list-inline-item">
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle
-                                            href="#"
-                                            className="btn btn-soft-primary btn-sm dropdown"
-                                            tag="button"
-                                        >
-                                            <i className="ri-more-fill align-middle"></i>
-                                        </DropdownToggle>
-                                        <DropdownMenu className="dropdown-menu-end">
-                                            <DropdownItem className="dropdown-item" href="#"
-                                                          onClick={() => { setInfo(cellProps.row.original); }}
-                                            >
-                                                <i className="ri-eye-fill align-bottom me-2 text-muted"></i>{" "}
-                                                {t("View")}
-                                            </DropdownItem>
-                                            <DropdownItem
-                                                className="dropdown-item edit-item-btn"
-                                                href="#"
-                                                onClick={() => { onClickEdit(cellProps.row.original); }}
-                                            >
-                                                <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                                                {t("Edit")}
-                                            </DropdownItem>
-                                            <DropdownItem
-                                                className="dropdown-item remove-item-btn"
-                                                href="#"
-                                                onClick={() => { onClickDelete(cellProps.row.original); }}
-                                            >
-                                                <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                                                {t("Delete")}
-                                            </DropdownItem>
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </li>
-                            </ul>
+                            <div className={'hstack gap-2 mb-0'}>
+                                <button className={'btn btn-soft-primary rounded-pill p-1'}
+                                      onClick={() => { setInfo(cellProps.row.original); }}>
+                                    <i className="ri-eye-fill"></i>
+                                </button>
+                                <button className={'btn btn-soft-success rounded-pill p-1'}
+                                      onClick={() => { onClickEdit(cellProps.row.original); }}>
+                                    <i className="ri-pencil-fill"></i>
+                                </button>
+                                <button className={'btn btn-soft-danger rounded-pill p-1'}
+                                      onClick={() => { onClickDelete(cellProps.row.original); }}>
+                                    <i className="ri-delete-bin-fill"></i>
+                                </button>
+                            </div>
                         );
                     },
                 },
             ]
         )
     }, [])
+
 
     return (
         <React.Fragment>
@@ -358,7 +352,7 @@ const ManageFinancialAccounts = () => {
                                                         >
                                                             {t("Financial Account Group")}
                                                         </Label>
-                                                        <SelectAccountGroup accountGroup={validation.parentGroup}
+                                                        <SelectAccountGroup accountGroupId={validation.values.parentGroup}
                                                                             onChangeAccountGroup={onAccountGroupChange}
                                                         />
                                                         {!isEdit &&

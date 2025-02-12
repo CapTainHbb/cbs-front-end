@@ -4,14 +4,13 @@ import Select from "react-select";
 import {AccountGroup} from "../Accounting/types";
 
 interface Props {
-    accountGroup: AccountGroup | undefined,
+    accountGroupId: number | undefined,
     onChangeAccountGroup: any;
 }
 
 
-const SelectAccountGroup: React.FC<Props> = ({ accountGroup, onChangeAccountGroup  }) => {
+const SelectAccountGroup: React.FC<Props> = ({ accountGroupId, onChangeAccountGroup  }) => {
     const accountGroups = useSelector((state: any) => state.InitialData.accountGroups)
-
     const options = useMemo(() => {
         return accountGroups?.map((item: AccountGroup) => ({
             label: item.full_name,
@@ -25,7 +24,7 @@ const SelectAccountGroup: React.FC<Props> = ({ accountGroup, onChangeAccountGrou
             onChange={(selectedOption: any) => {
                 onChangeAccountGroup?.(selectedOption?.value)
             }}
-            value={options?.find((option: any) => option?.value?.id === accountGroup?.id)}
+            value={options?.find((option: any) => option?.value?.id === accountGroupId)}
             isClearable
         />
     );

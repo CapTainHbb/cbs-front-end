@@ -1,17 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {CurrencyAccount, FinancialAccount} from "../Accounting/types";
-import {Card, CardBody, Modal, ModalBody, ModalHeader, Table} from "reactstrap";
+import {Card, CardBody, Modal, ModalBody, ModalHeader} from "reactstrap";
 import {t} from "i18next";
-import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
-import {Currency} from "../Reports/utils";
-import BalanceAmount from "../Reports/BalanceAmount";
-import {determineCreditorOrDebtor, determineCurrencyTextColor} from "../Accounting/utils";
-import {useSelector} from "react-redux";
 import axiosInstance from "../../helpers/axios_instance";
 import toast from "react-hot-toast";
-import {getToday, handleValidDate, handleValidTime} from "../../helpers/date";
 import FinancialAccountBalance from "../Accounting/FinancialAccountBalance";
-import financialAccountBalance from "../Accounting/FinancialAccountBalance";
 
 interface Props {
     financialAccount?: FinancialAccount | null;
@@ -21,7 +14,6 @@ interface Props {
 const FinancialAccountViewDetail: React.FC<Props> = ({ financialAccount, forceUpdate }) => {
 
     const [currencyAccounts, setCurrencyAccounts] = useState<CurrencyAccount[]>([]);
-    const currencies = useSelector((info: any) => info.InitialData.currencies);
     const [modal, setModal] = useState<boolean>(false);
 
 
@@ -39,7 +31,7 @@ const FinancialAccountViewDetail: React.FC<Props> = ({ financialAccount, forceUp
     }, [financialAccount, forceUpdate]);
 
     return (
-        <Card id="financial-account-view-detail" style={{maxHeight: "200px", overflowY: "auto"}}>
+        <Card id="financial-account-view-detail" >
             <Modal fade={true} isOpen={modal} toggle={() => setModal(false)} centered={true} >
                 <ModalHeader className="bg-primary-subtle p-3"  toggle={() => setModal(false)}>
                     {t("Financial Account Balance")}
