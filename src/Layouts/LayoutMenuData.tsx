@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {t} from "i18next";
+import CreateDirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/DirectCurrencyTransfer/CreateDirectCurrencyTransfer";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -54,6 +55,7 @@ const Navdata = () => {
     const [isBilling, setIsBilling] = useState<boolean>(false);
     const [isGeneralLedger, setIsGeneralLedger] = useState<boolean>(false);
     const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
+    const [directCurrencyTransferModal, setDirectCurrencyTransferModal] = useState<boolean>(false);
 
     // Manage
     const [isManageUsers, setIsManageUsers] = useState<boolean>(false);
@@ -658,6 +660,9 @@ const Navdata = () => {
                     id: "direct-currency-transfer",
                     label: "Direct Currency Transfer",
                     parentId: "create-new-document",
+                    onClick: () => setDirectCurrencyTransferModal(true),
+                    renderModal: () => <CreateDirectCurrencyTransfer isOpen={directCurrencyTransferModal}
+                                                                     toggle={() => setDirectCurrencyTransferModal(false)} />,
                 },
                 {
                     id: "buy-and-sell-cash",

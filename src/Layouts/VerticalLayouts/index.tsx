@@ -180,7 +180,7 @@ const VerticalLayout = (props : any) => {
                                                     <React.Fragment key={key}>
                                                         {!subItem.isChildItem ? (
                                                             <li className="nav-item">
-                                                                <Link
+                                                                {subItem.link && <Link
                                                                     to={subItem.link ? subItem.link : "/#"}
                                                                     className="nav-link"
                                                                 >
@@ -188,7 +188,16 @@ const VerticalLayout = (props : any) => {
                                                                     {subItem.badgeName ?
                                                                         <span className={"badge badge-pill bg-" + subItem.badgeColor} data-key="t-new">{subItem.badgeName}</span>
                                                                         : null}
-                                                                </Link>
+                                                                </Link>}
+                                                                {subItem.onClick &&
+                                                                    <li className={'nav-link cursor-pointer'} onClick={subItem.onClick}>
+                                                                        {props.t(subItem.label)}
+                                                                        {subItem.badgeName ?
+                                                                            <span className={"badge badge-pill bg-" + subItem.badgeColor} data-key="t-new">{subItem.badgeName}</span>
+                                                                            : null}
+                                                                    </li>
+                                                                }
+                                                                {subItem?.renderModal?.()}
                                                             </li>
                                                         ) : (
                                                             <li className="nav-item">
