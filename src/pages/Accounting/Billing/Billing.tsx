@@ -173,12 +173,15 @@ const Billing = () => {
                 },
                 {
                     id: 'account_name',
+
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Account Name")}</span>
                         </div>,
                     cell: info => info.row.original.financial_account?.name,
-                    size: 60,
+                    minSize: 150,  // Ensure the column doesn't shrink below this size
+                    maxSize: 150,  // Prevent resizing beyond this size
+                    width: 150     // Explicitly set the width
                 },
                 {
                     id: 'created_by',
@@ -223,10 +226,6 @@ const Billing = () => {
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Transaction Type")}</span>
-                            <SelectTransactionType
-                                onTransactionTypeChange={setTransactionType}
-                                transactionType={filters?.transaction_type}
-                            />
                         </div>,
                     size: 50
                 },
@@ -339,7 +338,6 @@ const Billing = () => {
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Currency Type")}</span>
-                            <SelectCurrency currency={currency} onCurrencyChange={(item: any) => setCurrency(item)}/>
                         </div>,
                     size: 50
                 },
@@ -419,8 +417,13 @@ const Billing = () => {
                         <Card>
                             <CardHeader>
                                 <BillingExtraHeader
+                                    currency={currency}
+                                    setCurrency={setCurrency}
                                     financialAccount={financialAccount}
                                     onChangeFinancialAccount={setFinancialAccount}
+                                    transactionType={transactionType}
+                                    setTransactionType={setTransactionType}
+                                    itemsChanged={itemsChanged}
                                 />
                             </CardHeader>
                             <CardBody>

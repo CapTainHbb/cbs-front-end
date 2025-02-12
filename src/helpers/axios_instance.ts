@@ -31,6 +31,7 @@ AxiosInstance.interceptors.response.use(
     },
     async error => {
         if (error.response && error.response.status === 401) {
+            console.log(error.response);
             setTimeout(() => {
                 toast.error(t("Your Session Is Expired"));
             }, 0);

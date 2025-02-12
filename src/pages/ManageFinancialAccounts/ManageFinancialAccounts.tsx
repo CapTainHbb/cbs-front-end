@@ -18,7 +18,7 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {t} from "i18next";
 import CustomTableContainer from "../Reports/CustomTableContainer";
-import {AccountGroup, FinancialAccount} from "../Accounting/types";
+import {AccountGroup, CurrencyAccount, FinancialAccount} from "../Accounting/types";
 import IndeterminateCheckbox from "../Reports/IndetermineCheckbox";
 import {ColumnDef} from "@tanstack/react-table";
 import FinancialAccountViewDetail from "./FinancialAccountViewDetail";
@@ -29,6 +29,8 @@ import SelectAccountGroup from "./SelectAccountGroup";
 import {toast, ToastContainer} from "react-toastify";
 import axiosInstance from "../../helpers/axios_instance";
 import {normalizeDjangoError} from "../../helpers/error";
+import InitialBalanceForm from "./InitialBalanceForm";
+import {Currency} from "../Reports/utils";
 
 interface Filters {
     name?: string;
@@ -50,6 +52,17 @@ const ManageFinancialAccounts = () => {
     // const [parentGroup] = useState<AccountGroup | undefined>(undefined);
 
     const accountGroups = useSelector((state: any) => state.InitialData.accountGroups);
+    const [initialCurrencyAccounts, setInitialCurrencyAccounts] = useState<CurrencyAccount[]>([]);
+    const currencies = useSelector((state: any) => state.InitialData.currencies);
+    useEffect(() => {
+        setInitialCurrencyAccounts(
+            currencies.map((e: any) => ({
+                financial_account: -1,
+                initial_balance: 0,
+                currency: e.id
+            }))
+        )
+    }, [currencies])
 
     const [info, setInfo] = useState<FinancialAccount | null>(null);
 
@@ -97,6 +110,23 @@ const ManageFinancialAccounts = () => {
         }
     }, [modal]);
 
+    const createCurrencyAccounts = useCallback((createdFinancialAccount: FinancialAccount, newCurrencyAccounts: CurrencyAccount[]) => {
+        const currencyAccountsToCreate = newCurrencyAccounts.map((currencyAccount: CurrencyAccount) => {
+            return {
+                ...currencyAccount,
+                financial_account: createdFinancialAccount?.id,
+            }
+        })
+        axiosInstance.post("/accounts/currency-accounts/", currencyAccountsToCreate)
+            .then(response => {
+                toast.success(t("Financial account created successfully"));
+                setModal(false);
+                toggle();
+                setItemsChanged(!itemsChanged);
+            })
+            .catch(error => toast.error(normalizeDjangoError(error)));
+    }, [itemsChanged, toggle]);
+
     const filters : Filters = useMemo(() => {
         return {
             name: name,
@@ -113,14 +143,12 @@ const ManageFinancialAccounts = () => {
     const handleAddFinancialAccount = useCallback((data: any) => {
         axiosInstance.post("/accounts/financial-accounts/create/", data)
             .then(response => {
-                toast.success(t("Financial account created successfully"));
-                toggle();
-                setItemsChanged(!itemsChanged);
+                createCurrencyAccounts(response.data, initialCurrencyAccounts);
             })
             .catch(error => {
                 toast.error(normalizeDjangoError(error))
             })
-    }, [])
+    }, [initialCurrencyAccounts, createCurrencyAccounts])
 
     const onClickEdit = useCallback((financialAccount: FinancialAccount) => {
         setActiveFinancialAccount(financialAccount);
@@ -333,6 +361,10 @@ const ManageFinancialAccounts = () => {
                                                         <SelectAccountGroup accountGroup={validation.parentGroup}
                                                                             onChangeAccountGroup={onAccountGroupChange}
                                                         />
+                                                        {!isEdit &&
+                                                            <InitialBalanceForm currencyAccounts={initialCurrencyAccounts}
+                                                                                setCurrencyAccounts={setInitialCurrencyAccounts} />
+                                                        }
                                                         {validation.touched.parentGroup &&
                                                         validation.errors.parentGroup ? (
                                                             <FormFeedback type="invalid">

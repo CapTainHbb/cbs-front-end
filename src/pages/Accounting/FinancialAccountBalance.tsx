@@ -1,83 +1,66 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
-import axiosInstance from '../../helpers/axios_instance';
-import {v4 as uuidv4} from "uuid";
+import React from 'react'
+
 import {useSelector} from "react-redux";
-import RectLoader from "../Reports/RectLoader";
-import {determineCreditorOrDebtor} from "./utils";
-import BalanceCurrencyAmount from "./BalanceCurrencyAmount";
-import CurrencyAmount from "./CurrencyAmount";
-import {Col, Label, Row} from "reactstrap";
+import {determineCreditorOrDebtor, determineCurrencyTextColor} from "./utils";
+import {Table} from "reactstrap";
+import {getToday, handleValidDate, handleValidTime} from "../../helpers/date";
+import {t} from "i18next";
+import {CurrencyAccount, FinancialAccount} from "./types";
+import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
+import {Currency} from "../Reports/utils";
+import BalanceAmount from "../Reports/BalanceAmount";
 
 
 interface Props {
-    financialAccountId: string | number | undefined;
+    financialAccount?: FinancialAccount | null;
     forceUpdate?: boolean;
+    setModal?: any;
+    currencyAccounts: CurrencyAccount[];
 }
 
-const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId, forceUpdate = undefined }) => {
-    const { t } = useTranslation();
-    const [currencyAccounts, setCurrencyAccounts] = useState([]);
-    const [isDataLoading, setIsDataLoading] = useState(true);
-
-    const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
-
-    const fetchFinancialAccountCurrencyAccount = useCallback(async () => {
-        if(!financialAccountId) {
-            setCurrencyAccounts([]);
-            return;
-        }
-        axiosInstance.get(`accounts/financial-accounts/${financialAccountId}/currency-accounts/`)
-            .then(response => {
-                setCurrencyAccounts(response.data);
-            }).catch(error => {
-            toast.error(t("LoadCurrencyAccountFailed"))
-        }).finally(() => {
-            setIsDataLoading(false);
-        })
-    }, [financialAccountId, t])
-
-    useEffect(() => {
-        setIsDataLoading(!!financialAccountId);
-        fetchFinancialAccountCurrencyAccount();
-    }, [fetchFinancialAccountCurrencyAccount, financialAccountId, forceUpdate]);
-
-    return (
-        <Col lg={12}>
-            {isDataLoading ? (
-                <RectLoader />
-            ) : (
-                <>
-                    {currencyAccounts?.some((currencyAccount: any) => Number(currencyAccount?.balance) !== 0) ? (
-                        currencyAccounts?.map((currencyAccount: any, index) => {
-                            const newId = uuidv4();
-                            if (Number(currencyAccount?.balance) !== 0) {
-                                return (
-                                    <BalanceCurrencyAmount
-                                        key={newId}
-                                        amount={currencyAccount.balance}
-                                        currencyId={currencyAccount.currency}
-                                    />
-                                );
-                            }
-                            return null;
-                        })
-                    ) : (
-                        <Row>
-                            <CurrencyAmount
-                                key={uuidv4()}
-                                amount={0}
-                                currencyId={referenceCurrency?.id}
-                                disabled={true}
-                            />
-                            <Label>{determineCreditorOrDebtor(0)}</Label>
-                        </Row>
-                    )}
-                </>
-            )}
-        </Col>
-    )
+const FinancialAccountBalance: React.FC<Props> = ({ financialAccount,
+                                                  forceUpdate = undefined, setModal, currencyAccounts }) => {
+    const currencies = useSelector((state: any) => state.InitialData.currencies);
+    return (<Table className="table table-hover mb-0">
+        <tbody>
+        <tr>
+            <td className={'fw-medium'}>
+                {handleValidDate(getToday())}{" "}
+                <small className="text-muted">{handleValidTime(getToday())}</small>
+            </td>
+            {setModal && <td>
+                <i className="bx bx-expand align-middle btn btn-soft-primary btn-sm dropdown"
+                   onClick={(e: any) => setModal(true)}></i>
+            </td>}
+        </tr>
+        <tr>
+            <td className="fw-medium">
+                {t("Financial Account Name")}
+            </td>
+            <td>{financialAccount?.full_name}</td>
+        </tr>
+        {currencyAccounts?.filter((currencyAccount: CurrencyAccount) => currencyAccount?.balance !== 0)?.map((currencyAccount: CurrencyAccount, index: number) => {
+            return (
+                <tr className={'p-0'} key={index}>
+                    <td className='fw-medium p-1'>
+                        <CurrencyNameAndFlag currencyName={currencies.find((currency: Currency) => currency.id === currencyAccount.currency).name}/>
+                    </td>
+                    <td className={'p-1'}>
+                        <BalanceAmount amount={currencyAccount.balance} />
+                    </td>
+                    <td
+                        className={'p-1'}
+                        style={{
+                            color: determineCurrencyTextColor(currencyAccount.balance || 0)
+                        }}
+                    >
+                        {determineCreditorOrDebtor(currencyAccount.balance || 0)}
+                    </td>
+                </tr>
+            )
+        })}
+        </tbody>
+    </Table>)
 }
 
 export default FinancialAccountBalance;

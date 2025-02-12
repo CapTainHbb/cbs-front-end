@@ -1,7 +1,10 @@
 import React, {useCallback} from 'react';
 import {t} from "i18next";
 import {CurrencyAccount} from "../Accounting/types";
-import CurrencyAmount from "../Accounting/CurrencyAmount";
+import {Col, Input, Label, Table} from "reactstrap";
+import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
+import {Currency} from "../Reports/utils";
+import {useSelector} from "react-redux";
 
 interface Props {
     currencyAccounts: CurrencyAccount[];
@@ -10,11 +13,13 @@ interface Props {
 
 const InitialBalanceForm: React.FC<Props> = ({ currencyAccounts, setCurrencyAccounts }) => {
 
+    const currencies = useSelector((state: any) => state.InitialData.currencies);
+
     const onInitialBalanceChange = useCallback((currencyAccount: CurrencyAccount, e: any) => {
         setCurrencyAccounts((prevAccounts: CurrencyAccount[]) => {
             return prevAccounts.map((account) =>
                 account.currency === currencyAccount.currency
-                    ? { ...account, initial_balance: Number(e?.target?.value) }
+                    ? { ...account, initial_balance: e?.target?.value }
                     : account
             );
         });
@@ -22,14 +27,29 @@ const InitialBalanceForm: React.FC<Props> = ({ currencyAccounts, setCurrencyAcco
 
 
     return (
-        <div className={'form-section p-2 w-full items-center'}>
-            <h1 className={'form-section-title'}>{t("InitialBalance")}</h1>
-            {currencyAccounts?.map?.((currencyAccount: CurrencyAccount, index) => (
-                <>
-
-                </>
-            ))}
-        </div>
+        <Col lg={12}>
+            <Label
+                htmlFor="initialbalance-field"
+                className="form-label"
+            >
+                {t("Initial Balance")}
+            </Label>
+            <Table className={'table table-striped'}>
+                <tbody>
+                    {currencyAccounts?.map?.((currencyAccount: CurrencyAccount, index) => (
+                        <tr key={index}>
+                            <td className='fw-medium'>
+                                <CurrencyNameAndFlag
+                                    currencyName={currencies.find((currency: Currency) => currency.id === currencyAccount.currency).name}/>
+                            </td>
+                            <td className={''}>
+                                <Input dir={'ltr'} type={'number'} bsSize={'sm'} value={currencyAccount.initial_balance} onChange={(e: any) => onInitialBalanceChange(currencyAccount, e)} />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </Col>
     );
 };
 

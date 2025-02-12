@@ -12,6 +12,7 @@ const BalanceAmount: React.FC<Props> = ({ amount }) => {
     }
     return (
         <p
+            className={'fw-medium'}
            style={{
                color: amount > 0 ? '#008e00' : '#ec0000'
            }}>

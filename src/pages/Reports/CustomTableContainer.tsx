@@ -121,7 +121,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
-                    <Table>
+                    <Table className={'table table-hover table-bordered'}>
                         <thead className={"table-light"}>
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
@@ -194,6 +194,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 >                          
                                     {row.getVisibleCells().map(cell => (
                                         <td
+                                            className={'p-1'}
                                             key={cell.id}
                                             style={{
                                                 width: cell.column.getSize(),

@@ -40,6 +40,7 @@ import moment from 'moment';
 import CustomTableContainer from 'pages/Reports/CustomTableContainer';
 import {normalizeDjangoError} from "../../helpers/error";
 import ResetPasswordModal from "./ResetPasswordModal";
+import {handleValidDate, handleValidTime} from "../../helpers/date";
 
 const statusOptions = [
   {label: t("Active"), value: true},
@@ -268,24 +269,7 @@ const UsersList = () => {
       setItemsChanged(!itemsChanged);
   }, [itemsChanged]);
 
-  const handleValidDate = (date: any) => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
-    return date1;
-  };
 
-  const handleValidTime = (time: any) => {
-    const time1 = new Date(time);
-    const getHour = time1.getUTCHours();
-    const getMin = time1.getUTCMinutes();
-    const getTime = `${getHour}:${getMin}`;
-    var meridiem = "";
-    if (getHour >= 12) {
-      meridiem = "PM";
-    } else {
-      meridiem = "AM";
-    }
-      return moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
-  };
 
   const onSelectRoleChange = useCallback((selectedOption: any) => {
       validation.setFieldValue('role', selectedOption?.value);

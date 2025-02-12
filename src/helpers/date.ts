@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getFormattedDate = (date: Date): string => {
     return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 };
@@ -20,3 +22,22 @@ export const getFormattedToday = (): string => {
 export const getFormattedTodayDateTime = (): any => {
     return getFormattedDateTime(getToday());
 }
+
+export const handleValidDate = (date: any) => {
+    const date1 = moment(new Date(date)).format("DD MMM Y");
+    return date1;
+};
+
+export const handleValidTime = (time: any) => {
+    const time1 = new Date(time);
+    const getHour = time1.getHours();
+    const getMin = time1.getMinutes();
+    const getTime = `${getHour}:${getMin}`;
+    var meridiem = "";
+    if (getHour >= 12) {
+        meridiem = "PM";
+    } else {
+        meridiem = "AM";
+    }
+    return moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
+};
