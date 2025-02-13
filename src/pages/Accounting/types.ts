@@ -4,6 +4,12 @@ const now = new Date();
 export const defaultDate = now.toISOString().split('T')[0];
 export const defaultTime = now.toTimeString().split(' ')[0].slice(0, 5);
 
+export interface TransactionType {
+    id: number;
+    name: string;
+    englishName: string;
+}
+
 export interface FinancialAccount {
     id?: number;
     name: string;

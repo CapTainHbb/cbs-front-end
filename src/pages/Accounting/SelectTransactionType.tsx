@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import Select from 'react-select';
-import {TransactionType} from "./types";
 import {t} from "i18next";
+import {TransactionType} from "./types";
 
 interface Props {
     transactionType?: string;
@@ -10,7 +10,7 @@ interface Props {
 
 const SelectTransactionType: React.FC<Props> = ({ transactionType, onTransactionTypeChange }) => {
 
-    const options: TransactionType[] = useMemo(() => {
+    const options: any[] = useMemo(() => {
         return [
             {
                 label: t("Direct Currency Transfer"),

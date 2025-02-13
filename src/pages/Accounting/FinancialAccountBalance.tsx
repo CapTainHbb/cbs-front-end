@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 import {useSelector} from "react-redux";
 import {determineCreditorOrDebtor, determineCurrencyTextColor} from "./utils";
@@ -12,15 +12,22 @@ import BalanceAmount from "../Reports/BalanceAmount";
 
 
 interface Props {
-    financialAccount?: FinancialAccount | null;
+    financialAccountId?: number | null;
     forceUpdate?: boolean;
     setModal?: any;
     currencyAccounts: CurrencyAccount[];
 }
 
-const FinancialAccountBalance: React.FC<Props> = ({ financialAccount,
+const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId,
                                                   forceUpdate = undefined, setModal, currencyAccounts }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
+    const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts);
+    const [financialAccount, setFinancialAccount] = useState<FinancialAccount | null>(null)
+
+    useEffect(() => {
+        setFinancialAccount(financialAccounts.find((acc: FinancialAccount) => acc.id === financialAccountId));
+    }, [financialAccountId])
+
     return (<Table className="table table-hover mb-0">
         <tbody>
         <tr>

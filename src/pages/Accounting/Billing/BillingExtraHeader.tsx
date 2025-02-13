@@ -9,6 +9,7 @@ import {Currency} from "../../Reports/utils";
 import SelectTransactionType from "../SelectTransactionType";
 import {t} from "i18next";
 import FinancialAccountViewDetail from "../../ManageFinancialAccounts/FinancialAccountViewDetail";
+import SelectFinancialAccount from "../SelectFinancialAccount";
 
 interface Props {
     financialAccount?: FinancialAccount;
@@ -24,28 +25,18 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
                                                 currency, setCurrency,
                                                  transactionType, setTransactionType,
                                              itemsChanged}) => {
-    const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts);
-    const options = useMemo(() => {
-        return financialAccounts.map((item: FinancialAccount) => ({
-            label: item?.full_name,
-            value: item,
-        }));
-    }, [financialAccounts])
+
 
     return (
         <Row className="flex-md-row flex-column">
             <Col>
                 <Label>{t("Financial Account")}</Label>
-                <Select
-                    options={options}
-                    onChange={(item: any) => onChangeFinancialAccount(item?.value)}
-                    value={options?.find((option: any) => option?.value?.id === financialAccount?.id)}
-                    isClearable
-                />
+                <SelectFinancialAccount onSelectFinancialAccount={onChangeFinancialAccount}
+                                        selectedFinancialAccountId={financialAccount?.id} />
             </Col>
             <Col>
                 <Label>{t("Currency Type")}</Label>
-                <SelectCurrency currency={currency} onCurrencyChange={(item: any) => setCurrency(item)} />
+                <SelectCurrency currencyId={currency?.id} onCurrencyChange={(item: any) => setCurrency(item)} />
             </Col>
             <Col>
                 <Label>{t("Transaction Type")}</Label>
@@ -55,7 +46,7 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
                 />
             </Col>
             <Col style={{ maxHeight: "250px", overflowY: "auto" }}>
-                <FinancialAccountViewDetail financialAccount={financialAccount} forceUpdate={itemsChanged} />
+                <FinancialAccountViewDetail financialAccountId={financialAccount?.id} forceUpdate={itemsChanged} />
             </Col>
         </Row>
 

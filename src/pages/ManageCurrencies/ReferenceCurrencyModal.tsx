@@ -63,7 +63,7 @@ const ReferenceCurrencyModal: React.FC<Props> = ({ show, onCloseClick }) => {
                                     {t("Currency Type")}
                                 </Label>
 
-                                <SelectCurrency currency={selectedReferenceCurrency} onCurrencyChange={(currency: Currency) => {
+                                <SelectCurrency currencyId={selectedReferenceCurrency?.id} onCurrencyChange={(currency: Currency) => {
                                         setSelectedReferenceCurrency(currency);
                                         validation.setFieldValue('currency', currency?.name);
                                     }

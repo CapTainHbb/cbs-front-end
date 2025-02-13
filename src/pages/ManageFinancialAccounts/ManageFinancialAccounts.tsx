@@ -389,7 +389,7 @@ const ManageFinancialAccounts = () => {
                             </Card>
                         </Col>
                         <Col xxl={3}>
-                            <FinancialAccountViewDetail financialAccount={info} />
+                            <FinancialAccountViewDetail financialAccountId={info?.id} />
                         </Col>
                     </Row>
                 </Container>

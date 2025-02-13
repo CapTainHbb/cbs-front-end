@@ -7,11 +7,11 @@ import {t} from "i18next";
 
 
 interface Props {
-    currency: Currency | undefined,
+    currencyId: number | undefined,
     onCurrencyChange: any;
 }
 
-const SelectCurrency: React.FC<Props> = ({ currency, onCurrencyChange }) => {
+const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies)
 
     const options = useMemo(() => {
@@ -34,7 +34,7 @@ const SelectCurrency: React.FC<Props> = ({ currency, onCurrencyChange }) => {
             onChange={(selectedOption: any) => {
                 onCurrencyChange?.(selectedOption?.value)
             }}
-            value={options?.find((option: any) => option?.value?.id === currency?.id)}
+            value={options?.find((option: any) => option?.value?.id === currencyId)}
             filterOption={filterOption}
             isClearable
         />

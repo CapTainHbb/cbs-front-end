@@ -22,7 +22,7 @@ const CreditorsAndDebtorsExtraHeader: React.FC<Props> = ({
             <Col lg={3}>
                 <Label htmlFor="choices-single-default" className="form-label text-muted">{t("Currency Type")}</Label>
                 <SelectCurrency
-                    currency={currency}
+                    currencyId={currency?.id}
                     onCurrencyChange={(item: Currency) => setCurrency(item)}
                 />
             </Col>
