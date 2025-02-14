@@ -22,7 +22,9 @@ const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId,
                                                   forceUpdate = undefined, setModal, currencyAccounts }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts);
+    const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
     const [financialAccount, setFinancialAccount] = useState<FinancialAccount | null>(null)
+
 
     useEffect(() => {
         setFinancialAccount(financialAccounts.find((acc: FinancialAccount) => acc.id === financialAccountId));
@@ -35,22 +37,24 @@ const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId,
                 {handleValidDate(getToday())}{" "}
                 <small className="text-muted">{handleValidTime(getToday())}</small>
             </td>
+            <td></td>
             {setModal && <td>
                 <i className="bx bx-expand align-middle btn btn-soft-primary btn-sm dropdown"
                    onClick={(e: any) => setModal(true)}></i>
             </td>}
         </tr>
-        <tr>
+        {!setModal && <tr>
             <td className="fw-medium">
                 {t("Financial Account Name")}
             </td>
-            <td>{financialAccount?.full_name}</td>
-        </tr>
+            <td>{financialAccount?.name}</td>
+            <td></td>
+        </tr>}
         {currencyAccounts?.filter((currencyAccount: CurrencyAccount) => currencyAccount?.balance !== 0)?.map((currencyAccount: CurrencyAccount, index: number) => {
             return (
                 <tr className={'p-0'} key={index}>
                     <td className='fw-medium p-1'>
-                        <CurrencyNameAndFlag currencyName={currencies.find((currency: Currency) => currency.id === currencyAccount.currency).name}/>
+                        <CurrencyNameAndFlag currencyId={currencyAccount.currency}/>
                     </td>
                     <td className={'p-1'}>
                         <BalanceAmount amount={currencyAccount.balance} />
@@ -66,6 +70,24 @@ const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId,
                 </tr>
             )
         })}
+        {currencyAccounts?.every((currencyAccount: CurrencyAccount) => Number(currencyAccount.balance === 0))
+            && <tr className={'p-0'} key={0}>
+                <td className='fw-medium p-1'>
+                    <CurrencyNameAndFlag
+                        currencyId={referenceCurrency.id}/>
+                </td>
+                <td className={'p-1'}>
+                    <BalanceAmount amount={0}/>
+                </td>
+                <td
+                    className={'p-1'}
+                    style={{
+                        color: determineCurrencyTextColor(0)
+                    }}
+                >
+                    {determineCreditorOrDebtor(0)}
+                </td>
+            </tr>}
         </tbody>
     </Table>)
 }

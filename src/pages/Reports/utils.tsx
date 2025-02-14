@@ -59,7 +59,7 @@ export const currencyColumns = (currencies: Currency[]) => {
     return currencies.map((currency) => ({
         id: currency?.name,
         cell: CurrencyCell(currency?.id),
-        header: () => <CurrencyNameAndFlag currencyName={currency?.name} />,
+        header: () => <CurrencyNameAndFlag currencyId={currency?.id} />,
         size: 40,
     }));
 }

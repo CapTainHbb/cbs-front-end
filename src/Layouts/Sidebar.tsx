@@ -52,7 +52,7 @@ const Sidebar = ({ layoutType } : any) => {
               <img src={logoSm} alt="" height="22" />
             </span>
             <span className="logo-lg">
-              <img src={logoLight} alt="" height="17" />
+              <span className={'fs-3 fw-bold text-white'}>ZALEX</span>
             </span>
           </Link>
           <button

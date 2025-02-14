@@ -9,9 +9,10 @@ import {t} from "i18next";
 interface Props {
     currencyId: number | undefined,
     onCurrencyChange: any;
+    className?: string;
 }
 
-const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange }) => {
+const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange, className }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies)
 
     const options = useMemo(() => {
@@ -20,7 +21,7 @@ const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange }) => {
             value: item,
             searchText: `${item.name} ${item.alternative_name}` // Custom property for searching
         }))
-        result.push({ value: 'clear', label: '', searchText: t('Clear currency') })
+        result?.push({ value: 'clear', label: '', searchText: t('Clear currency') })
         return result;
     }, [currencies])
 
@@ -34,6 +35,7 @@ const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange }) => {
             onChange={(selectedOption: any) => {
                 onCurrencyChange?.(selectedOption?.value)
             }}
+            className={className}
             value={options?.find((option: any) => option?.value?.id === currencyId)}
             filterOption={filterOption}
             isClearable

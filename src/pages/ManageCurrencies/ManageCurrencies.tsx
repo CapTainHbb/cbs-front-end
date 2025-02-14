@@ -159,7 +159,7 @@ const ManageCurrencies = () => {
                 },
                 {
                     id: "flag",
-                    cell: (info) => <CurrencyNameAndFlag currencyName={info.row.original?.name} /> ,
+                    cell: (info) => <CurrencyNameAndFlag currencyId={info.row.original?.id} /> ,
                     header: () => <span>{t("Flag")}</span>,
                     size: 10
                 },

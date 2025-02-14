@@ -90,7 +90,7 @@ const GeneralLedger = () => {
                 />,
                 header: () => <div className="flex flex-col">
                     <p>{t("Exchanged Total Amount")}</p>
-                    <CurrencyNameAndFlag currencyName={referenceCurrency?.name} />
+                    <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
                 </div>,
                 meta: {
                     hideCondition: (row: any) => isSmallAmountAccount(row.original.currency_accounts), // Hide rows where age is less than 25

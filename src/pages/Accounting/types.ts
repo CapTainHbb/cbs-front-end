@@ -65,18 +65,18 @@ export const defaultInterestCostProps : InterestCostProps =  {
 
 export interface Party {
     id?: number;
-    financial_account?: FinancialAccount;
+    financial_account?: number;
     cost: InterestCostProps;
     interest: InterestCostProps;
     type: string;
-    currency?: Currency;
+    currency?: number;
     amount: number | undefined;
     date: string;
     time: string;
     transaction_type: string;
     transaction_brief: string;
     document_type?: string;
-    counter_financial_account?: FinancialAccount;
+    counter_financial_account?: number;
     description: string;
     user_specified_id: string;
     balance?: number;

@@ -40,7 +40,7 @@ const InitialBalanceForm: React.FC<Props> = ({ currencyAccounts, setCurrencyAcco
                         <tr key={index}>
                             <td className='fw-medium'>
                                 <CurrencyNameAndFlag
-                                    currencyName={currencies.find((currency: Currency) => currency.id === currencyAccount.currency).name}/>
+                                    currencyId={currencyAccount.currency}/>
                             </td>
                             <td className={''}>
                                 <Input dir={'ltr'} type={'number'} bsSize={'sm'} value={currencyAccount.initial_balance} onChange={(e: any) => onInitialBalanceChange(currencyAccount, e)} />

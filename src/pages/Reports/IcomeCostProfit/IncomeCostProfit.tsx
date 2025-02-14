@@ -73,7 +73,7 @@ const IncomeCostProfit = () => {
             />,
             header: () => <Col lg={12}>
                 <p>{t("Exchanged Total Amount")}</p>
-                <CurrencyNameAndFlag currencyName={referenceCurrency?.name} />
+                <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
             </Col>,
             size: 50,
         },

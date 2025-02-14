@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Badge, Card, CardBody, CardHeader, Col, Container} from "reactstrap";
+import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../../Reports/CustomTableContainer";
 import {ColumnDef} from "@tanstack/table-core";
@@ -10,11 +10,10 @@ import CreditorDebtorAmount from "../../Reports/CreditorsAndDebtors/CreditorDebt
 import {FinancialAccount, Party} from "../types";
 import {useSelector} from "react-redux";
 import {Currency} from "../../Reports/utils";
-import SelectTransactionType from "../SelectTransactionType";
 import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
-import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
 import BillingExtraHeader from "./BillingExtraHeader";
 import { useSearchParams } from 'react-router-dom';
+import FinancialAccountName from "./FinancialAccountName";
 
 export interface Filters {
     financial_account?: number,
@@ -178,7 +177,7 @@ const Billing = () => {
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Account Name")}</span>
                         </div>,
-                    cell: info => info.row.original.financial_account?.name,
+                    cell: info => <FinancialAccountName financialAccountId={info.row.original.financial_account} />,
                     minSize: 150,  // Ensure the column doesn't shrink below this size
                     maxSize: 150,  // Prevent resizing beyond this size
                     width: 150     // Explicitly set the width
@@ -334,7 +333,7 @@ const Billing = () => {
                 },
                 {
                     accessorKey: 'currency',
-                    cell: info => <CurrencyNameAndFlag currencyName={info.row.original.currency?.name} />,
+                    cell: info => <CurrencyNameAndFlag currencyId={info.row.original.currency} />,
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Currency Type")}</span>

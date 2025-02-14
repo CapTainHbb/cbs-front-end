@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import {useSelector} from "react-redux";
+import {Currency} from "./utils";
 
 interface Props {
-    currencyName?: string;
+    currencyId?: number;
 }
 
-const CurrencyNameAndFlag : React.FC<Props> = ({ currencyName }) => {
+const CurrencyNameAndFlag : React.FC<Props> = ({ currencyId }) => {
+    const currencies = useSelector((state: any) => state.InitialData.currencies);
+    const currencyName = useMemo(() => {
+        return currencies?.find((cur: Currency) => cur.id === currencyId)?.name
+    }, [currencyId, currencies]);
     return (
         <div className="d-flex justify-items-center gap-1 items-center">
             <p>{currencyName && (currencyName)}</p>

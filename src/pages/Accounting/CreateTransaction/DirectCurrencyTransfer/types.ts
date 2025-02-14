@@ -1,12 +1,13 @@
-import {defaultDate, defaultParty, defaultTime, Party} from "../../types";
+import {defaultParty, Party} from "../../types";
 
 export interface DirectCurrencyTransferTransaction {
     id?: number;
-    transaction_type: string;
-    user_specified_id: string;
-    description: string;
     date: string;
     time: string;
+    amount: number;
+    transaction_type: string;
+    description: string;
+    user_specified_id: string;
     prev_transaction?: number;
     next_transaction?: number;
     creditor_party: Party;
@@ -16,10 +17,11 @@ export interface DirectCurrencyTransferTransaction {
 
 export const defaultDirectCurrencyTransferFormData : DirectCurrencyTransferTransaction = {
     transaction_type: "direct-currency-transfer",
-    user_specified_id: "",
+    amount: 0,
+    date: "",
+    time: "",
     description: "",
-    date: defaultDate,
-    time: defaultTime,
+    user_specified_id: "",
     is_edit_enabled: false,
     creditor_party: { ...defaultParty, type: "creditor", document_type: "main"},
     debtor_party: { ...defaultParty, document_type: "main"},
