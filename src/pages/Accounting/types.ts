@@ -110,3 +110,27 @@ export const defaultParty : Party = {
     currency: undefined,
 }
 
+export interface Transaction {
+    id?: number;
+    transaction_type: string;
+    date: string;
+    time: string;
+    description: string;
+    user_specified_id: string;
+    next_transaction?: number;
+    prev_transaction?: number;
+    is_edit_enabled: boolean;
+}
+
+export const defaultTransaction: Transaction = {
+    id: undefined,
+    transaction_type: "",
+    date: "",
+    time: '',
+    description: "",
+    user_specified_id: "",
+    next_transaction: undefined,
+    prev_transaction: undefined,
+    is_edit_enabled: false,
+}
+

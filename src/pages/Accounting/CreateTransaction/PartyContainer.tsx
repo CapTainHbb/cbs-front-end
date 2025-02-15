@@ -25,7 +25,9 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                     <FormGroup>
                         <Label htmlFor={`${party}FinancialAccount`}>{t("Financial Account")}</Label>
                         <SelectFinancialAccount onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`${party}FinancialAccount`, acc?.id)}
-                                                selectedFinancialAccountId={formik.values?.[`${party}FinancialAccount`]}/>
+                                                selectedFinancialAccountId={formik.values?.[`${party}FinancialAccount`]}
+                                                disabled={formik.derivedState.areInputsDisabled}
+                        />
                         {formik.touched?.[`${party}FinancialAccount`] && formik.errors?.[`${party}FinancialAccount`]
                             && <div className={'text-danger'}>{formik.errors?.[`${party}FinancialAccount`]}</div>}
                     </FormGroup>
@@ -55,6 +57,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     invalid={
                                         !!(formik.touched?.[`${party}ReceivedFeeRate`] && formik.errors?.[`${party}ReceivedFeeRate`])
                                     }
+                                    disabled={formik.derivedState.areInputsDisabled}
                                 />
                                 {formik.touched?.[`${party}ReceivedFeeRate`] && formik.errors?.[`${party}ReceivedFeeRate`] ? (
                                     <FormFeedback type="invalid">{formik.errors?.[`${party}ReceivedFeeRate`]}</FormFeedback>
@@ -75,6 +78,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     invalid={
                                         !!(formik.touched?.[`${party}ReceivedFeeAmount`] && formik.errors?.[`${party}ReceivedFeeAmount`])
                                     }
+                                    disabled={formik.derivedState.areInputsDisabled}
                                 />
                                 {formik.touched?.[`${party}ReceivedFeeAmount`] && formik.errors?.[`${party}ReceivedFeeAmount`] ? (
                                     <FormFeedback type="invalid">{formik.errors?.[`${party}ReceivedFeeAmount`]}</FormFeedback>
@@ -106,6 +110,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     invalid={
                                         !!(formik.touched?.[`${party}PaidFeeRate`] && formik.errors?.[`${party}PaidFeeRate`])
                                     }
+                                    disabled={formik.derivedState.areInputsDisabled}
                                 />
                                 {formik.touched?.[`${party}PaidFeeRate`] && formik.errors?.[`${party}PaidFeeRate`] ? (
                                     <FormFeedback type="invalid">{formik.errors?.[`${party}PaidFeeRate`]}</FormFeedback>
@@ -126,6 +131,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     invalid={
                                         !!(formik.touched?.[`${party}PaidFeeAmount`] && formik.errors?.[`${party}PaidFeeAmount`])
                                     }
+                                    disabled={formik.derivedState.areInputsDisabled}
                                 />
                                 {formik.touched?.[`${party}PaidFeeAmount`] && formik.errors?.[`${party}PaidFeeAmount`] ? (
                                     <FormFeedback type="invalid">{formik.errors?.[`${party}PaidFeeAmount`]}</FormFeedback>
@@ -135,7 +141,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                     </Row>
                 </Col>
                 <Col md={4}>
-                    <FinancialAccountViewDetail financialAccountId={formik.values.debtorFinancialAccount} />
+                    <FinancialAccountViewDetail financialAccountId={formik.values?.[`${party}FinancialAccount`]} />
                 </Col>
             </Row>
         </Row>

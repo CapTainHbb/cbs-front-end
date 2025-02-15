@@ -26,6 +26,7 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik, handleNumberInputC
                         invalid={
                             !!(formik.touched.amount && formik.errors.amount)
                         }
+                        disabled={formik.derivedState.areInputsDisabled}
                     />
                     {formik.touched.amount && formik.errors.amount ? (
                         <FormFeedback type="invalid">{formik.errors.amount}</FormFeedback>
@@ -37,6 +38,7 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik, handleNumberInputC
                     <Label htmlFor="currency">{t("Currency Type")}</Label>
                     <SelectCurrency currencyId={formik.values.currency}
                                     onCurrencyChange={(currency: Currency) => formik.setFieldValue('currency', currency?.id)}
+                                    disabled={formik.derivedState.areInputsDisabled}
                     />
                     {formik.touched.currency && formik.errors.currency &&
                         <div className="text-danger">{formik.errors.currency}</div>}

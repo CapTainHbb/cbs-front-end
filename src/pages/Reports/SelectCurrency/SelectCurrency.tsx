@@ -10,9 +10,10 @@ interface Props {
     currencyId: number | undefined,
     onCurrencyChange: any;
     className?: string;
+    disabled?: boolean;
 }
 
-const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange, className }) => {
+const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange, className, disabled }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies)
 
     const options = useMemo(() => {
@@ -38,6 +39,7 @@ const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange, classNa
             className={className}
             value={options?.find((option: any) => option?.value?.id === currencyId)}
             filterOption={filterOption}
+            isDisabled={disabled}
             isClearable
         />
     );

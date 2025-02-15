@@ -1,13 +1,14 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import axiosInstance from "../../../helpers/axios_instance";
 
-interface Props {
+
+interface AdjacentTransactionLoaderProps {
     data?: any;
     setData?: any;
     transactionUrl: string;
 }
 
-export const useAdjacentTransactionLoader = ({ data, setData, transactionUrl }: Props) => {
+export const useAdjacentTransactionLoader = ({ data, setData, transactionUrl }: AdjacentTransactionLoaderProps) => {
     const [isAdjacentTransactionLoading, setIsAdjacentTransactionLoading] = useState(false);
     const ref = useRef(null);
     const [size, setSize] = useState({ width: 0, height: 0 });

@@ -14,6 +14,10 @@ import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
 import BillingExtraHeader from "./BillingExtraHeader";
 import { useSearchParams } from 'react-router-dom';
 import FinancialAccountName from "./FinancialAccountName";
+import CreateDirectCurrencyTransfer from "../CreateTransaction/DirectCurrencyTransfer/CreateDirectCurrencyTransfer";
+import { ToastContainer, toast } from 'react-toastify';
+import axiosInstance from "../../../helpers/axios_instance";
+import {normalizeDjangoError} from "../../../helpers/error";
 
 export interface Filters {
     financial_account?: number,
@@ -141,6 +145,28 @@ const Billing = () => {
 
         return null;
     }, [t]);
+
+    const [activeTransactionData, setActiveTransactionData] = useState<any>(undefined)
+    const [isDirectCurrencyTransferModalOpen, setIsDirectCurrencyTransferModalOpen] = useState<boolean>(false);
+    const handleEditTransaction = useCallback(async (party: any) => {
+        let url = "";
+        if(party?.transaction_type === "direct-currency-transfer") {
+            url = `/transactions/direct-currency-transfer/${party?.transaction}/`;
+        } else if(party?.transaction_type === 'buy-cash' || party?.transaction_type === 'sell-cash') {
+            url = `/transactions/buy-and-sell-cash/${party?.transaction}/`;
+        } else if(party?.transaction_type === 'local-payments') {
+            url = `/transactions/local-payments/${party?.transaction}/`
+        }
+
+        axiosInstance.get(url)
+            .then(response => {
+                setActiveTransactionData(response.data);
+                setIsDirectCurrencyTransferModalOpen(true);
+            })
+            .catch(error => {
+                // toast.error(normalizeDjangoError(error));
+            })
+    }, [setActiveTransactionData, setIsDirectCurrencyTransferModalOpen]);
 
     const columns = useMemo<ColumnDef<Party>[]>(() => {
         return (
@@ -413,7 +439,7 @@ const Billing = () => {
                 <Container fluid>
                     <BreadCrumb title={t("Billing")} pageTitle={t("Billing")} />
                     <Col lg={12}>
-                        <Card>
+                        <Card key="direct-currency-transfer-card">
                             <CardHeader>
                                 <BillingExtraHeader
                                     currency={currency}
@@ -433,6 +459,15 @@ const Billing = () => {
                                         filters={filters}
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
+                                        onDoubleClickRow={handleEditTransaction}
+                                    />
+                                    <CreateDirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
+                                                                  activeTransactionData={activeTransactionData || undefined}
+                                                                  toggle={() => {
+                                                                      setIsDirectCurrencyTransferModalOpen(false);
+                                                                      setActiveTransactionData(undefined);
+                                                                  }}
+                                                                  setActiveTransactionData={setActiveTransactionData}
                                     />
                                 </React.Fragment >
                             </CardBody>

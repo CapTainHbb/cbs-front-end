@@ -41,3 +41,8 @@ export const handleValidTime = (time: any) => {
     }
     return moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
 };
+
+export const createDate = (dateString: string, timeString: string) => {
+    const dateTimeString = `${dateString}T${timeString}`;
+    return new Date(dateTimeString)
+}

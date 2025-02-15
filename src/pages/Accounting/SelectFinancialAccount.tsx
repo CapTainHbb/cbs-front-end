@@ -6,9 +6,10 @@ import {FinancialAccount} from "./types";
 interface Props {
     onSelectFinancialAccount: any;
     selectedFinancialAccountId?: number;
+    disabled?: boolean;
 }
 
-const SelectFinancialAccount: React.FC<Props> = ({ onSelectFinancialAccount, selectedFinancialAccountId }) => {
+const SelectFinancialAccount: React.FC<Props> = ({ onSelectFinancialAccount, selectedFinancialAccountId, disabled }) => {
     const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts);
     const options = useMemo(() => {
         return financialAccounts.map((item: FinancialAccount) => ({
@@ -22,6 +23,7 @@ const SelectFinancialAccount: React.FC<Props> = ({ onSelectFinancialAccount, sel
             options={options}
             onChange={(item: any) => onSelectFinancialAccount(item?.value)}
             value={options?.find((option: any) => option?.value?.id === selectedFinancialAccountId)}
+            isDisabled={disabled}
             isClearable
         />
     );

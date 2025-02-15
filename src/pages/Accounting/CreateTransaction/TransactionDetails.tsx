@@ -9,6 +9,7 @@ interface Props {
 }
 
 const TransactionDetails: React.FC<Props> = ({ formik }) => {
+
     return (
         <Row>
             <Col md={4}>
@@ -17,6 +18,7 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
                         {t("Description")}
                     </Label>
                     <Input
+                        disabled={formik.derivedState.areInputsDisabled}
                         type={'text'}
                         name={'description'}
                         value={formik.values.description}
@@ -34,6 +36,7 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
                         name={'userSpecifiedId'}
                         value={formik.values.userSpecifiedId}
                         onChange={formik.handleChange}
+                        disabled={formik.derivedState.areInputsDisabled}
                     />
                 </FormGroup>
             </Col>
@@ -53,6 +56,7 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
                             formik.setFieldValue('dateTime', selectedDate);
                         }}
                         value={formik.values.dateTime || getToday()}
+                        disabled={formik.derivedState.areInputsDisabled}
                     />
                     {formik.errors.dateTime && formik.touched.dateTime && (
                         <div className="text-danger mt-1">{formik.errors.dateTime}</div>
