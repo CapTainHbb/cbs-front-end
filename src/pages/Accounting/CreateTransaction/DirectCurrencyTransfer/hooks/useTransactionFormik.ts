@@ -1,0 +1,216 @@
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useFormik} from "formik";
+import * as Yup from "yup";
+import {t} from "i18next";
+import {
+    DirectCurrencyTransferTransaction
+} from "../types";
+import {customFormatNumber, removeNonNumberChars} from "../../../utils";
+import {createDate, getFormattedDateTime} from "../../../../../helpers/date";
+import axiosInstance from "../../../../../helpers/axios_instance";
+import {toast} from "react-toastify";
+import {normalizeDjangoError} from "../../../../../helpers/error";
+
+interface TransactionFormikProps {
+    endPointApi: string;
+    activeTransactionData?: DirectCurrencyTransferTransaction;
+    isParentModalOpen: boolean;
+    getSpecificFormFieldsInitial: any;
+    getLockableFormFieldsInitial: any;
+    getSpecificFormFieldsValidation: any;
+    getSpecificFormFieldsAfterResetForm: any;
+    getLockableFormFieldsAfterResetForm: any;
+    getSpecificFormFieldsAfterSubmission: any;
+    getLockableFormFieldsAfterSubmission: any;
+    getSpecificTransactionDataForSubmission: any;
+}
+
+export const useTransactionFormik = ({ endPointApi, activeTransactionData, isParentModalOpen,
+                                         getSpecificFormFieldsInitial,
+                                         getLockableFormFieldsInitial,
+                                         getSpecificFormFieldsValidation,
+                                         getSpecificFormFieldsAfterSubmission,
+                                         getSpecificFormFieldsAfterResetForm,
+                                         getLockableFormFieldsAfterResetForm, getLockableFormFieldsAfterSubmission,
+                                         getSpecificTransactionDataForSubmission}: TransactionFormikProps) => {
+    const [lastActiveTransactionData, setLastActiveTransactionData] = useState(activeTransactionData);
+    const initialDateTime = useMemo(() => new Date(), []);
+    useEffect(() => {
+        // for first render in fresh create new document
+        if(activeTransactionData || !isParentModalOpen) return;
+        fetchAndSetPreviousTransactionId();
+
+    }, [activeTransactionData, isParentModalOpen])
+
+    const getCommonTransactionFieldsInitial = useCallback(() => {
+        return {
+            id: activeTransactionData?.id || undefined,
+            description: activeTransactionData?.description || "",
+            userSpecifiedId: activeTransactionData?.user_specified_id || "",
+            dateTime: (activeTransactionData && createDate(activeTransactionData?.date, activeTransactionData?.time)) || initialDateTime,
+            createdAt: activeTransactionData?.created_at || undefined,
+            createdBy: activeTransactionData?.created_by || undefined,
+            isEditing: (!activeTransactionData) && false,
+            isDeleting: false,
+            isCreate: !activeTransactionData,
+            nextTransactionId: activeTransactionData?.next_transaction || undefined,
+            previousTransactionId: activeTransactionData?.prev_transaction || undefined,
+            forceUpdateFinancialAccountsBalance: false
+        }
+    }, [activeTransactionData, activeTransactionData, isParentModalOpen]);
+    const getCommonTransactionValidationInitial = useCallback(() => {
+        return ({
+            description: Yup.string(),
+            userSpecifiedId: Yup.string(),
+            dateTime: Yup.string().required(t("Required")),
+        });
+    }, []);
+    const getInitialValues = useCallback(() => {
+        return {
+            ...getCommonTransactionFieldsInitial(),
+            ...getSpecificFormFieldsInitial(),
+            ...getLockableFormFieldsInitial(),
+        }
+    }, [getCommonTransactionFieldsInitial, getSpecificFormFieldsInitial, getLockableFormFieldsInitial]);
+    const formik: any = useFormik({
+        enableReinitialize: true,
+        initialValues: {...getInitialValues()},
+        validationSchema:Yup.object({
+            ...getCommonTransactionValidationInitial(),
+            ...getSpecificFormFieldsValidation()
+        }),
+        onSubmit: (values: any) => {
+            const commonData = {
+                id: values?.id,
+                date: getFormattedDateTime(values.dateTime).date,
+                time: getFormattedDateTime(values.dateTime).time,
+                description: values?.description,
+                user_specified_id: values?.userSpecifiedId,
+            }
+            const specificData = getSpecificTransactionDataForSubmission(formik);
+            const finalData = {
+                ...specificData,
+                ...commonData,
+            }
+            sendCreateTransactionRequest(finalData)
+            .then((response: any) => {
+                const createdTransaction = response.data;
+                formik.setValues({
+                    ...getCommonFormFieldsAfterSubmission(createdTransaction),
+                    ...getSpecificFormFieldsAfterSubmission(createdTransaction),
+                    ...getLockableFormFieldsAfterSubmission(formik),
+                })
+                setLastActiveTransactionData(createdTransaction);
+                toast.success(formik.values.isEditing? t("Transaction updated successfully") : t("Transaction created successfully"));
+            })
+            .catch(error => toast.error(normalizeDjangoError(error)))
+            .finally(() => { formik.setSubmitting(false); });
+        }
+    });
+    const sendCreateTransactionRequest = useCallback(async (data: any) => {
+         return (formik.values.isEditing? axiosInstance.put(`${endPointApi}/${formik?.values?.id}/`, data): axiosInstance.post(`${endPointApi}/`, data));
+    }, [formik, endPointApi]);
+
+    const getCommonFormFieldsAfterSubmission = useCallback((createdTransaction: any) => {
+        return {
+            id: createdTransaction?.id || undefined,
+            createdAt: createdTransaction?.created_at || undefined,
+            createdBy: createdTransaction?.created_by || undefined,
+            isEditing: false,
+            isDeleting: false,
+            isCreate: false,
+            nextTransactionId: createdTransaction?.next_transaction || undefined,
+            previousTransactionId: createdTransaction?.prev_transaction || undefined,
+            userSpecifiedId: createdTransaction?.user_specified_id || "",
+            dateTime: (createdTransaction && createDate(createdTransaction?.date, createdTransaction?.time)) || initialDateTime,
+            forceUpdateFinancialAccountsBalance: !formik.values.forceUpdateFinancialAccountsBalance,
+            description: createdTransaction?.description || "",
+        }
+    }, []);
+
+    const fetchAndSetPreviousTransactionId = useCallback(() => {
+        axiosInstance.get(`${endPointApi}/last-transaction/`)
+            .then(response => {formik.setFieldValue('previousTransactionId', response.data)})
+            .catch(error => console.error(error));
+    }, [formik])
+
+    // Add derivedState directly to formik
+    Object.defineProperty(formik, 'derivedState', {
+        get: () => ({
+            areInputsDisabled: !formik.values.isCreate && !formik.values.isEditing,
+        }),
+    });
+
+    formik.loadTransaction = useCallback((transactionId: number) => {
+        axiosInstance.get(`${endPointApi}/${transactionId}/`)
+            .then(response => {
+                const loadedTransaction: DirectCurrencyTransferTransaction = response.data;
+                formik.setValues({
+                    ...getCommonFormFieldsAfterSubmission(loadedTransaction),
+                    ...getSpecificFormFieldsAfterSubmission(loadedTransaction),
+                    ...getLockableFormFieldsInitial(),
+                })
+                setLastActiveTransactionData(response.data)
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }, [])
+
+    const getCommonFormFieldsAfterResetForm = useCallback(() => {
+        return {
+            id: undefined,
+            isEditing: false,
+            isDeleting: false,
+            isCreate: true,
+            nextTransactionId: null,
+            previousTransactionId: null,
+            forceUpdateFinancialAccountsBalance: formik.values.forceUpdateFinancialAccountsBalance,
+            description: "",
+            userSpecifiedId: "",
+            dateTime: initialDateTime,
+        }
+    }, [formik])
+    formik.resetFormValues = useCallback(async () => {
+        formik.setValues({
+            ...getCommonFormFieldsAfterResetForm(),
+            ...getSpecificFormFieldsAfterResetForm(formik),
+            ...getLockableFormFieldsAfterResetForm(formik),
+        });
+        fetchAndSetPreviousTransactionId();
+    }, [formik]);
+
+    formik.handleClickEditTransaction = useCallback(async () => {
+        if(formik.values.isEditing) {
+            formik.setValues({
+                ...getCommonFormFieldsAfterSubmission(lastActiveTransactionData),
+                ...getSpecificFormFieldsAfterSubmission(lastActiveTransactionData),
+                ...getLockableFormFieldsAfterSubmission(formik),
+            })
+        }
+        formik.setFieldValue("isEditing", !formik.values.isEditing)
+
+    }, [formik]);
+    formik.handleClickNewDocument = useCallback(async () => {
+        formik.setFieldValue('isCreate', true);
+        formik.resetFormValues();
+    }, [formik]);
+    formik.handleDeleteTransaction = () => {
+        if(!formik.values?.id) return;
+
+        formik.setFieldValue('isDeleting', true);
+        axiosInstance.delete(`${endPointApi}/${formik?.values?.id}/`)
+            .then(response => {
+                formik.resetFormValues();
+            })
+            .catch(error => {})
+            .finally(() => {formik.setFieldValue('isDeleting', false);});
+    };
+    formik.handleNumberInputChange = (name: string, e: React.ChangeEvent<HTMLInputElement>) => {
+        formik.setFieldValue(name, customFormatNumber(e.target.value));
+    };
+
+    return {
+        formik
+    }
+}
