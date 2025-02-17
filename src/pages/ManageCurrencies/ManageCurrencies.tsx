@@ -20,7 +20,7 @@ import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import axiosInstance from "../../helpers/axios_instance";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import ReferenceCurrencyModal from "./ReferenceCurrencyModal";
@@ -322,7 +322,6 @@ const ManageCurrencies = () => {
                                             </ModalFooter>
                                         </Form>
                                     </Modal>
-                                    <ToastContainer closeButton={false} limit={1} />
                                 </CardBody>
                             </Card>
                         </Col>

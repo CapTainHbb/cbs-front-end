@@ -26,7 +26,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useSelector} from "react-redux";
 import SelectAccountGroup from "./SelectAccountGroup";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import axiosInstance from "../../helpers/axios_instance";
 import {normalizeDjangoError} from "../../helpers/error";
 import InitialBalanceForm from "./InitialBalanceForm";
@@ -384,7 +384,6 @@ const ManageFinancialAccounts = () => {
                                             </ModalFooter>
                                         </Form>
                                     </Modal>
-                                    <ToastContainer closeButton={false} limit={1} />
                                 </CardBody>
                             </Card>
                         </Col>

@@ -14,10 +14,8 @@ import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
 import BillingExtraHeader from "./BillingExtraHeader";
 import { useSearchParams } from 'react-router-dom';
 import FinancialAccountName from "./FinancialAccountName";
-import CreateDirectCurrencyTransfer from "../CreateTransaction/DirectCurrencyTransfer/CreateDirectCurrencyTransfer";
-import { ToastContainer, toast } from 'react-toastify';
+import DirectCurrencyTransfer from "../CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
 import axiosInstance from "../../../helpers/axios_instance";
-import {normalizeDjangoError} from "../../../helpers/error";
 
 export interface Filters {
     financial_account?: number,
@@ -462,9 +460,9 @@ const Billing = () => {
                                         setItemsChanged={setItemsChanged}
                                         onDoubleClickRow={handleEditTransaction}
                                     />
-                                    <CreateDirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
-                                                                  activeTransactionData={activeTransactionData || undefined}
-                                                                  toggle={() => {
+                                    <DirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
+                                                            activeTransactionData={activeTransactionData || undefined}
+                                                            toggle={() => {
                                                                       setIsDirectCurrencyTransferModalOpen(false);
                                                                       setItemsChanged(!itemsChanged);
                                                                       setActiveTransactionData(undefined);

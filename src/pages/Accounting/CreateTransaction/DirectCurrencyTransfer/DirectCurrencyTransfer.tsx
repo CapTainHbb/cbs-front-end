@@ -10,11 +10,10 @@ import {t} from "i18next";
 import TransactionDetails from "../TransactionDetails";
 import PartyContainer from "../PartyContainer";
 import TransferAmountAndCurrency from "./TransferAmountAndCurrency";
-import {ToastContainer} from "react-toastify";
-import {defaultDirectCurrencyTransferFormData, DirectCurrencyTransferTransaction} from "./types";
+import {defaultDirectCurrencyTransferFormData, DirectCurrencyTransferTransactionFormDataType} from "./types";
 import TransactionFooter from "../TransactionFooter";
 import TransactionMetaData from '../TransactionMetaData';
-import {useTransactionFormik} from "./hooks/useTransactionFormik";
+import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
 import {removeNonNumberChars} from "../../utils";
@@ -23,10 +22,10 @@ import {getFormattedDateTime} from "../../../../helpers/date";
 interface Props {
     isOpen: boolean;
     toggle: any;
-    activeTransactionData?: DirectCurrencyTransferTransaction;
+    activeTransactionData?: DirectCurrencyTransferTransactionFormDataType;
 }
 
-const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
 
     const getSpecificFormFieldsInitial = useCallback(() => {
         return {
@@ -106,13 +105,6 @@ const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeT
             isDebtorFinancialAccountLocked: inputFormik.values.isDebtorFinancialAccountLocked,
         };
     }, []);
-    const getLockableFormFieldsAfterSubmission = useCallback((inputFormik: any) => {
-        return {
-            isCurrencyLocked: inputFormik.values.isCurrencyLocked,
-            isCreditorFinancialAccountLocked: inputFormik.values.isCreditorFinancialAccountLocked,
-            isDebtorFinancialAccountLocked: inputFormik.values.isDebtorFinancialAccountLocked,
-        };
-    }, []);
     const getSpecificTransactionDataForSubmission = useCallback((inputFormik: any) => {
         let data = {
             ...structuredClone(defaultDirectCurrencyTransferFormData),
@@ -161,7 +153,6 @@ const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeT
         getSpecificFormFieldsAfterSubmission,
         getSpecificFormFieldsAfterResetForm,
         getLockableFormFieldsAfterResetForm,
-        getLockableFormFieldsAfterSubmission,
         getSpecificTransactionDataForSubmission
     });
 
@@ -202,9 +193,8 @@ const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeT
                     </Container>
                 </Form>
             </ModalBody>
-            <ToastContainer autoClose={2000} closeButton={false} limit={1} />
         </Modal>
     );
 };
 
-export default CreateDirectCurrencyTransfer
+export default DirectCurrencyTransfer

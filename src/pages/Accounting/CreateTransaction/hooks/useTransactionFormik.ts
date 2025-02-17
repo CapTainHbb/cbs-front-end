@@ -3,17 +3,18 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {t} from "i18next";
 import {
-    DirectCurrencyTransferTransaction
-} from "../types";
-import {customFormatNumber, removeNonNumberChars} from "../../../utils";
-import {createDate, getFormattedDateTime} from "../../../../../helpers/date";
-import axiosInstance from "../../../../../helpers/axios_instance";
+    DirectCurrencyTransferTransactionFormDataType
+} from "../DirectCurrencyTransfer/types";
+import {customFormatNumber, removeNonNumberChars} from "../../utils";
+import {createDate, getFormattedDateTime} from "../../../../helpers/date";
+import axiosInstance from "../../../../helpers/axios_instance";
 import {toast} from "react-toastify";
-import {normalizeDjangoError} from "../../../../../helpers/error";
+import {normalizeDjangoError} from "../../../../helpers/error";
+import {BuyAndSellCashFormDataType} from "../BuyAndSellCash/types";
 
 interface TransactionFormikProps {
     endPointApi: string;
-    activeTransactionData?: DirectCurrencyTransferTransaction;
+    activeTransactionData?: DirectCurrencyTransferTransactionFormDataType | BuyAndSellCashFormDataType;
     isParentModalOpen: boolean;
     getSpecificFormFieldsInitial: any;
     getLockableFormFieldsInitial: any;
@@ -21,7 +22,6 @@ interface TransactionFormikProps {
     getSpecificFormFieldsAfterResetForm: any;
     getLockableFormFieldsAfterResetForm: any;
     getSpecificFormFieldsAfterSubmission: any;
-    getLockableFormFieldsAfterSubmission: any;
     getSpecificTransactionDataForSubmission: any;
 }
 
@@ -31,7 +31,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
                                          getSpecificFormFieldsValidation,
                                          getSpecificFormFieldsAfterSubmission,
                                          getSpecificFormFieldsAfterResetForm,
-                                         getLockableFormFieldsAfterResetForm, getLockableFormFieldsAfterSubmission,
+                                         getLockableFormFieldsAfterResetForm,
                                          getSpecificTransactionDataForSubmission}: TransactionFormikProps) => {
     const [lastActiveTransactionData, setLastActiveTransactionData] = useState(activeTransactionData);
     const initialDateTime = useMemo(() => new Date(), []);
@@ -98,7 +98,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
                 formik.setValues({
                     ...getCommonFormFieldsAfterSubmission(createdTransaction),
                     ...getSpecificFormFieldsAfterSubmission(createdTransaction),
-                    ...getLockableFormFieldsAfterSubmission(formik),
+                    ...getLockableFormFieldsAfterResetForm(formik),
                 })
                 setLastActiveTransactionData(createdTransaction);
                 toast.success(formik.values.isEditing? t("Transaction updated successfully") : t("Transaction created successfully"));
@@ -144,7 +144,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
     formik.loadTransaction = useCallback((transactionId: number) => {
         axiosInstance.get(`${endPointApi}/${transactionId}/`)
             .then(response => {
-                const loadedTransaction: DirectCurrencyTransferTransaction = response.data;
+                const loadedTransaction: DirectCurrencyTransferTransactionFormDataType = response.data;
                 formik.setValues({
                     ...getCommonFormFieldsAfterSubmission(loadedTransaction),
                     ...getSpecificFormFieldsAfterSubmission(loadedTransaction),
@@ -185,7 +185,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             formik.setValues({
                 ...getCommonFormFieldsAfterSubmission(lastActiveTransactionData),
                 ...getSpecificFormFieldsAfterSubmission(lastActiveTransactionData),
-                ...getLockableFormFieldsAfterSubmission(formik),
+                ...getLockableFormFieldsAfterResetForm(formik),
             })
         }
         formik.setFieldValue("isEditing", !formik.values.isEditing)

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {t} from "i18next";
-import CreateDirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/DirectCurrencyTransfer/CreateDirectCurrencyTransfer";
+import DirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
+import BuyAndSellCash from "../pages/Accounting/CreateTransaction/BuyAndSellCash/BuyAndSellCash";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -56,6 +57,7 @@ const Navdata = () => {
     const [isGeneralLedger, setIsGeneralLedger] = useState<boolean>(false);
     const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
     const [directCurrencyTransferModal, setDirectCurrencyTransferModal] = useState<boolean>(false);
+    const [buyAndSellCashModal, setBuyAndSellCashModal] = useState<boolean>(false);
 
     // Manage
     const [isManageUsers, setIsManageUsers] = useState<boolean>(false);
@@ -661,7 +663,7 @@ const Navdata = () => {
                     label: "Direct Currency Transfer",
                     parentId: "create-new-document",
                     onClick: () => setDirectCurrencyTransferModal(true),
-                    renderModal: () => <CreateDirectCurrencyTransfer isOpen={directCurrencyTransferModal}
+                    renderModal: () => <DirectCurrencyTransfer isOpen={directCurrencyTransferModal}
                                                                      toggle={() => setDirectCurrencyTransferModal(false)} 
                                                                      />,
                 },
@@ -669,6 +671,10 @@ const Navdata = () => {
                     id: "buy-and-sell-cash",
                     label: "Buy and Sell Cash",
                     parentId: "create-new-document",
+                    onClick: () => setBuyAndSellCashModal(true),
+                    renderModal: () => <BuyAndSellCash isOpen={buyAndSellCashModal}
+                                                                     toggle={() => setBuyAndSellCashModal(false)}
+                    />,
                 },
                 {
                     id: "local-payments",
