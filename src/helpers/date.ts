@@ -5,6 +5,7 @@ export const getFormattedDate = (date: Date): string => {
 };
 
 export const getFormattedDateTime = (date: Date): any => {
+    if(!date) return {time: undefined, date: undefined}
     const formatted_time = date.toISOString().split("T")[1].split('.')[0];
     const formatted_date = date.toISOString().split("T")[0]
     return {time: formatted_time, date: formatted_date}

@@ -662,7 +662,8 @@ const Navdata = () => {
                     parentId: "create-new-document",
                     onClick: () => setDirectCurrencyTransferModal(true),
                     renderModal: () => <CreateDirectCurrencyTransfer isOpen={directCurrencyTransferModal}
-                                                                     toggle={() => setDirectCurrencyTransferModal(false)} />,
+                                                                     toggle={() => setDirectCurrencyTransferModal(false)} 
+                                                                     />,
                 },
                 {
                     id: "buy-and-sell-cash",

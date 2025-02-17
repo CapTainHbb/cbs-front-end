@@ -449,6 +449,7 @@ const Billing = () => {
                                     transactionType={transactionType}
                                     setTransactionType={setTransactionType}
                                     itemsChanged={itemsChanged}
+                                    setItemsChanged={setItemsChanged}
                                 />
                             </CardHeader>
                             <CardBody>
@@ -465,9 +466,9 @@ const Billing = () => {
                                                                   activeTransactionData={activeTransactionData || undefined}
                                                                   toggle={() => {
                                                                       setIsDirectCurrencyTransferModalOpen(false);
+                                                                      setItemsChanged(!itemsChanged);
                                                                       setActiveTransactionData(undefined);
                                                                   }}
-                                                                  setActiveTransactionData={setActiveTransactionData}
                                     />
                                 </React.Fragment >
                             </CardBody>

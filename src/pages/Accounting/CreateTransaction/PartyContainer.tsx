@@ -4,15 +4,15 @@ import {t} from "i18next";
 import SelectFinancialAccount from "../SelectFinancialAccount";
 import {FinancialAccount} from "../types";
 import FinancialAccountViewDetail from "../../ManageFinancialAccounts/FinancialAccountViewDetail";
+import LockInputButton from 'Components/Common/LockInputButton';
 
 interface Props {
     formik: any;
     party: 'creditor' | 'debtor';
     headerTitle: string;
-    handleNumberInputChange: any;
 }
 
-const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNumberInputChange }) => {
+const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle }) => {
     return (
         <Row className={`mb-1 border-opacity-50 border border-1 ${party === 'debtor'? 'border-danger': 'border-success'}`}>
             <Row>
@@ -21,17 +21,38 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                 </Col>
             </Row>
             <Row>
-                <Col md={12}>
-                    <FormGroup>
-                        <Label htmlFor={`${party}FinancialAccount`}>{t("Financial Account")}</Label>
-                        <SelectFinancialAccount onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`${party}FinancialAccount`, acc?.id)}
-                                                selectedFinancialAccountId={formik.values?.[`${party}FinancialAccount`]}
-                                                disabled={formik.derivedState.areInputsDisabled}
-                        />
-                        {formik.touched?.[`${party}FinancialAccount`] && formik.errors?.[`${party}FinancialAccount`]
-                            && <div className={'text-danger'}>{formik.errors?.[`${party}FinancialAccount`]}</div>}
-                    </FormGroup>
+            <FormGroup row className='align-items-center'>
+                {/* Label */}
+                <Label for={`${party}FinancialAccount`} md={2}>{t("Financial Account")}</Label>
+                
+                {/* SelectFinancialAccount */}
+                <Col md={6}>
+                    <SelectFinancialAccount
+                        onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`${party}FinancialAccount`, acc?.id)}
+                        selectedFinancialAccountId={formik.values?.[`${party}FinancialAccount`]}
+                        disabled={formik.derivedState.areInputsDisabled}
+                    />
                 </Col>
+                
+                {/* Icon */}
+                <Col md={1}>
+                    {party === 'creditor' && <LockInputButton 
+                    isLocked={formik.values.isCreditorFinancialAccountLocked} 
+                    onClick={formik.toggleCreditorFinancialAccountLock} />}
+                    
+                    {party === 'debtor' && <LockInputButton 
+                    isLocked={formik.values.isDebtorFinancialAccountLocked} 
+                    onClick={formik.toggleDebtorFinancialAccountLock} />}
+                    
+                </Col>
+                
+                {/* Error Message */}
+                <Col md={3}>
+                    {formik.touched?.[`${party}FinancialAccount`] && formik.errors?.[`${party}FinancialAccount`] && (
+                        <div className={'text-danger'}>{formik.errors?.[`${party}FinancialAccount`]}</div>
+                    )}
+                </Col>
+            </FormGroup>
             </Row>
             <Row>
                 <Col md={4}>
@@ -51,7 +72,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     name={"debtorReceivedFeeRate"}
                                     type="text"
                                     value={formik.values?.[`${party}ReceivedFeeRate`]}
-                                    onChange={(e: any) => handleNumberInputChange(`${party}ReceivedFeeRate`, e)}
+                                    onChange={(e: any) => formik.handleNumberInputChange(`${party}ReceivedFeeRate`, e)}
                                     onBlur={formik.handleBlur}
                                     placeholder={t("Enter Rate")}
                                     invalid={
@@ -72,7 +93,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     name={`${party}ReceivedFeeAmount`}
                                     type="text"
                                     value={formik.values?.[`${party}ReceivedFeeAmount`]}
-                                    onChange={(e: any) => handleNumberInputChange(`${party}ReceivedFeeAmount`, e)}
+                                    onChange={(e: any) => formik.handleNumberInputChange(`${party}ReceivedFeeAmount`, e)}
                                     onBlur={formik.handleBlur}
                                     placeholder={t("Enter Amount")}
                                     invalid={
@@ -104,7 +125,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     name={`${party}PaidFeeRate`}
                                     type="text"
                                     value={formik.values?.[`${party}PaidFeeRate`]}
-                                    onChange={(e: any) => handleNumberInputChange(`${party}PaidFeeRate`, e)}
+                                    onChange={(e: any) => formik.handleNumberInputChange(`${party}PaidFeeRate`, e)}
                                     onBlur={formik.handleBlur}
                                     placeholder={t("Enter Rate")}
                                     invalid={
@@ -125,7 +146,7 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                                     name="debtorPaidFeeAmount"
                                     type="text"
                                     value={formik.values?.[`${party}PaidFeeAmount`]}
-                                    onChange={(e: any) => handleNumberInputChange(`${party}PaidFeeAmount`, e)}
+                                    onChange={(e: any) => formik.handleNumberInputChange(`${party}PaidFeeAmount`, e)}
                                     onBlur={formik.handleBlur}
                                     placeholder={t("Enter Amount")}
                                     invalid={
@@ -141,7 +162,10 @@ const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, handleNum
                     </Row>
                 </Col>
                 <Col md={4}>
-                    <FinancialAccountViewDetail financialAccountId={formik.values?.[`${party}FinancialAccount`]} />
+                    <FinancialAccountViewDetail 
+                        financialAccountId={formik.values?.[`${party}FinancialAccount`]} 
+                        forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}            
+                    />
                 </Col>
             </Row>
         </Row>

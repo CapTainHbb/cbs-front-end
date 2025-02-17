@@ -1,26 +1,26 @@
 import React from 'react';
-import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
+import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
 import {t} from "i18next";
 import SelectCurrency from "../../../Reports/SelectCurrency/SelectCurrency";
 import {Currency} from "../../../Reports/utils";
+import LockInputButton from 'Components/Common/LockInputButton';
 
 interface Props {
     formik: any;
-    handleNumberInputChange: any;
 }
 
-const TransferAmountAndCurrency: React.FC<Props> = ({ formik, handleNumberInputChange }) => {
+const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
     return (
         <Row>
             <Col md={6}>
-                <FormGroup>
+                <FormGroup className='align-items-center'>
                     <Label htmlFor="amount">{t("Transfer Amount")}</Label>
                     <Input
                         id="amount"
                         name="amount"
                         type="text"
                         value={formik.values.amount}
-                        onChange={(e: any) => handleNumberInputChange('amount', e)}
+                        onChange={(e: any) => formik.handleNumberInputChange('amount', e)}
                         onBlur={formik.handleBlur}
                         placeholder={t("Enter Amount")}
                         invalid={
@@ -36,10 +36,17 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik, handleNumberInputC
             <Col md={6}>
                 <FormGroup>
                     <Label htmlFor="currency">{t("Currency Type")}</Label>
-                    <SelectCurrency currencyId={formik.values.currency}
-                                    onCurrencyChange={(currency: Currency) => formik.setFieldValue('currency', currency?.id)}
-                                    disabled={formik.derivedState.areInputsDisabled}
-                    />
+                    <Row className='align-items-center'>
+                        <Col md={10}>
+                            <SelectCurrency currencyId={formik.values.currency}
+                                            onCurrencyChange={(currency: Currency) => formik.setFieldValue('currency', currency?.id)}
+                                            disabled={formik.derivedState.areInputsDisabled}
+                            />
+                        </Col>
+                        <Col md={2}>
+                            <LockInputButton isLocked={formik.values.isCurrencyLocked} onClick={formik.toggleCurrencyLock} />
+                        </Col>
+                    </Row>
                     {formik.touched.currency && formik.errors.currency &&
                         <div className="text-danger">{formik.errors.currency}</div>}
                 </FormGroup>

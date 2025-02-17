@@ -37,7 +37,7 @@ const SelectCurrency: React.FC<Props> = ({ currencyId, onCurrencyChange, classNa
                 onCurrencyChange?.(selectedOption?.value)
             }}
             className={className}
-            value={options?.find((option: any) => option?.value?.id === currencyId)}
+            value={options?.find((option: any) => option?.value?.id === currencyId) || null}
             filterOption={filterOption}
             isDisabled={disabled}
             isClearable

@@ -120,6 +120,8 @@ export interface Transaction {
     next_transaction?: number;
     prev_transaction?: number;
     is_edit_enabled: boolean;
+    created_at?: string;
+    created_by?: any;
 }
 
 export const defaultTransaction: Transaction = {

@@ -1,9 +1,6 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {FinancialAccount} from "../types";
-import {useSelector} from "react-redux";
-import Select from "react-select";
-import {Col, Label, Row} from "reactstrap";
-import FinancialAccountBalance from "../FinancialAccountBalance";
+import {Button, Col, Label, Row} from "reactstrap";
 import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
 import {Currency} from "../../Reports/utils";
 import SelectTransactionType from "../SelectTransactionType";
@@ -19,16 +16,18 @@ interface Props {
     transactionType: any;
     setTransactionType: any;
     itemsChanged?: boolean;
+    setItemsChanged: any;
 }
 
 const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinancialAccount,
                                                 currency, setCurrency,
                                                  transactionType, setTransactionType,
+                                                 setItemsChanged,
                                              itemsChanged}) => {
 
 
     return (
-        <Row className="flex-md-row flex-column">
+        <Row>
             <Col>
                 <Label>{t("Financial Account")}</Label>
                 <SelectFinancialAccount onSelectFinancialAccount={onChangeFinancialAccount}
@@ -44,6 +43,11 @@ const BillingExtraHeader: React.FC<Props> = ({ financialAccount, onChangeFinanci
                     onTransactionTypeChange={setTransactionType}
                     transactionType={transactionType}
                 />
+            </Col>
+            <Col>
+                <Button color='primary' onClick={() => setItemsChanged(!itemsChanged)}>
+                    <i className=' ri-refresh-fill' /> {t("Refresh")}
+                </Button>
             </Col>
             <Col style={{ maxHeight: "250px", overflowY: "auto" }}>
                 <FinancialAccountViewDetail financialAccountId={financialAccount?.id} forceUpdate={itemsChanged} />

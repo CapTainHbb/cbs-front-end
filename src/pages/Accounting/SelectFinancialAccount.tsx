@@ -22,7 +22,7 @@ const SelectFinancialAccount: React.FC<Props> = ({ onSelectFinancialAccount, sel
         <Select
             options={options}
             onChange={(item: any) => onSelectFinancialAccount(item?.value)}
-            value={options?.find((option: any) => option?.value?.id === selectedFinancialAccountId)}
+            value={options?.find((option: any) => option?.value?.id === selectedFinancialAccountId) || null}
             isDisabled={disabled}
             isClearable
         />

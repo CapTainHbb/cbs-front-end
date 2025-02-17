@@ -1,12 +1,10 @@
-import React, {useCallback, useMemo, useState} from 'react'
+import React, { useEffect } from 'react'
 import {
-    Button,
-    Col, Container,
+    Container,
     Form,
     Modal,
     ModalBody,
     ModalHeader,
-    Row
 } from 'reactstrap';
 import {t} from "i18next";
 import TransactionDetails from "../TransactionDetails";
@@ -16,20 +14,27 @@ import {ToastContainer} from "react-toastify";
 import {useTransactionFormik} from "./hooks";
 import {DirectCurrencyTransferTransaction} from "./types";
 import TransactionFooter from "../TransactionFooter";
+import TransactionMetaData from '../TransactionMetaData';
 
 interface Props {
     isOpen: boolean;
     toggle: any;
     activeTransactionData?: DirectCurrencyTransferTransaction;
-    setActiveTransactionData?: any;
 }
 
-const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData, setActiveTransactionData }) => {
-    const {formik, handleNumberInputChange} = useTransactionFormik({
+const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+    const {formik} = useTransactionFormik({
         endPointApi: '/transactions/direct-currency-transfer/',
-        activeTransactionData: activeTransactionData,
-        setActiveTransactionData: setActiveTransactionData
+        activeTransactionData,
+        isParentModalOpen: isOpen,
+
     });
+
+    useEffect(() => {
+        if(isOpen) return;
+
+        formik.resetFormValues();
+    }, [isOpen])
 
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
@@ -39,18 +44,15 @@ const CreateDirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeT
             <ModalBody>
                 <Form className={'form-container active'} onSubmit={formik.handleSubmit}>
                     <Container fluid>
-                        <TransferAmountAndCurrency formik={formik}
-                                                   handleNumberInputChange={handleNumberInputChange} />
+                        {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
+                        <TransferAmountAndCurrency formik={formik} />
                         <PartyContainer formik={formik}
                                         party={'creditor'}
-                                        headerTitle={t("Creditor")}
-                                        handleNumberInputChange={handleNumberInputChange} />
+                                        headerTitle={t("Creditor")} />
 
                         <PartyContainer formik={formik}
                                         party={'debtor'}
-                                        headerTitle={t("Debtor")}
-                                        handleNumberInputChange={handleNumberInputChange}
-                        />
+                                        headerTitle={t("Debtor")} />
                         <TransactionDetails formik={formik} />
                         <TransactionFooter formik={formik}/>
                     </Container>
