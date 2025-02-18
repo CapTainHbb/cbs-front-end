@@ -10,6 +10,8 @@ import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
 import {getFormattedDateTime} from "../../../../helpers/date";
 import {removeNonNumberChars} from "../../utils";
+import SelectFinancialAccountAndTradeType from './SelectFinancialAccountAndTradeType';
+import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
 
 interface Props {
     isOpen: boolean;
@@ -20,20 +22,26 @@ interface Props {
 const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
 
     const getSpecificFormFieldsInitial = useCallback(() => {
+        const isBuy = activeTransactionData?.is_buy || false;
+        const baseParty = isBuy? "debtor": "creditor";
+        const againstParty = isBuy? "creditor": "debtor";
         return {
-            isBuy: activeTransactionData?.is_buy || false,
+            isBuy: isBuy,
+            cenvertType: activeTransactionData?.conversion_type || "multiplication",
             exchangeRate: (activeTransactionData && formatNumber(activeTransactionData?.exchange_rate)) || "0",
-            baseCurrency: activeTransactionData?.creditor_party?.currency || null,
-            againstCurrency: activeTransactionData?.debtor_party?.currency || null,
             financialAccount: activeTransactionData?.creditor_party?.financial_account || null,
-            baseReceivedFeeRate: formatNumber(activeTransactionData?.creditor_party?.interest.rate) || "0",
-            baseReceivedFeeAmount: formatNumber(activeTransactionData?.creditor_party?.interest.amount) || "0",
-            basePaidFeeRate: formatNumber(activeTransactionData?.creditor_party?.cost?.rate) || "0",
-            basePaidFeeAmount: formatNumber(activeTransactionData?.creditor_party?.cost?.amount) || "0",
-            againstReceivedFeeRate: formatNumber(activeTransactionData?.debtor_party?.interest?.rate) || "0",
-            againstReceivedFeeAmount: formatNumber(activeTransactionData?.debtor_party?.interest?.amount) || "0",
-            againstPaidFeeRate: formatNumber(activeTransactionData?.debtor_party?.cost?.rate) || "0",
-            againstPaidFeeAmount: formatNumber(activeTransactionData?.debtor_party?.cost?.amount) || "0",
+            baseCurrency: activeTransactionData?.[`${baseParty}_party`]?.currency || null,
+            baseAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.amount) || "0",
+            baseReceivedFeeRate: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.rate) || "0",
+            baseReceivedFeeAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.amount) || "0",
+            basePaidFeeRate: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.rate) || "0",
+            basePaidFeeAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.amount) || "0",
+            againstCurrency: activeTransactionData?.[`${againstParty}_party`]?.currency || null,
+            againstAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.amount) || "0",
+            againstReceivedFeeRate: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.rate) || "0",
+            againstReceivedFeeAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.amount) || "0",
+            againstPaidFeeRate: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.rate) || "0",
+            againstPaidFeeAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.amount) || "0",
         }
     }, [activeTransactionData]);
     const getLockableFormFieldsInitial = useCallback(() => {
@@ -48,44 +56,57 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return ({
             isBuy: Yup.boolean().required(t('Required')),
             exchangeRate: Yup.string().required(t('Required')),
+            conversionType: Yup.string().required(t("Required")),
             baseCurrency: Yup.string().required(t('Required')),
             againstCurrency: Yup.string().required(t('Required')),
             financialAccount: Yup.string().required(t('Required')),
+            baseAmount: Yup.string().required(t("Required")),
             baseReceivedFeeRate: Yup.string().required(t("Required")),
             baseReceivedFeeAmount: Yup.string().required(t("Required")),
             basePaidFeeRate: Yup.string().required(t("Required")),
             basePaidFeeAmount: Yup.string().required(t("Required")),
+            againstAmount: Yup.string().required(t("Required")),
             againstReceivedFeeRate: Yup.string().required(t("Required")),
             againstReceivedFeeAmount: Yup.string().required(t("Required")),
             againstPaidFeeRate: Yup.string().required(t("Required")),
             againstPaidFeeAmount: Yup.string().required(t("Required"))
         });
     }, []);
-    const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: any) => {
+    const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: BuyAndSellCashFormDataType) => {
+        const isBuy = createdTransaction?.is_buy || false;
+        const baseParty = isBuy? "debtor": "creditor";
+        const againstParty = isBuy? "creditor": "debtor";
         return {
-            isBuy: createdTransaction?.isBuy || false,
-            baseCurrency: createdTransaction?.creditor_party?.currency || null,
+            isBuy: isBuy,
+            conversionType: createdTransaction?.conversion_type || "multiplication",
             financialAccount: createdTransaction?.creditor_party?.financial_account || null,
-            baseReceivedFeeRate: formatNumber(createdTransaction?.creditor_party?.interest.rate) || "0",
-            baseReceivedFeeAmount: formatNumber(createdTransaction?.creditor_party?.interest.amount) || "0",
-            basePaidFeeRate: formatNumber(createdTransaction?.creditor_party?.cost?.rate) || "0",
-            basePaidFeeAmount: formatNumber(createdTransaction?.creditor_party?.cost?.amount) || "0",
-            againstReceivedFeeRate: formatNumber(createdTransaction?.debtor_party?.interest?.rate) || "0",
-            againstReceivedFeeAmount: formatNumber(createdTransaction?.debtor_party?.interest?.amount) || "0",
-            againstPaidFeeRate: formatNumber(createdTransaction?.debtor_party?.cost?.rate) || "0",
-            againstPaidFeeAmount: formatNumber(createdTransaction?.debtor_party?.cost?.amount) || "0",
+            baseCurrency: createdTransaction?.[`${baseParty}_party`]?.currency || null,
+            baseAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.amount) || "0",
+            baseReceivedFeeRate: formatNumber(createdTransaction?.[`${baseParty}_party`]?.interest.rate) || "0",
+            baseReceivedFeeAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.interest.amount) || "0",
+            basePaidFeeRate: formatNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.rate) || "0",
+            basePaidFeeAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.amount) || "0",
+            againstCurrency: createdTransaction?.[`${againstParty}_party`]?.currency || null,
+            againstAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.amount) || "0",
+            againstReceivedFeeRate: formatNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.rate) || "0",
+            againstReceivedFeeAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.amount) || "0",
+            againstPaidFeeRate: formatNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.rate) || "0",
+            againstPaidFeeAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.amount) || "0",
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
         return {
             isBuy: inputFormik.values.isIsBuyLocked? inputFormik.values.isBuy: false,
-            baseCurrency: inputFormik.values.isBaseCurrencyLocked? inputFormik.values.baseCurrency: null,
-            againstCurrency: inputFormik.values.isAgainstCurrencyLocked? inputFormik.values.againstCurrency: null,
+            conversionType: "multiplication",
             financialAccount:inputFormik.values.isFinancialAccountLocked? inputFormik.values.financialAccount: null,
+            baseCurrency: inputFormik.values.isBaseCurrencyLocked? inputFormik.values.baseCurrency: null,
+            baseAmount: "0",
             baseReceivedFeeRate: "0",
             baseReceivedFeeAmount: "0",
             basePaidFeeRate: "0",
             basePaidFeeAmount: "0",
+            againstCurrency: inputFormik.values.isAgainstCurrencyLocked? inputFormik.values.againstCurrency: null,
+            againstAmount: "0",
             againstReceivedFeeRate: "0",
             againstReceivedFeeAmount: "0",
             againstPaidFeeRate: "0",
@@ -107,33 +128,40 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
             creditor_party: structuredClone(defaultBuyAndSellCashFormData.creditor_party)
         };
 
-        // const date = getFormattedDateTime(inputFormik.values.dateTime).date;
-        // const time = getFormattedDateTime(inputFormik.values.dateTime).time;
-        // const amount = Number(removeNonNumberChars(inputFormik.values.amount));
-        // data.amount = amount;
-        // data.debtor_party.financial_account = inputFormik.values.debtorFinancialAccount;
-        // data.debtor_party.amount = amount;
-        // data.debtor_party.currency = inputFormik.values.currency;
-        // data.debtor_party.date = date;
-        // data.debtor_party.time = time;
-        // data.debtor_party.cost.amount = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeAmount));
-        // data.debtor_party.cost.rate = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeRate));
-        // data.debtor_party.interest.amount = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeAmount));
-        // data.debtor_party.interest.rate = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeRate));
-        // data.debtor_party.description = inputFormik.values.description;
-        // data.debtor_party.user_specified_id = inputFormik.values.userSpecifiedId;
-        //
-        // data.creditor_party.financial_account = inputFormik.values.creditorFinancialAccount;
-        // data.creditor_party.amount = amount;
-        // data.creditor_party.currency = inputFormik.values.currency;
-        // data.creditor_party.date = date;
-        // data.creditor_party.time = time;
-        // data.creditor_party.cost.amount = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeAmount));
-        // data.creditor_party.cost.rate = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeRate));
-        // data.creditor_party.interest.amount = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeAmount));
-        // data.creditor_party.interest.rate = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeRate));
-        // data.creditor_party.description = inputFormik.values.description;
-        // data.creditor_party.user_specified_id = inputFormik.values.userSpecifiedId;
+        const date = getFormattedDateTime(inputFormik.values.dateTime).date;
+        const time = getFormattedDateTime(inputFormik.values.dateTime).time;
+
+        const isBuy = inputFormik.values.isBuy;
+        const baseParty = isBuy? 'debtor': 'creditor';
+        const againstParty = isBuy? 'creditor': 'debtor';
+        
+        data.is_buy = isBuy;
+        data.exchange_rate = inputFormik.values.exchangeRate;
+        data.conversion_type = inputFormik.values.conversionType;
+
+        data[`${baseParty}_party`].financial_account = inputFormik.values.financialAccount;
+        data[`${baseParty}_party`].amount = Number(removeNonNumberChars(inputFormik.values.baseAmount));
+        data[`${baseParty}_party`].currency = inputFormik.values.baseCurrency;
+        data[`${baseParty}_party`].date = date;
+        data[`${baseParty}_party`].time = time;
+        data[`${baseParty}_party`].cost.amount = Number(removeNonNumberChars(inputFormik.values.basePaidFeeAmount));
+        data[`${baseParty}_party`].cost.rate = Number(removeNonNumberChars(inputFormik.values.basePaidFeeRate));
+        data[`${baseParty}_party`].interest.amount = Number(removeNonNumberChars(inputFormik.values.baseReceivedFeeAmount));
+        data[`${baseParty}_party`].interest.rate = Number(removeNonNumberChars(inputFormik.values.baseReceivedFeeRate));
+        data[`${baseParty}_party`].description = inputFormik.values.description;
+        data[`${baseParty}_party`].user_specified_id = inputFormik.values.userSpecifiedId;
+        
+        data[`${againstParty}_party`].financial_account = inputFormik.values.financialAccount;
+        data[`${againstParty}_party`].amount = inputFormik.values.againstAmount;
+        data[`${againstParty}_party`].currency = inputFormik.values.abainstCurrency;
+        data[`${againstParty}_party`].date = date;
+        data[`${againstParty}_party`].time = time;
+        data[`${againstParty}_party`].cost.amount = Number(removeNonNumberChars(inputFormik.values.againstPaidFeeAmount));
+        data[`${againstParty}_party`].cost.rate = Number(removeNonNumberChars(inputFormik.values.againstPaidFeeRate));
+        data[`${againstParty}_party`].interest.amount = Number(removeNonNumberChars(inputFormik.values.againstReceivedFeeAmount));
+        data[`${againstParty}_party`].interest.rate = Number(removeNonNumberChars(inputFormik.values.againstReceivedFeeRate));
+        data[`${againstParty}_party`].description = inputFormik.values.description;
+        data[`${againstParty}_party`].user_specified_id = inputFormik.values.userSpecifiedId;
 
         return data;
     },[])
@@ -154,15 +182,16 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
-                <h5 className="modal-title">{t("Direct Currency Transfer")}</h5>
+                <h5 className="modal-title">{t("Buy and Sell Cash")}</h5>
             </ModalHeader>
             <ModalBody>
                 <Form className={'form-container active'} onSubmit={formik.handleSubmit}>
                     <Container fluid>
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
-
+                        <SelectFinancialAccountAndTradeType formik={formik} />
+                        <ExchangeRateAndConversionType formik={formik} />
                         <TransactionDetails formik={formik} />
-                        <TransactionFooter formik={formik}/>
+                        <TransactionFooter formik={formik} />
                     </Container>
                 </Form>
             </ModalBody>
