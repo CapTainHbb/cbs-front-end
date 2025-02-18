@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect} from 'react'
 import {
+    Col,
     Container,
-    Form,
+    Form, FormGroup, Label,
     Modal,
     ModalBody,
-    ModalHeader,
+    ModalHeader, Row,
 } from 'reactstrap';
 import {t} from "i18next";
 import TransactionDetails from "../TransactionDetails";
@@ -18,6 +19,11 @@ import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
 import {removeNonNumberChars} from "../../utils";
 import {getFormattedDateTime} from "../../../../helpers/date";
+import SelectFinancialAccount from "../../SelectFinancialAccount";
+import {FinancialAccount} from "../../types";
+import LockInputButton from "../../../../Components/Common/LockInputButton";
+import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
+import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 
 interface Props {
     isOpen: boolean;
@@ -181,13 +187,89 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                     <Container fluid>
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
                         <TransferAmountAndCurrency formik={formik} />
+
                         <PartyContainer formik={formik}
                                         party={'creditor'}
-                                        headerTitle={t("Creditor")} />
+                                        headerTitle={t("Creditor")}>
+                            <Row>
+                                <FormGroup row className='align-items-center'>
+                                    {/* Label */}
+                                    <Label for={`creditorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
+
+                                    {/* SelectFinancialAccount */}
+                                    <Col md={6}>
+                                        <SelectFinancialAccount
+                                            onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`creditorFinancialAccount`, acc?.id)}
+                                            selectedFinancialAccountId={formik.values?.[`creditorFinancialAccount`]}
+                                            disabled={formik.derivedState.areInputsDisabled}
+                                        />
+                                    </Col>
+
+                                    {/* Icon */}
+                                    <Col md={1}>
+                                        <LockInputButton
+                                            isLocked={formik.values.isCreditorFinancialAccountLocked}
+                                            onClick={formik.toggleCreditorFinancialAccountLock} />
+                                    </Col>
+
+                                    {/* Error Message */}
+                                    <Col md={3}>
+                                        {formik.touched?.[`creditorFinancialAccount`] && formik.errors?.[`creditorFinancialAccount`] && (
+                                            <div className={'text-danger'}>{formik.errors?.[`creditorFinancialAccount`]}</div>
+                                        )}
+                                    </Col>
+                                </FormGroup>
+                            </Row>
+                            <ReceivedPaidFeeContainer formik={formik} prefixName={'creditor'} />
+                            <Col md={4}>
+                                <FinancialAccountViewDetail
+                                    financialAccountId={formik.values?.[`creditorFinancialAccount`]}
+                                    forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
+                                />
+                            </Col>
+                        </PartyContainer>
+
 
                         <PartyContainer formik={formik}
                                         party={'debtor'}
-                                        headerTitle={t("Debtor")} />
+                                        headerTitle={t("Debtor")}>
+                            <Row>
+                                <FormGroup row className='align-items-center'>
+                                    {/* Label */}
+                                    <Label for={`debtorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
+
+                                    {/* SelectFinancialAccount */}
+                                    <Col md={6}>
+                                        <SelectFinancialAccount
+                                            onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`debtorFinancialAccount`, acc?.id)}
+                                            selectedFinancialAccountId={formik.values?.[`debtorFinancialAccount`]}
+                                            disabled={formik.derivedState.areInputsDisabled}
+                                        />
+                                    </Col>
+
+                                    {/* Icon */}
+                                    <Col md={1}>
+                                        <LockInputButton
+                                            isLocked={formik.values.isDebtorFinancialAccountLocked}
+                                            onClick={formik.toggleDebtorFinancialAccountLock} />
+                                    </Col>
+
+                                    {/* Error Message */}
+                                    <Col md={3}>
+                                        {formik.touched?.[`debtorFinancialAccount`] && formik.errors?.[`debtorFinancialAccount`] && (
+                                            <div className={'text-danger'}>{formik.errors?.[`debtorFinancialAccount`]}</div>
+                                        )}
+                                    </Col>
+                                </FormGroup>
+                            </Row>
+                            <ReceivedPaidFeeContainer formik={formik} prefixName={'debtor'} />
+                            <Col md={4}>
+                                <FinancialAccountViewDetail
+                                    financialAccountId={formik.values?.[`debtorFinancialAccount`]}
+                                    forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
+                                />
+                            </Col>
+                        </PartyContainer>
                         <TransactionDetails formik={formik} />
                         <TransactionFooter formik={formik}/>
                     </Container>

@@ -206,8 +206,8 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             .catch(error => {})
             .finally(() => {formik.setFieldValue('isDeleting', false);});
     };
-    formik.handleNumberInputChange = (name: string, e: React.ChangeEvent<HTMLInputElement>) => {
-        formik.setFieldValue(name, customFormatNumber(e.target.value));
+    formik.handleNumberInputChange = (name: string, value: string) => {
+        formik.setFieldValue(name, customFormatNumber(value));
     };
 
     return {

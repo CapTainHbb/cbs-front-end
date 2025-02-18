@@ -12,6 +12,9 @@ import {getFormattedDateTime} from "../../../../helpers/date";
 import {removeNonNumberChars} from "../../utils";
 import SelectFinancialAccountAndTradeType from './SelectFinancialAccountAndTradeType';
 import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
+import PartyContainer from "../PartyContainer";
+import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
+import BuyAndSellAmountAndCurrency from "./BuyAndSellAmountAndCurrency";
 
 interface Props {
     isOpen: boolean;
@@ -27,7 +30,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         const againstParty = isBuy? "creditor": "debtor";
         return {
             isBuy: isBuy,
-            cenvertType: activeTransactionData?.conversion_type || "multiplication",
+            conversionType: activeTransactionData?.conversion_type || "multiplication",
             exchangeRate: (activeTransactionData && formatNumber(activeTransactionData?.exchange_rate)) || "0",
             financialAccount: activeTransactionData?.creditor_party?.financial_account || null,
             baseCurrency: activeTransactionData?.[`${baseParty}_party`]?.currency || null,
@@ -56,7 +59,6 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return ({
             isBuy: Yup.boolean().required(t('Required')),
             exchangeRate: Yup.string().required(t('Required')),
-            conversionType: Yup.string().required(t("Required")),
             baseCurrency: Yup.string().required(t('Required')),
             againstCurrency: Yup.string().required(t('Required')),
             financialAccount: Yup.string().required(t('Required')),
@@ -79,6 +81,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return {
             isBuy: isBuy,
             conversionType: createdTransaction?.conversion_type || "multiplication",
+            exchangeRate: createdTransaction?.exchange_rate || "0",
             financialAccount: createdTransaction?.creditor_party?.financial_account || null,
             baseCurrency: createdTransaction?.[`${baseParty}_party`]?.currency || null,
             baseAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.amount) || "0",
@@ -97,6 +100,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
         return {
             isBuy: inputFormik.values.isIsBuyLocked? inputFormik.values.isBuy: false,
+            exchangeRate: "0",
             conversionType: "multiplication",
             financialAccount:inputFormik.values.isFinancialAccountLocked? inputFormik.values.financialAccount: null,
             baseCurrency: inputFormik.values.isBaseCurrencyLocked? inputFormik.values.baseCurrency: null,
@@ -134,7 +138,8 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         const isBuy = inputFormik.values.isBuy;
         const baseParty = isBuy? 'debtor': 'creditor';
         const againstParty = isBuy? 'creditor': 'debtor';
-        
+
+        data.transaction_type = isBuy? 'buy-cash': 'sell-cash';
         data.is_buy = isBuy;
         data.exchange_rate = inputFormik.values.exchangeRate;
         data.conversion_type = inputFormik.values.conversionType;
@@ -150,10 +155,10 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         data[`${baseParty}_party`].interest.rate = Number(removeNonNumberChars(inputFormik.values.baseReceivedFeeRate));
         data[`${baseParty}_party`].description = inputFormik.values.description;
         data[`${baseParty}_party`].user_specified_id = inputFormik.values.userSpecifiedId;
-        
+
         data[`${againstParty}_party`].financial_account = inputFormik.values.financialAccount;
-        data[`${againstParty}_party`].amount = inputFormik.values.againstAmount;
-        data[`${againstParty}_party`].currency = inputFormik.values.abainstCurrency;
+        data[`${againstParty}_party`].amount = Number(removeNonNumberChars(inputFormik.values.againstAmount));
+        data[`${againstParty}_party`].currency = inputFormik.values.againstCurrency;
         data[`${againstParty}_party`].date = date;
         data[`${againstParty}_party`].time = time;
         data[`${againstParty}_party`].cost.amount = Number(removeNonNumberChars(inputFormik.values.againstPaidFeeAmount));
@@ -179,6 +184,40 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         getSpecificTransactionDataForSubmission
     });
 
+    formik.updateAgainstAmount = useCallback((exchangeRate: string, conversionType: string, baseAmount: string) => {
+        const baseAmountNumber = Number(removeNonNumberChars(baseAmount))
+        const exchangeRateNumber = Number(removeNonNumberChars(exchangeRate))
+        let newAgainstValue = '';
+        if(conversionType === 'multiplication')
+        {
+            newAgainstValue = String(baseAmountNumber * exchangeRateNumber);
+        } else {
+            newAgainstValue = String(baseAmountNumber / exchangeRateNumber);
+        }
+        formik.handleNumberInputChange("againstAmount", newAgainstValue);
+    }, [formik]);
+    formik.toggleIsBuyLock = useCallback((e: any) => {
+        formik.setFieldValue('isIsBuyLocked', !formik.values.isIsBuyLocked);
+    }, [formik.values.isIsBuyLocked]);
+    formik.toggleFinancialAccountLock = useCallback((e: any) => {
+        formik.setFieldValue('isFinancialAccountLocked', !formik.values.isFinancialAccountLocked);
+    }, [formik.values.isFinancialAccountLocked]);
+    formik.toggleBaseCurrencyLock = useCallback((e: any) => {
+        formik.setFieldValue('isBaseCurrencyLocked', !formik.values.isBaseCurrencyLocked);
+    }, [formik.values.isBaseCurrencyLocked]);
+    formik.toggleAgainstCurrencyLock = useCallback((e: any) => {
+        formik.setFieldValue('isAgainstCurrencyLocked', !formik.values.isAgainstCurrencyLocked);
+    }, [formik.values.isAgainstCurrencyLocked]);
+    const onChangeBaseAmountValue = useCallback((e: any) => {
+        formik.handleNumberInputChange(`baseAmount`, e.target.value);
+        formik.updateAgainstAmount(formik.values.exchangeRate,
+            formik.values.conversionType, e.target.value);
+    }, [formik]);
+
+    const onChangeAgainstAmountValue = useCallback((e: any) => {
+        formik.handleNumberInputChange(`againstAmount`, e.target.value);
+    }, [formik]);
+
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
@@ -190,6 +229,25 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
                         <SelectFinancialAccountAndTradeType formik={formik} />
                         <ExchangeRateAndConversionType formik={formik} />
+                        <PartyContainer formik={formik} party={formik.values.isBuy? 'debtor': 'creditor'}
+                                        headerTitle={formik.values.isBuy? t("Buy"): t("Sell")}
+                        >
+                            <BuyAndSellAmountAndCurrency
+                                onChangeAmountValue={onChangeBaseAmountValue}
+                                formik={formik}
+                                prefixName={'base'}
+                            />
+                            <ReceivedPaidFeeContainer formik={formik} prefixName={'base'} />
+                        </PartyContainer>
+                        <PartyContainer formik={formik} party={formik.values.isBuy? 'creditor': 'debtor'}
+                                        headerTitle={t("Against")} >
+                            <BuyAndSellAmountAndCurrency
+                                onChangeAmountValue={onChangeAgainstAmountValue}
+                                formik={formik}
+                                prefixName={'against'}
+                            />
+                            <ReceivedPaidFeeContainer formik={formik} prefixName={'against'} />
+                        </PartyContainer>
                         <TransactionDetails formik={formik} />
                         <TransactionFooter formik={formik} />
                     </Container>

@@ -92,19 +92,18 @@ const Billing = () => {
 
     const getTransactionBriefCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;
-
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span className={'badge rounded-pill bg-success-subtle text-success fs-6'}>{t(String(info.getValue()))}</span>;
+                return <span className={'badge bg-success-subtle text-success fs-6'}>{t(String(info.getValue()))}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span className={"badge rounded-pill bg-danger-subtle text-danger fs-6"}>{t(String(info.getValue()))}</span>;
+                return <span className={"badge bg-danger-subtle text-danger fs-6"}>{t(String(info.getValue()))}</span>;
             }
         } else {
             switch (transaction_type) {
                 case 'direct-currency-transfer':
                     return <p className="badge bg-primary-subtle text-primary fs-6">{t(String(info.getValue()))}</p>;
                 case 'sell-cash':
-                    return <p className="badge bg-secandary-subtle text-secandary fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-secondary-subtle text-secondary fs-6">{t(String(info.getValue()))}</p>;
                 case 'buy-cash':
                     return <p className="badge bg-warning-subtle text-warning fs-6">{t(String(info.getValue()))}</p>;
                 case 'local-payments':
@@ -122,9 +121,9 @@ const Billing = () => {
 
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span className={'badge rounded-pill bg-success-subtle text-success fs-6'}>{t("Received Fee")}</span>;
+                return <span className={'badge bg-success-subtle text-success fs-6'}>{t("Received Fee")}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span className={'badge rounded-pill bg-danger-subtle text-danger fs-6'}>{t("Paid Fee")}</span>;
+                return <span className={'badge bg-danger-subtle text-danger fs-6'}>{t("Paid Fee")}</span>;
             }
         } else {
             switch (transaction_type) {

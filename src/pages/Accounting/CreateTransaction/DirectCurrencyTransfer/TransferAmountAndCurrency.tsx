@@ -20,7 +20,7 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
                         name="amount"
                         type="text"
                         value={formik.values.amount}
-                        onChange={(e: any) => formik.handleNumberInputChange('amount', e)}
+                        onChange={(e: any) => formik.handleNumberInputChange('amount', e.target.value)}
                         onBlur={formik.handleBlur}
                         placeholder={t("Enter Amount")}
                         invalid={
