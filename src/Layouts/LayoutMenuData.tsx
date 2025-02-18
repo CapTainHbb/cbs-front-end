@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {t} from "i18next";
 import DirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
 import BuyAndSellCash from "../pages/Accounting/CreateTransaction/BuyAndSellCash/BuyAndSellCash";
+import LocalPayments from "../pages/Accounting/CreateTransaction/LocalPayments/LocalPayments";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -58,6 +59,7 @@ const Navdata = () => {
     const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
     const [directCurrencyTransferModal, setDirectCurrencyTransferModal] = useState<boolean>(false);
     const [buyAndSellCashModal, setBuyAndSellCashModal] = useState<boolean>(false);
+    const [localPaymentsModal, setLocalPaymentsModal] = useState<boolean>(false);
 
     // Manage
     const [isManageUsers, setIsManageUsers] = useState<boolean>(false);
@@ -675,6 +677,14 @@ const Navdata = () => {
                     renderModal: () => <BuyAndSellCash isOpen={buyAndSellCashModal}
                                                                      toggle={() => setBuyAndSellCashModal(false)}
                     />,
+                },
+                {
+                    id: "local-payments",
+                    label: "Local Payments",
+                    parentId: "create-new-document",
+                    onClick: () => setLocalPaymentsModal(true),
+                    renderModal: () => <LocalPayments isOpen={localPaymentsModal}
+                                                      toggle={() => setLocalPaymentsModal(false)} />
                 },
                 {
                     id: "local-payments",

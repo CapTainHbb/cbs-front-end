@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Container, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
@@ -217,6 +217,11 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     const onChangeAgainstAmountValue = useCallback((e: any) => {
         formik.handleNumberInputChange(`againstAmount`, e.target.value);
     }, [formik]);
+
+    useEffect(() => {
+        if(isOpen) return;
+        formik.resetFormValues();
+    }, [isOpen])
 
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>

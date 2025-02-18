@@ -1,52 +1,47 @@
-import React, {useCallback, useEffect} from 'react'
-import {
-    Col,
-    Container,
-    Form, FormGroup, Label,
-    Modal,
-    ModalBody,
-    ModalHeader, Row,
-} from 'reactstrap';
+import React, {useCallback, useEffect} from 'react';
+import {LocalPaymentsFormDataType} from "./types";
+import {Col, Container, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
-import TransactionDetails from "../TransactionDetails";
+import TransactionMetaData from "../TransactionMetaData";
 import PartyContainer from "../PartyContainer";
-import TransferAmountAndCurrency from "./TransferAmountAndCurrency";
-import {defaultDirectCurrencyTransferFormData, DirectCurrencyTransferTransactionFormDataType} from "./types";
-import TransactionFooter from "../TransactionFooter";
-import TransactionMetaData from '../TransactionMetaData';
-import {useTransactionFormik} from "../hooks/useTransactionFormik";
-import {formatNumber} from "../../../Reports/utils";
-import * as Yup from "yup";
-import {removeNonNumberChars} from "../../utils";
-import {getFormattedDateTime} from "../../../../helpers/date";
 import SelectFinancialAccount from "../../SelectFinancialAccount";
 import {FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
+import TransactionDetails from "../TransactionDetails";
+import TransactionFooter from "../TransactionFooter";
+import {formatNumber} from "../../../Reports/utils";
+import * as Yup from "yup";
+import {defaultDirectCurrencyTransferFormData} from "../DirectCurrencyTransfer/types";
+import {getFormattedDateTime} from "../../../../helpers/date";
+import {removeNonNumberChars} from "../../utils";
+import {useTransactionFormik} from "../hooks/useTransactionFormik";
+import TotalAmount from "./TotalAmount";
 
 interface Props {
     isOpen: boolean;
     toggle: any;
-    activeTransactionData?: DirectCurrencyTransferTransactionFormDataType;
+    activeTransactionData?: LocalPaymentsFormDataType;
 }
 
-const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+
+const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
 
     const getSpecificFormFieldsInitial = useCallback(() => {
         return {
-            amount: (activeTransactionData && formatNumber(activeTransactionData?.amount)) || "0",
-            currency: activeTransactionData?.creditor_party?.currency || null,
-            creditorFinancialAccount: activeTransactionData?.creditor_party?.financial_account || null,
-            creditorReceivedFeeRate: formatNumber(activeTransactionData?.creditor_party?.interest.rate) || "0",
-            creditorReceivedFeeAmount: formatNumber(activeTransactionData?.creditor_party?.interest.amount) || "0",
-            creditorPaidFeeRate: formatNumber(activeTransactionData?.creditor_party?.cost?.rate) || "0",
-            creditorPaidFeeAmount: formatNumber(activeTransactionData?.creditor_party?.cost?.amount) || "0",
-            debtorFinancialAccount: activeTransactionData?.debtor_party?.financial_account || null,
-            debtorReceivedFeeRate: formatNumber(activeTransactionData?.debtor_party?.interest?.rate) || "0",
-            debtorReceivedFeeAmount: formatNumber(activeTransactionData?.debtor_party?.interest?.amount) || "0",
-            debtorPaidFeeRate: formatNumber(activeTransactionData?.debtor_party?.cost?.rate) || "0",
-            debtorPaidFeeAmount: formatNumber(activeTransactionData?.debtor_party?.cost?.amount) || "0",
+            totalAmount: (activeTransactionData && formatNumber(activeTransactionData?.total_amount)) || "0",
+            currency: activeTransactionData?.currency || null,
+            creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
+            creditorReceivedFeeRate: formatNumber(activeTransactionData?.creditor_interest.rate) || "0",
+            creditorReceivedFeeAmount: formatNumber(activeTransactionData?.creditor_interest.amount) || "0",
+            creditorPaidFeeRate: formatNumber(activeTransactionData?.creditor_cost?.rate) || "0",
+            creditorPaidFeeAmount: formatNumber(activeTransactionData?.creditor_cost?.amount) || "0",
+            debtorFinancialAccount: activeTransactionData?.debtor_financial_account || null,
+            debtorReceivedFeeRate: formatNumber(activeTransactionData?.debtor_interest?.rate) || "0",
+            debtorReceivedFeeAmount: formatNumber(activeTransactionData?.debtor_interest?.amount) || "0",
+            debtorPaidFeeRate: formatNumber(activeTransactionData?.debtor_cost?.rate) || "0",
+            debtorPaidFeeAmount: formatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
         }
     }, [activeTransactionData]);
     const getLockableFormFieldsInitial = useCallback(() => {
@@ -58,7 +53,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     }, []);
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
-            amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
+            totalAmount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
             currency: Yup.string().required(t('Required')),
             creditorFinancialAccount: Yup.string().required(t('Required')),
             creditorReceivedFeeRate: Yup.string().required(t("Required")),
@@ -72,25 +67,25 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
             debtorPaidFeeAmount: Yup.string().required(t("Required"))
         });
     }, []);
-    const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: any) => {
+    const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: LocalPaymentsFormDataType) => {
         return {
-            amount: (createdTransaction && formatNumber(createdTransaction?.amount)) || "0",
-            currency: createdTransaction?.creditor_party?.currency || null,
-            creditorFinancialAccount: createdTransaction?.creditor_party?.financial_account || null,
-            creditorReceivedFeeRate: formatNumber(createdTransaction?.creditor_party?.interest.rate) || "0",
-            creditorReceivedFeeAmount: formatNumber(createdTransaction?.creditor_party?.interest.amount) || "0",
-            creditorPaidFeeRate: formatNumber(createdTransaction?.creditor_party?.cost?.rate) || "0",
-            creditorPaidFeeAmount: formatNumber(createdTransaction?.creditor_party?.cost?.amount) || "0",
-            debtorFinancialAccount: createdTransaction?.debtor_party?.financial_account || null,
-            debtorReceivedFeeRate: formatNumber(createdTransaction?.debtor_party?.interest?.rate) || "0",
-            debtorReceivedFeeAmount: formatNumber(createdTransaction?.debtor_party?.interest?.amount) || "0",
-            debtorPaidFeeRate: formatNumber(createdTransaction?.debtor_party?.cost?.rate) || "0",
-            debtorPaidFeeAmount: formatNumber(createdTransaction?.debtor_party?.cost?.amount) || "0",
+            totalAmount: (createdTransaction && formatNumber(createdTransaction?.total_amount)) || "0",
+            currency: createdTransaction?.currency || null,
+            creditorFinancialAccount: createdTransaction?.creditor_financial_account || null,
+            creditorReceivedFeeRate: formatNumber(createdTransaction?.creditor_interest.rate) || "0",
+            creditorReceivedFeeAmount: formatNumber(createdTransaction?.creditor_interest.amount) || "0",
+            creditorPaidFeeRate: formatNumber(createdTransaction?.creditor_cost?.rate) || "0",
+            creditorPaidFeeAmount: formatNumber(createdTransaction?.creditor_cost?.amount) || "0",
+            debtorFinancialAccount: createdTransaction?.debtor_financial_account || null,
+            debtorReceivedFeeRate: formatNumber(createdTransaction?.debtor_interest?.rate) || "0",
+            debtorReceivedFeeAmount: formatNumber(createdTransaction?.debtor_interest?.amount) || "0",
+            debtorPaidFeeRate: formatNumber(createdTransaction?.debtor_cost?.rate) || "0",
+            debtorPaidFeeAmount: formatNumber(createdTransaction?.debtor_cost?.amount) || "0",
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
         return {
-            amount: "0",
+            totalAmount: "0",
             currency: inputFormik.values.isCurrencyLocked? inputFormik.values.currency: null,
             creditorFinancialAccount:inputFormik.values.isCreditorFinancialAccountLocked? inputFormik.values.creditorFinancialAccount: null,
             creditorReceivedFeeRate: "0",
@@ -150,7 +145,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     },[])
 
     const {formik} = useTransactionFormik({
-        endPointApi: '/transactions/direct-currency-transfer',
+        endPointApi: '/transactions/local-payments',
         activeTransactionData,
         isParentModalOpen: isOpen,
         getLockableFormFieldsInitial,
@@ -162,9 +157,6 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
         getSpecificTransactionDataForSubmission
     });
 
-    formik.toggleCurrencyLock = useCallback((e: any) => {
-        formik.setFieldValue('isCurrencyLocked', !formik.values.isCurrencyLocked);
-    }, [formik.values.isCurrencyLocked]);
     formik.toggleCreditorFinancialAccountLock = useCallback((e: any) => {
         formik.setFieldValue('isCreditorFinancialAccountLocked', !formik.values.isCreditorFinancialAccountLocked);
     }, [formik.values.isCreditorFinancialAccountLocked]);
@@ -180,13 +172,13 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
-                <h5 className="modal-title">{t("Direct Currency Transfer")}</h5>
+                <h5 className="modal-title">{t("Local Payments")}</h5>
             </ModalHeader>
             <ModalBody>
                 <Form className={'form-container active'} onSubmit={formik.handleSubmit}>
                     <Container fluid>
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
-                        <TransferAmountAndCurrency
+                        <TotalAmount
                             formik={formik}
                         />
 
@@ -281,4 +273,4 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     );
 };
 
-export default DirectCurrencyTransfer
+export default LocalPayments;

@@ -11,10 +11,11 @@ import axiosInstance from "../../../../helpers/axios_instance";
 import {toast} from "react-toastify";
 import {normalizeDjangoError} from "../../../../helpers/error";
 import {BuyAndSellCashFormDataType} from "../BuyAndSellCash/types";
+import {LocalPaymentsFormDataType} from "../LocalPayments/types";
 
 interface TransactionFormikProps {
     endPointApi: string;
-    activeTransactionData?: DirectCurrencyTransferTransactionFormDataType | BuyAndSellCashFormDataType;
+    activeTransactionData?: DirectCurrencyTransferTransactionFormDataType | BuyAndSellCashFormDataType | LocalPaymentsFormDataType;
     isParentModalOpen: boolean;
     getSpecificFormFieldsInitial: any;
     getLockableFormFieldsInitial: any;
