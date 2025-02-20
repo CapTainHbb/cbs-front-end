@@ -9,7 +9,6 @@ import logoLight from "../assets/images/logo-light.png";
 
 //import Components
 import LanguageDropdown from '../Components/Common/LanguageDropdown';
-import WebAppsDropdown from '../Components/Common/WebAppsDropdown';
 import FullScreenDropdown from '../Components/Common/FullScreenDropdown';
 import NotificationDropdown from '../Components/Common/NotificationDropdown';
 import ProfileDropdown from '../Components/Common/ProfileDropdown';
@@ -134,11 +133,6 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass } : any) => {
                             {/* LanguageDropdown */}
                             <LanguageDropdown />
 
-                            {/* WebAppsDropdown */}
-                            <WebAppsDropdown />
-
-                            {/* MyCartDropdwon */}
-                            {/*<MyCartDropdown />*/}
 
                             {/* FullScreenDropdown */}
                             <FullScreenDropdown />

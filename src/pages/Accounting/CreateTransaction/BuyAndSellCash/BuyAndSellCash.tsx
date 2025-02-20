@@ -16,6 +16,25 @@ import PartyContainer from "../PartyContainer";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import BuyAndSellAmountAndCurrency from "./BuyAndSellAmountAndCurrency";
 
+const initialResetForm = {
+    isBuy: false,
+    exchangeRate: "0",
+    conversionType: "multiplication",
+    financialAccount: null,
+    baseCurrency: null,
+    baseAmount: "0",
+    baseReceivedFeeRate: "0",
+    baseReceivedFeeAmount: "0",
+    basePaidFeeRate: "0",
+    basePaidFeeAmount: "0",
+    againstCurrency: null,
+    againstAmount: "0",
+    againstReceivedFeeRate: "0",
+    againstReceivedFeeAmount: "0",
+    againstPaidFeeRate: "0",
+    againstPaidFeeAmount: "0",
+}
+
 interface Props {
     isOpen: boolean;
     toggle: any;
@@ -23,8 +42,11 @@ interface Props {
 }
 
 const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
-
     const getSpecificFormFieldsInitial = useCallback(() => {
+        if(activeTransactionData?.transaction_type !== 'buy-and-sell-cash') {
+            return structuredClone(initialResetForm);
+        }
+
         const isBuy = activeTransactionData?.is_buy || false;
         const baseParty = isBuy? "debtor": "creditor";
         const againstParty = isBuy? "creditor": "debtor";

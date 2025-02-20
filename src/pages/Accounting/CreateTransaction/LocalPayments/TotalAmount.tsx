@@ -17,8 +17,10 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
         <Row>
             <Col>
                 <FormGroup className='align-items-center' row>
-                    <Label htmlFor="amount">{t("Transfer Amount")}</Label>
                     <Col>
+                        <Label htmlFor="amount">{t("Transfer Amount")}</Label>
+                    </Col>
+                    <Col md={8}>
                         <Input
                             id="amount"
                             name="amount"

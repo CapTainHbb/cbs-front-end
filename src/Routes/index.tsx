@@ -65,7 +65,7 @@ const Index = () => {
                         <Route
                             path={route.path}
                             element={
-                                <AuthProtected>
+                                <AuthProtected route={route}>
                                     <VerticalLayout>{route.component}</VerticalLayout>
                                 </AuthProtected>}
                             key={idx}

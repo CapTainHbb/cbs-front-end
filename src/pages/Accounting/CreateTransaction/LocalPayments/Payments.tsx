@@ -1,11 +1,11 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { PaymentDataType } from './types';
-import { Button, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
-import { t } from 'i18next';
-import { getFormattedDateTime, getFormattedTodayDateTime, getToday } from 'helpers/date';
+import React, {useMemo} from 'react';
+import {PaymentDataType} from './types';
+import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
+import {t} from 'i18next';
+import {getFormattedTodayDateTime, getToday} from 'helpers/date';
 import Flatpickr from "react-flatpickr";
+import {removeNonNumberChars} from "../../utils";
+import {formatNumber} from "../../../Reports/utils";
 
 
 interface Props {
@@ -31,6 +31,14 @@ const Payments: React.FC<Props> = ({ formik }) => {
         const updatedPayments = formik.values.payments.filter((_: any, i: number) => i !== index);
         formik.setFieldValue('payments', updatedPayments);
     };
+
+    const totalPaidAmount = useMemo(() => {
+        return formik.values.payments.reduce((sum: number, payment: PaymentDataType) => sum + (Number(removeNonNumberChars(payment?.amount)) || 0), 0);
+    }, [formik.values.payments]);
+
+    const remainedPaidAmount = useMemo(() => {
+        return Number(removeNonNumberChars(formik.values.totalAmount) - totalPaidAmount);
+    }, [totalPaidAmount, formik.values.totalAmount]);
 
     return (
         <Row style={{margin: '1px'}}>
@@ -136,11 +144,39 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
                 </Row>
             ))}
-
-                {/* Add Payment Button */}
-                <Button type="button" onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
-                    {t("Add Payment")}
-                </Button>
+            <Row>
+                <Col md={5} className={'align-items-center'}>
+                    <FormGroup row>
+                        <Col>
+                            <Label>{t("Total Paid Amount")}</Label>
+                        </Col>
+                        <Col>
+                            <Label>{formatNumber(totalPaidAmount)}</Label>
+                        </Col>
+                    </FormGroup>
+                </Col>
+                <Col md={4}>
+                    <FormGroup row>
+                        <Col >
+                            <Label>{t("Remained Paid Amount")}</Label>
+                        </Col>
+                        <Col>
+                            <Label dir={'ltr'}>{formatNumber(remainedPaidAmount)}</Label>
+                        </Col>
+                    </FormGroup>
+                </Col>
+                <Col md={3}>
+                    <Button type={'button'} disabled={true} color={remainedPaidAmount === 0? 'success': (remainedPaidAmount < 0? 'warning': 'danger')} className={'btn-label'}>
+                        <i className={remainedPaidAmount === 0? "ri-check-double-line": (remainedPaidAmount < 0? "ri-error-warning-line": "ri-alert-line" )  +
+                            ' label-icon align-middle fs-16 me-2'}/>
+                        {remainedPaidAmount === 0? t("Fully Paid"): (remainedPaidAmount < 0? t("Extra Paid"): t("Semi Paid"))}
+                    </Button>
+                </Col>
+            </Row>
+            {/* Add Payment Button */}
+            <Button type="button" onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
+                {t("Add Payment")}
+            </Button>
         </Row>
     );
 };

@@ -2,12 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Container, Row } from 'reactstrap';
 
-// Import Images
-// import error400cover from "../../../assets/images/error400-cover.png";
 import error400cover from "../../../assets/images/error400-cover.png"
+import {t} from "i18next";
 
 const Cover404 = () => {
-document.title="404 Error Cover | Velzon - React Admin & Dashboard Template";
+document.title="404 Error | ZALEX - Financial Software";
     return (
         <React.Fragment>
             <div className="auth-page-content">
@@ -19,9 +18,8 @@ document.title="404 Error Cover | Velzon - React Admin & Dashboard Template";
                                     <div className="text-center">
                                         <img src={error400cover} alt="error img" className="img-fluid" />
                                         <div className="mt-3">
-                                            <h3 className="text-uppercase">Sorry, Page not Found 😭</h3>
-                                            <p className="text-muted mb-4">The page you are looking for not available!</p>
-                                            <Link to="/dashboard" className="btn btn-success"><i className="mdi mdi-home me-1"></i>Back to home</Link>
+                                            <h3 className="text-uppercase">{t("Sorry, Page not Found")} 😭</h3>
+                                            <Link to="/" className="btn btn-success"><i className="mdi mdi-home me-1"></i>{t("Back to home")}</Link>
                                         </div>
                                     </div>
                                 </Col>

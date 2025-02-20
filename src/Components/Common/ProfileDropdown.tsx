@@ -47,7 +47,7 @@ const ProfileDropdown = () => {
                                 {userProfileData.user.username}
                             </span>
                             <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">
-                                {userProfileData.role}
+                                {t(userProfileData.role)}
                             </span>
                         </span>
                     </span>
@@ -55,46 +55,12 @@ const ProfileDropdown = () => {
                 <DropdownMenu className="dropdown-menu-end">
                     <h6 className="dropdown-header">{t("Welcome")} {userProfileData.user.username}!</h6>
                     <DropdownItem className='p-0'>
-                        <Link to="/profile" className="dropdown-item">
-                            <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-                            <span className="align-middle">{t("Profile")}</span>
-                        </Link>
-                    </DropdownItem>
-                    <DropdownItem className='p-0'>
                         <Link to="/apps-chat" className="dropdown-item">
                             <i className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span
                                 className="align-middle">{t("Messages")}</span>
                         </Link>
                     </DropdownItem>
-                    <DropdownItem className='p-0'>
-                        <Link to={"#"} className="dropdown-item">
-                            <i className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span
-                                className="align-middle">{t("Taskboard")}</span>
-                        </Link>
-                    </DropdownItem>
-                    <DropdownItem className='p-0'>
-                        <Link to="/pages-faqs" className="dropdown-item">
-                            <i
-                                className="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
-                                    className="align-middle">{t("Help")}</span>
-                        </Link>
-                    </DropdownItem>
                     <div className="dropdown-divider"></div>
-                    <DropdownItem className='p-0'>
-                        <Link to="/pages-profile-settings" className="dropdown-item">
-                            <span
-                                className="badge bg-success-subtle text-success mt-1 float-end">New</span><i
-                                    className="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
-                                        className="align-middle">{t("Settings")}</span>
-                        </Link>
-                    </DropdownItem>
-                    <DropdownItem className='p-0'>
-                        <Link to="/auth-lockscreen-basic" className="dropdown-item">
-                            <i
-                                className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
-                            <span className="align-middle">{t("Lock screen")}</span>
-                        </Link>
-                    </DropdownItem>
                     <DropdownItem className='p-0'>
                         <div  onClick={onClickLogout} className="dropdown-item">
                             <i

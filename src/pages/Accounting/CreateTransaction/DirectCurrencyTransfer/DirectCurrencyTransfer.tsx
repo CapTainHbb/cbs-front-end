@@ -25,6 +25,21 @@ import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 
+const initialRestForm = {
+    amount: "0",
+    currency: null,
+    creditorFinancialAccount: null,
+    creditorReceivedFeeRate: "0",
+    creditorReceivedFeeAmount: "0",
+    creditorPaidFeeRate: "0",
+    creditorPaidFeeAmount: "0",
+    debtorFinancialAccount: null,
+    debtorReceivedFeeRate: "0",
+    debtorReceivedFeeAmount: "0",
+    debtorPaidFeeRate: "0",
+    debtorPaidFeeAmount: "0",
+}
+
 interface Props {
     isOpen: boolean;
     toggle: any;
@@ -32,8 +47,11 @@ interface Props {
 }
 
 const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
-
     const getSpecificFormFieldsInitial = useCallback(() => {
+        if(activeTransactionData?.transaction_type !== 'direct-currency-transfer') {
+            return structuredClone(initialRestForm);
+        }
+
         return {
             amount: (activeTransactionData && formatNumber(activeTransactionData?.amount)) || "0",
             currency: activeTransactionData?.creditor_party?.currency || null,

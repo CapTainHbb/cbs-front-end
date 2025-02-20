@@ -1,6 +1,7 @@
 import axios from 'axios';
 import i18n, {t} from 'i18next';
 import {toast} from "react-toastify";
+import {normalizeDjangoError} from "./error";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -31,9 +32,9 @@ AxiosInstance.interceptors.response.use(
     },
     async error => {
         if (error.response && error.response.status === 401) {
-            console.log(error.response);
+
             setTimeout(() => {
-                toast.error(t("Your Session Is Expired"));
+                toast.error(t(normalizeDjangoError(error)));
             }, 0);
         }
         return Promise.reject(error);

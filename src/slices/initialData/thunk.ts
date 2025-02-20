@@ -43,8 +43,6 @@ export const fetchInitialData = () => async (dispatch: any) => {
     dispatch(setAccountGroups(accountGroups.data));
     dispatch(setFinancialAccounts(financialAccounts.data));
     dispatch(setLocalCurrency(localCurrency.data));
-    // defaultLocalPayments.currency = localCurrency.data;
-    // defaultCreateLocalPayments.currency = localCurrency.data;
     dispatch(setCustomers(customers.data));
     dispatch(setUsers(users.data.data));
     dispatch(setInitialDataIsLoading(false));

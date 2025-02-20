@@ -162,18 +162,18 @@ const Billing = () => {
         axiosInstance.get(url)
             .then(response => {
                 setActiveTransactionData(response.data);
-                if(party?.transaction_type === 'direct-currency-transfer') {
+                if(response.data?.transaction_type === 'direct-currency-transfer') {
                     setIsDirectCurrencyTransferModalOpen(true);
-                } else if(party?.transaction_type === 'buy-cash' || party?.transaction_type === 'sell-cash') {
+                } else if(response.data?.transaction_type === 'buy-cash' || response.data?.transaction_type === 'sell-cash') {
                     setIsBuyAndSellCashModalOpen(true);
-                } else if(party?.transaction_type === 'local-payments') {
+                } else if(response.data?.transaction_type === 'local-payments') {
                     setIsLocalPaymentsModalOpen(true);
                 }
             })
             .catch(error => {
                 // toast.error(normalizeDjangoError(error));
             })
-    }, [setActiveTransactionData, setIsDirectCurrencyTransferModalOpen]);
+    }, [setActiveTransactionData, setIsDirectCurrencyTransferModalOpen, setIsBuyAndSellCashModalOpen, setIsLocalPaymentsModalOpen]);
 
     const columns = useMemo<ColumnDef<Party>[]>(() => {
         return (
@@ -439,7 +439,6 @@ const Billing = () => {
         filters.transaction_id_to, filters?.transaction_type, filters.user_specified_id,
         getTransactionTypeCell, t])
 
-
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -477,6 +476,14 @@ const Billing = () => {
                                                                       setActiveTransactionData(undefined);
                                                                   }}
                                     />
+                                    <LocalPayments isOpen={isLocalPaymentsModalOpen}
+                                                   activeTransactionData={activeTransactionData || undefined}
+                                                   toggle={() => {
+                                                       setIsLocalPaymentsModalOpen(false);
+                                                       setItemsChanged(!itemsChanged);
+                                                       setActiveTransactionData(undefined);
+                                                   }}
+                                    />
                                     <BuyAndSellCash isOpen={isBuyAndSellCashModalOpen}
                                                             activeTransactionData={activeTransactionData || undefined}
                                                             toggle={() => {
@@ -485,14 +492,7 @@ const Billing = () => {
                                                                       setActiveTransactionData(undefined);
                                                                   }}
                                     />
-                                    <LocalPayments isOpen={isLocalPaymentsModalOpen}
-                                                            activeTransactionData={activeTransactionData || undefined}
-                                                            toggle={() => {
-                                                                      setIsLocalPaymentsModalOpen(false);
-                                                                      setItemsChanged(!itemsChanged);
-                                                                      setActiveTransactionData(undefined);
-                                                                  }}
-                                    />
+
                                 </React.Fragment >
                             </CardBody>
                         </Card>

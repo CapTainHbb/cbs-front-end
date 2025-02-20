@@ -5,7 +5,7 @@ import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
 import PartyContainer from "../PartyContainer";
 import SelectFinancialAccount from "../../SelectFinancialAccount";
-import {FinancialAccount} from "../../types";
+import {defaultInterestCostProps, FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
@@ -21,17 +21,34 @@ import Payments from './Payments';
 import { useSelector } from 'react-redux';
 import { getFormattedDateTime, getFormattedTodayDateTime } from 'helpers/date';
 
+const initialResetForm = {
+    totalAmount: "0",
+    creditorFinancialAccount: null,
+    creditorReceivedFeeRate: "0",
+    creditorReceivedFeeAmount: "0",
+    creditorPaidFeeRate: "0",
+    creditorPaidFeeAmount: "0",
+    debtorFinancialAccount: null,
+    debtorReceivedFeeRate: "0",
+    debtorReceivedFeeAmount: "0",
+    debtorPaidFeeRate: "0",
+    debtorPaidFeeAmount: "0",
+    payments: [],
+}
+
 interface Props {
     isOpen: boolean;
     toggle: any;
     activeTransactionData?: LocalPaymentsFormDataType;
 }
 
-
 const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
     const localCurrency = useSelector((state: any) => state.InitialData.localCurrency);
-
     const getSpecificFormFieldsInitial = useCallback(() => {
+        if (activeTransactionData?.transaction_type !== 'local-payments') {
+            return structuredClone(initialResetForm);
+        }
+
         return {
             totalAmount: (activeTransactionData && formatNumber(activeTransactionData?.total_amount)) || "0",
             creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
@@ -88,25 +105,17 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
-        return {
-            totalAmount: "0",
-            creditorFinancialAccount: null,
-            creditorReceivedFeeRate: "0",
-            creditorReceivedFeeAmount: "0",
-            creditorPaidFeeRate: "0",
-            creditorPaidFeeAmount: "0",
-            debtorFinancialAccount: null,
-            debtorReceivedFeeRate: "0",
-            debtorReceivedFeeAmount: "0",
-            debtorPaidFeeRate: "0",
-            debtorPaidFeeAmount: "0",
-            payments: [],
-        }
+        return structuredClone(initialResetForm)
     }, []);
 
     const getSpecificTransactionDataForSubmission = useCallback((inputFormik: any) => {
         let data = {
             ...structuredClone(defaultLocalPaymentsFormData),
+            debtor_interest: structuredClone(defaultInterestCostProps),
+            debtor_cost: structuredClone(defaultInterestCostProps),
+            creditor_financial_account: undefined,
+            creditor_interest: structuredClone(defaultInterestCostProps),
+            creditor_cost: structuredClone(defaultInterestCostProps),
         };
 
         const totalAmount = Number(removeNonNumberChars(inputFormik.values.totalAmount));

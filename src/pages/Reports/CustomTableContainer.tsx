@@ -1,4 +1,5 @@
-import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useState} from 'react';
+import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import isEqual from 'lodash/isEqual';
 import TableExtraHeaderContainer from "./TableExtraHeaderContainer";
 import {
     ColumnDef, ExpandedState,
@@ -64,21 +65,15 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         setData(data?.data)
         setRowCount(data?.total_rows);
         setPageCount(data?.total_pages);
-        setPagination({ pageIndex: data?.current_page - 1, pageSize: data?.page_size });
+        setPagination({
+            pageIndex: data?.current_page? (data?.current_page - 1): 0,
+            pageSize: data?.page_size
+        });
     }, []);
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
-    
-    useEffect(() => {
-        fetchData({
-            pagination: {
-                page: pagination?.pageIndex + 1,
-                page_size: pagination?.pageSize,
-            },
-            filters: filters
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex]);
+
+
 
     const table = useReactTable({
         data,
@@ -104,6 +99,22 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         onExpandedChange: setExpanded,
         getSubRows: (row: any) => row?.children,
     })
+
+    useEffect(() => {
+        table.setPageIndex(0);
+    }, [filters]);
+
+    useEffect(() => {
+
+        fetchData({
+            pagination: {
+                page: pagination?.pageIndex + 1,
+                page_size: pagination?.pageSize,
+            },
+            filters: filters
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex]);
 
     const onUpdateTable = useCallback(() => {
         setItemsChanged?.(!itemsChanged);
