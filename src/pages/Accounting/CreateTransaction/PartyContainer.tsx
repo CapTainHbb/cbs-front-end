@@ -2,13 +2,12 @@ import React, {ReactNode} from 'react';
 import {Badge, Col, Row} from "reactstrap";
 
 interface Props {
-    formik: any;
     party: 'creditor' | 'debtor';
     headerTitle: string;
     children: ReactNode;
 }
 
-const PartyContainer: React.FC<Props> = ({ formik, party, headerTitle, children }) => {
+const PartyContainer: React.FC<Props> = ({ party, headerTitle, children }) => {
     return (
         <Row className={`mb-1 border-opacity-50 border border-1 ${party === 'debtor'? 'border-danger': 'border-success'}`}>
             <Row>

@@ -234,7 +234,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
                         <SelectFinancialAccountAndTradeType formik={formik} />
                         <ExchangeRateAndConversionType formik={formik} />
-                        <PartyContainer formik={formik} party={formik.values.isBuy? 'debtor': 'creditor'}
+                        <PartyContainer party={formik.values.isBuy? 'debtor': 'creditor'}
                                         headerTitle={formik.values.isBuy? t("Buy"): t("Sell")}
                         >
                             <BuyAndSellAmountAndCurrency
@@ -244,7 +244,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                             />
                             <ReceivedPaidFeeContainer formik={formik} prefixName={'base'} />
                         </PartyContainer>
-                        <PartyContainer formik={formik} party={formik.values.isBuy? 'creditor': 'debtor'}
+                        <PartyContainer party={formik.values.isBuy? 'creditor': 'debtor'}
                                         headerTitle={t("Against")} >
                             <BuyAndSellAmountAndCurrency
                                 onChangeAmountValue={onChangeAgainstAmountValue}

@@ -14,13 +14,11 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
         <Row>
             <Col md={4}>
                 <FormGroup>
-                    <Label htmlFor='description'>
-                        {t("Description")}
-                    </Label>
                     <Input
                         disabled={formik.derivedState.areInputsDisabled}
                         type={'text'}
                         name={'description'}
+                        placeholder={t("Description")}
                         value={formik.values.description}
                         onChange={formik.handleChange}
                     />
@@ -28,12 +26,10 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
             </Col>
             <Col md={4}>
                 <FormGroup>
-                    <Label htmlFor='description'>
-                        {t("Transaction Number")}
-                    </Label>
                     <Input
                         type={'text'}
                         name={'userSpecifiedId'}
+                        placeholder={t("Transaction Number")}
                         value={formik.values.userSpecifiedId}
                         onChange={formik.handleChange}
                         disabled={formik.derivedState.areInputsDisabled}
@@ -42,9 +38,6 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
             </Col>
             <Col md={4}>
                 <FormGroup>
-                    <Label htmlFor='date-time'>
-                        {t("Date and Time")}
-                    </Label>
                     <Flatpickr
                         className="form-control"
                         name={'dateTime'}

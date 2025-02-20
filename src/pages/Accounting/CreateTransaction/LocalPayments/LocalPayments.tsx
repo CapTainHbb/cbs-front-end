@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import {LocalPaymentsFormDataType} from "./types";
+import {LocalPaymentsFormDataType, PaymentDataType, defaultLocalPaymentsFormData} from "./types";
 import {Col, Container, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
@@ -13,11 +13,13 @@ import TransactionDetails from "../TransactionDetails";
 import TransactionFooter from "../TransactionFooter";
 import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
-import {defaultDirectCurrencyTransferFormData} from "../DirectCurrencyTransfer/types";
-import {getFormattedDateTime} from "../../../../helpers/date";
 import {removeNonNumberChars} from "../../utils";
 import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import TotalAmount from "./TotalAmount";
+import PaymentsContainer from './PaymentsContainer';
+import Payments from './Payments';
+import { useSelector } from 'react-redux';
+import { getFormattedDateTime, getFormattedTodayDateTime } from 'helpers/date';
 
 interface Props {
     isOpen: boolean;
@@ -27,11 +29,11 @@ interface Props {
 
 
 const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+    const localCurrency = useSelector((state: any) => state.InitialData.localCurrency);
 
     const getSpecificFormFieldsInitial = useCallback(() => {
         return {
             totalAmount: (activeTransactionData && formatNumber(activeTransactionData?.total_amount)) || "0",
-            currency: activeTransactionData?.currency || null,
             creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
             creditorReceivedFeeRate: formatNumber(activeTransactionData?.creditor_interest.rate) || "0",
             creditorReceivedFeeAmount: formatNumber(activeTransactionData?.creditor_interest.amount) || "0",
@@ -42,19 +44,12 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorReceivedFeeAmount: formatNumber(activeTransactionData?.debtor_interest?.amount) || "0",
             debtorPaidFeeRate: formatNumber(activeTransactionData?.debtor_cost?.rate) || "0",
             debtorPaidFeeAmount: formatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
+            payments: activeTransactionData?.payments || [],
         }
     }, [activeTransactionData]);
-    const getLockableFormFieldsInitial = useCallback(() => {
-        return {
-            isCurrencyLocked: false,
-            isCreditorFinancialAccountLocked: false,
-            isDebtorFinancialAccountLocked: false,
-        }
-    }, []);
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
             totalAmount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
-            currency: Yup.string().required(t('Required')),
             creditorFinancialAccount: Yup.string().required(t('Required')),
             creditorReceivedFeeRate: Yup.string().required(t("Required")),
             creditorReceivedFeeAmount: Yup.string().required(t("Required")),
@@ -64,13 +59,21 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorReceivedFeeRate: Yup.string().required(t("Required")),
             debtorReceivedFeeAmount: Yup.string().required(t("Required")),
             debtorPaidFeeRate: Yup.string().required(t("Required")),
-            debtorPaidFeeAmount: Yup.string().required(t("Required"))
+            debtorPaidFeeAmount: Yup.string().required(t("Required")),
+            payments: Yup.array().of(
+                Yup.object({
+                    amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
+                    bank_account: Yup.string(),
+                    transaction_id: Yup.string(),
+                    date: Yup.string(),
+                    time: Yup.string(),
+                })
+            ).min(1, 'At least one payment is required'),
         });
     }, []);
     const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: LocalPaymentsFormDataType) => {
         return {
             totalAmount: (createdTransaction && formatNumber(createdTransaction?.total_amount)) || "0",
-            currency: createdTransaction?.currency || null,
             creditorFinancialAccount: createdTransaction?.creditor_financial_account || null,
             creditorReceivedFeeRate: formatNumber(createdTransaction?.creditor_interest.rate) || "0",
             creditorReceivedFeeAmount: formatNumber(createdTransaction?.creditor_interest.amount) || "0",
@@ -81,79 +84,68 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorReceivedFeeAmount: formatNumber(createdTransaction?.debtor_interest?.amount) || "0",
             debtorPaidFeeRate: formatNumber(createdTransaction?.debtor_cost?.rate) || "0",
             debtorPaidFeeAmount: formatNumber(createdTransaction?.debtor_cost?.amount) || "0",
+            payments: createdTransaction?.payments || [],
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
         return {
             totalAmount: "0",
-            currency: inputFormik.values.isCurrencyLocked? inputFormik.values.currency: null,
-            creditorFinancialAccount:inputFormik.values.isCreditorFinancialAccountLocked? inputFormik.values.creditorFinancialAccount: null,
+            creditorFinancialAccount: null,
             creditorReceivedFeeRate: "0",
             creditorReceivedFeeAmount: "0",
             creditorPaidFeeRate: "0",
             creditorPaidFeeAmount: "0",
-            debtorFinancialAccount: inputFormik.values.isDebtorFinancialAccountLocked? inputFormik.values.debtorFinancialAccount: null,
+            debtorFinancialAccount: null,
             debtorReceivedFeeRate: "0",
             debtorReceivedFeeAmount: "0",
             debtorPaidFeeRate: "0",
             debtorPaidFeeAmount: "0",
+            payments: [],
         }
     }, []);
-    const getLockableFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
-        return {
-            isCurrencyLocked: inputFormik.values.isCurrencyLocked,
-            isCreditorFinancialAccountLocked: inputFormik.values.isCreditorFinancialAccountLocked,
-            isDebtorFinancialAccountLocked: inputFormik.values.isDebtorFinancialAccountLocked,
-        };
-    }, []);
+
     const getSpecificTransactionDataForSubmission = useCallback((inputFormik: any) => {
         let data = {
-            ...structuredClone(defaultDirectCurrencyTransferFormData),
-            debtor_party: structuredClone(defaultDirectCurrencyTransferFormData.debtor_party),
-            creditor_party: structuredClone(defaultDirectCurrencyTransferFormData.creditor_party)
+            ...structuredClone(defaultLocalPaymentsFormData),
         };
 
-        const date = getFormattedDateTime(inputFormik.values.dateTime).date;
-        const time = getFormattedDateTime(inputFormik.values.dateTime).time;
-        const amount = Number(removeNonNumberChars(inputFormik.values.amount));
-        data.amount = amount;
-        data.debtor_party.financial_account = inputFormik.values.debtorFinancialAccount;
-        data.debtor_party.amount = amount;
-        data.debtor_party.currency = inputFormik.values.currency;
-        data.debtor_party.date = date;
-        data.debtor_party.time = time;
-        data.debtor_party.cost.amount = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeAmount));
-        data.debtor_party.cost.rate = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeRate));
-        data.debtor_party.interest.amount = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeAmount));
-        data.debtor_party.interest.rate = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeRate));
-        data.debtor_party.description = inputFormik.values.description;
-        data.debtor_party.user_specified_id = inputFormik.values.userSpecifiedId;
+        const totalAmount = Number(removeNonNumberChars(inputFormik.values.totalAmount));
+        
+        data.currency = localCurrency?.id
 
-        data.creditor_party.financial_account = inputFormik.values.creditorFinancialAccount;
-        data.creditor_party.amount = amount;
-        data.creditor_party.currency = inputFormik.values.currency;
-        data.creditor_party.date = date;
-        data.creditor_party.time = time;
-        data.creditor_party.cost.amount = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeAmount));
-        data.creditor_party.cost.rate = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeRate));
-        data.creditor_party.interest.amount = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeAmount));
-        data.creditor_party.interest.rate = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeRate));
-        data.creditor_party.description = inputFormik.values.description;
-        data.creditor_party.user_specified_id = inputFormik.values.userSpecifiedId;
+        data.total_amount = totalAmount;
+        data.debtor_financial_account = inputFormik.values.debtorFinancialAccount;
+        data.debtor_interest.amount = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeAmount));
+        data.debtor_interest.rate = Number(removeNonNumberChars(inputFormik.values.debtorReceivedFeeRate));
+        data.debtor_cost.amount = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeAmount));
+        data.debtor_cost.rate = Number(removeNonNumberChars(inputFormik.values.debtorPaidFeeRate));
+        
+        data.creditor_financial_account = inputFormik.values.creditorFinancialAccount;
+        data.creditor_interest.amount = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeAmount));
+        data.creditor_interest.rate = Number(removeNonNumberChars(inputFormik.values.creditorReceivedFeeRate));
+        data.creditor_cost.amount = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeAmount));
+        data.creditor_cost.rate = Number(removeNonNumberChars(inputFormik.values.creditorPaidFeeRate));
+
+        data.payments = inputFormik.values.payments.map((item: PaymentDataType) => {
+            return {
+                ...item,
+                amount: Number(removeNonNumberChars(item.amount)),
+                date: item.date === ""? getFormattedTodayDateTime().date: item.date,
+                time: item.time === ""? getFormattedTodayDateTime().time: item.time,
+            }
+        });
 
         return data;
-    },[])
+    },[localCurrency])
 
     const {formik} = useTransactionFormik({
         endPointApi: '/transactions/local-payments',
         activeTransactionData,
         isParentModalOpen: isOpen,
-        getLockableFormFieldsInitial,
         getSpecificFormFieldsInitial,
         getSpecificFormFieldsValidation,
         getSpecificFormFieldsAfterSubmission,
         getSpecificFormFieldsAfterResetForm,
-        getLockableFormFieldsAfterResetForm,
         getSpecificTransactionDataForSubmission
     });
 
@@ -169,6 +161,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
         formik.resetFormValues();
     }, [isOpen])
 
+
     return (
         <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
@@ -182,88 +175,87 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                             formik={formik}
                         />
 
-                        <PartyContainer formik={formik}
+                        <PartyContainer 
                                         party={'creditor'}
                                         headerTitle={t("Creditor")}>
-                            <Row>
-                                <FormGroup row className='align-items-center'>
-                                    {/* Label */}
-                                    <Label for={`creditorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
+                            <Row>    
+                                <Col md={8}>
+                                    <Row>
+                                        <FormGroup row className='align-items-center'>
+                                            {/* Label */}
+                                            <Label for={`creditorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
 
-                                    {/* SelectFinancialAccount */}
-                                    <Col md={6}>
-                                        <SelectFinancialAccount
-                                            onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`creditorFinancialAccount`, acc?.id)}
-                                            selectedFinancialAccountId={formik.values?.creditorFinancialAccount}
-                                            disabled={formik.derivedState.areInputsDisabled}
-                                        />
-                                    </Col>
+                                            {/* SelectFinancialAccount */}
+                                            <Col md={9}>
+                                                <SelectFinancialAccount
+                                                    onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`creditorFinancialAccount`, acc?.id)}
+                                                    selectedFinancialAccountId={formik.values?.creditorFinancialAccount}
+                                                    disabled={formik.derivedState.areInputsDisabled}
+                                                />
+                                            </Col>
 
-                                    {/* Icon */}
-                                    <Col md={1}>
-                                        <LockInputButton
-                                            isLocked={formik.values.isCreditorFinancialAccountLocked}
-                                            onClick={formik.toggleCreditorFinancialAccountLock} />
-                                    </Col>
-
-                                    {/* Error Message */}
-                                    <Col md={3}>
-                                        {formik.touched?.creditorFinancialAccount && formik.errors?.creditorFinancialAccount && (
-                                            <div className={'text-danger'}>{formik.errors?.creditorFinancialAccount}</div>
-                                        )}
-                                    </Col>
-                                </FormGroup>
+                                            {/* Error Message */}
+                                            <Col md={3}>
+                                                {formik.touched?.creditorFinancialAccount && formik.errors?.creditorFinancialAccount && (
+                                                    <div className={'text-danger'}>{formik.errors?.creditorFinancialAccount}</div>
+                                                )}
+                                            </Col>
+                                        </FormGroup>
+                                        <ReceivedPaidFeeContainer formik={formik} prefixName={'creditor'} />
+                                    </Row>
+                                </Col>
+                                <Col md={4}>
+                                    <FinancialAccountViewDetail
+                                        financialAccountId={formik.values?.creditorFinancialAccount}
+                                        forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
+                                    />
+                                </Col>
                             </Row>
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'creditor'} />
-                            <Col md={4}>
-                                <FinancialAccountViewDetail
-                                    financialAccountId={formik.values?.creditorFinancialAccount}
-                                    forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
-                                />
-                            </Col>
                         </PartyContainer>
 
 
-                        <PartyContainer formik={formik}
+                        <PartyContainer 
                                         party={'debtor'}
                                         headerTitle={t("Debtor")}>
                             <Row>
-                                <FormGroup row className='align-items-center'>
-                                    {/* Label */}
-                                    <Label for={`debtorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
+                                <Col md={8}>
+                                    <Row>
+                                        <FormGroup row className='align-items-center'>
+                                            {/* Label */}
+                                            <Label for={`debtorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
 
-                                    {/* SelectFinancialAccount */}
-                                    <Col md={6}>
-                                        <SelectFinancialAccount
-                                            onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`debtorFinancialAccount`, acc?.id)}
-                                            selectedFinancialAccountId={formik.values?.debtorFinancialAccount}
-                                            disabled={formik.derivedState.areInputsDisabled}
-                                        />
-                                    </Col>
+                                            {/* SelectFinancialAccount */}
+                                            <Col md={9}>
+                                                <SelectFinancialAccount
+                                                    onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`debtorFinancialAccount`, acc?.id)}
+                                                    selectedFinancialAccountId={formik.values?.debtorFinancialAccount}
+                                                    disabled={formik.derivedState.areInputsDisabled}
+                                                />
+                                            </Col>
 
-                                    {/* Icon */}
-                                    <Col md={1}>
-                                        <LockInputButton
-                                            isLocked={formik.values.isDebtorFinancialAccountLocked}
-                                            onClick={formik.toggleDebtorFinancialAccountLock} />
-                                    </Col>
-
-                                    {/* Error Message */}
-                                    <Col md={3}>
-                                        {formik.touched?.[`debtorFinancialAccount`] && formik.errors?.debtorFinancialAccount && (
-                                            <div className={'text-danger'}>{formik.errors?.debtorFinancialAccount}</div>
-                                        )}
-                                    </Col>
-                                </FormGroup>
+                                            {/* Error Message */}
+                                            <Col md={3}>
+                                                {formik.touched?.[`debtorFinancialAccount`] && formik.errors?.debtorFinancialAccount && (
+                                                    <div className={'text-danger'}>{formik.errors?.debtorFinancialAccount}</div>
+                                                )}
+                                            </Col>
+                                        </FormGroup>
+                                    </Row>
+                                    <ReceivedPaidFeeContainer formik={formik} prefixName={'debtor'} />  
+                                </Col>
+                                <Col md={4}>
+                                    <FinancialAccountViewDetail
+                                        financialAccountId={formik.values?.debtorFinancialAccount}
+                                        forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
+                                    />
+                                </Col>
                             </Row>
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'debtor'} />
-                            <Col md={4}>
-                                <FinancialAccountViewDetail
-                                    financialAccountId={formik.values?.debtorFinancialAccount}
-                                    forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
-                                />
-                            </Col>
                         </PartyContainer>
+
+                        <PaymentsContainer>
+                            <Payments formik={formik} />
+                        </PaymentsContainer>
+                        
                         <TransactionDetails formik={formik} />
                         <TransactionFooter formik={formik}/>
                     </Container>

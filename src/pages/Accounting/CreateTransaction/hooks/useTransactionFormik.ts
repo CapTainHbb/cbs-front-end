@@ -18,10 +18,10 @@ interface TransactionFormikProps {
     activeTransactionData?: DirectCurrencyTransferTransactionFormDataType | BuyAndSellCashFormDataType | LocalPaymentsFormDataType;
     isParentModalOpen: boolean;
     getSpecificFormFieldsInitial: any;
-    getLockableFormFieldsInitial: any;
+    getLockableFormFieldsInitial?: any;
     getSpecificFormFieldsValidation: any;
     getSpecificFormFieldsAfterResetForm: any;
-    getLockableFormFieldsAfterResetForm: any;
+    getLockableFormFieldsAfterResetForm?: any;
     getSpecificFormFieldsAfterSubmission: any;
     getSpecificTransactionDataForSubmission: any;
 }
@@ -70,7 +70,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
         return {
             ...getCommonTransactionFieldsInitial(),
             ...getSpecificFormFieldsInitial(),
-            ...getLockableFormFieldsInitial(),
+            ...getLockableFormFieldsInitial?.(),
         }
     }, [getCommonTransactionFieldsInitial, getSpecificFormFieldsInitial, getLockableFormFieldsInitial]);
     const formik: any = useFormik({
@@ -99,7 +99,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
                 formik.setValues({
                     ...getCommonFormFieldsAfterSubmission(createdTransaction),
                     ...getSpecificFormFieldsAfterSubmission(createdTransaction),
-                    ...getLockableFormFieldsAfterResetForm(formik),
+                    ...getLockableFormFieldsAfterResetForm?.(formik),
                 })
                 setLastActiveTransactionData(createdTransaction);
                 toast.success(formik.values.isEditing? t("Transaction updated successfully") : t("Transaction created successfully"));
@@ -149,7 +149,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
                 formik.setValues({
                     ...getCommonFormFieldsAfterSubmission(loadedTransaction),
                     ...getSpecificFormFieldsAfterSubmission(loadedTransaction),
-                    ...getLockableFormFieldsInitial(),
+                    ...getLockableFormFieldsInitial?.(),
                 })
                 setLastActiveTransactionData(response.data)
             })
@@ -176,7 +176,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
         formik.setValues({
             ...getCommonFormFieldsAfterResetForm(),
             ...getSpecificFormFieldsAfterResetForm(formik),
-            ...getLockableFormFieldsAfterResetForm(formik),
+            ...getLockableFormFieldsAfterResetForm?.(formik),
         });
         fetchAndSetPreviousTransactionId();
     }, [formik]);
@@ -186,7 +186,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             formik.setValues({
                 ...getCommonFormFieldsAfterSubmission(lastActiveTransactionData),
                 ...getSpecificFormFieldsAfterSubmission(lastActiveTransactionData),
-                ...getLockableFormFieldsAfterResetForm(formik),
+                ...getLockableFormFieldsAfterResetForm?.(formik),
             })
         }
         formik.setFieldValue("isEditing", !formik.values.isEditing)

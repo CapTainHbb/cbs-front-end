@@ -7,7 +7,6 @@ import {getToday, handleValidDate, handleValidTime} from "../../helpers/date";
 import {t} from "i18next";
 import {CurrencyAccount, FinancialAccount} from "./types";
 import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
-import {Currency} from "../Reports/utils";
 import BalanceAmount from "../Reports/BalanceAmount";
 
 
@@ -20,7 +19,6 @@ interface Props {
 
 const FinancialAccountBalance: React.FC<Props> = ({ financialAccountId,
                                                   forceUpdate = undefined, setModal, currencyAccounts }) => {
-    const currencies = useSelector((state: any) => state.InitialData.currencies);
     const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts);
     const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
     const [financialAccount, setFinancialAccount] = useState<FinancialAccount | null>(null)

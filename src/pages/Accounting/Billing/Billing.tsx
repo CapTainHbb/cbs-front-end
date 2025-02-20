@@ -16,6 +16,8 @@ import { useSearchParams } from 'react-router-dom';
 import FinancialAccountName from "./FinancialAccountName";
 import DirectCurrencyTransfer from "../CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
 import axiosInstance from "../../../helpers/axios_instance";
+import BuyAndSellCash from '../CreateTransaction/BuyAndSellCash/BuyAndSellCash';
+import LocalPayments from '../CreateTransaction/LocalPayments/LocalPayments';
 
 export interface Filters {
     financial_account?: number,
@@ -145,6 +147,8 @@ const Billing = () => {
 
     const [activeTransactionData, setActiveTransactionData] = useState<any>(undefined)
     const [isDirectCurrencyTransferModalOpen, setIsDirectCurrencyTransferModalOpen] = useState<boolean>(false);
+    const [isBuyAndSellCashModalOpen, setIsBuyAndSellCashModalOpen] = useState<boolean>(false);
+    const [isLocalPaymentsModalOpen, setIsLocalPaymentsModalOpen] = useState<boolean>(false);
     const handleEditTransaction = useCallback(async (party: any) => {
         let url = "";
         if(party?.transaction_type === "direct-currency-transfer") {
@@ -158,7 +162,13 @@ const Billing = () => {
         axiosInstance.get(url)
             .then(response => {
                 setActiveTransactionData(response.data);
-                setIsDirectCurrencyTransferModalOpen(true);
+                if(party?.transaction_type === 'direct-currency-transfer') {
+                    setIsDirectCurrencyTransferModalOpen(true);
+                } else if(party?.transaction_type === 'buy-cash' || party?.transaction_type === 'sell-cash') {
+                    setIsBuyAndSellCashModalOpen(true);
+                } else if(party?.transaction_type === 'local-payments') {
+                    setIsLocalPaymentsModalOpen(true);
+                }
             })
             .catch(error => {
                 // toast.error(normalizeDjangoError(error));
@@ -463,6 +473,22 @@ const Billing = () => {
                                                             activeTransactionData={activeTransactionData || undefined}
                                                             toggle={() => {
                                                                       setIsDirectCurrencyTransferModalOpen(false);
+                                                                      setItemsChanged(!itemsChanged);
+                                                                      setActiveTransactionData(undefined);
+                                                                  }}
+                                    />
+                                    <BuyAndSellCash isOpen={isBuyAndSellCashModalOpen}
+                                                            activeTransactionData={activeTransactionData || undefined}
+                                                            toggle={() => {
+                                                                      setIsBuyAndSellCashModalOpen(false);
+                                                                      setItemsChanged(!itemsChanged);
+                                                                      setActiveTransactionData(undefined);
+                                                                  }}
+                                    />
+                                    <LocalPayments isOpen={isLocalPaymentsModalOpen}
+                                                            activeTransactionData={activeTransactionData || undefined}
+                                                            toggle={() => {
+                                                                      setIsLocalPaymentsModalOpen(false);
                                                                       setItemsChanged(!itemsChanged);
                                                                       setActiveTransactionData(undefined);
                                                                   }}

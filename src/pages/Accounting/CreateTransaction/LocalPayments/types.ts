@@ -12,7 +12,7 @@ export interface LocalPaymentsFormDataType extends Transaction {
     creditor_financial_account?: number,
     creditor_interest: InterestCostProps,
     creditor_cost: InterestCostProps,
-    total_amount: 0,
+    total_amount: number,
     is_edit_enabled: false,
     currency?: number,
     payments: any,
@@ -20,7 +20,7 @@ export interface LocalPaymentsFormDataType extends Transaction {
 
 export const defaultLocalPaymentsFormData : LocalPaymentsFormDataType = {
     ...structuredClone(defaultTransaction),
-    transaction_type: "direct-currency-transfer",
+    transaction_type: "local-payments",
     debtor_financial_account: undefined,
     debtor_interest: defaultInterestCostProps,
     debtor_cost: defaultInterestCostProps,
@@ -31,4 +31,12 @@ export const defaultLocalPaymentsFormData : LocalPaymentsFormDataType = {
     is_edit_enabled: false,
     currency: undefined,
     payments: [],
+}
+
+export interface PaymentDataType {
+    amount: number | undefined;
+    bank_account: string;
+    payment_transaction_id: string;
+    date: string;
+    time: string;
 }

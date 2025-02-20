@@ -190,7 +190,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                             formik={formik}
                         />
 
-                        <PartyContainer formik={formik}
+                        <PartyContainer 
                                         party={'creditor'}
                                         headerTitle={t("Creditor")}>
                             <Row>
@@ -232,7 +232,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                         </PartyContainer>
 
 
-                        <PartyContainer formik={formik}
+                        <PartyContainer 
                                         party={'debtor'}
                                         headerTitle={t("Debtor")}>
                             <Row>

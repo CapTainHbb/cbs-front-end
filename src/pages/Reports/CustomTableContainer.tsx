@@ -78,7 +78,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             filters: filters
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemsChanged, loadItemsApi, filters]);
+    }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex]);
 
     const table = useReactTable({
         data,

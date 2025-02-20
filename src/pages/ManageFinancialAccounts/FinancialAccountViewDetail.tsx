@@ -30,7 +30,7 @@ const FinancialAccountViewDetail: React.FC<Props> = ({ financialAccountId, force
     }, [financialAccountId, forceUpdate]);
 
     return (
-        <Card id="financial-account-view-detail" >
+        <Card id="financial-account-view-detail" style={{maxHeight: 150, overflow: "scroll"}} >
             <Modal fade={true} isOpen={modal} toggle={() => setModal(false)} centered={true} >
                 <ModalHeader className="bg-primary-subtle p-3"  toggle={() => setModal(false)}>
                     {t("Financial Account Balance")}
