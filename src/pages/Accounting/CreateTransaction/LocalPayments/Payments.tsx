@@ -45,14 +45,14 @@ const Payments: React.FC<Props> = ({ formik }) => {
             {formik.values.payments.map((payment: PaymentDataType, index: number) => (
                 <Row key={index} style={{marginBottom: '2px'}}>
                     {/* Amount Field */}
-                    <Col>
+                    <Col md={2}>
                         <Input
                             id={`payments.${index}.amount`}
                             name={`payments.${index}.amount`}
                             type="text"
                             onBlur={formik.handleBlur}
                             placeholder={t("Enter Amount")}
-                            value={payment.amount}
+                            value={formatNumber(payment.amount)}
                             onChange={(e: any) => formik.handleNumberInputChange(`payments.${index}.amount`, e.target.value)}
                             disabled={formik.derivedState.areInputsDisabled}
                             invalid={
@@ -66,7 +66,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Bank Account Field */}
-                    <Col>
+                    <Col md={3}>
                         <Input
                             id={`payments.${index}.bank_account`}
                             name={`payments.${index}.bank_account`}
@@ -98,7 +98,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Date Field */}
-                    <Col>
+                    <Col >
                         <Flatpickr
                             className="form-control"
                             name={`payments.${index}.date`}

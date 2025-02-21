@@ -181,7 +181,7 @@ const Billing = () => {
                 {
                     id: 'select',
                     header: ({ table }) => (
-                        <div className="header-item-container">
+                        <div>
                             <IndeterminateCheckbox
                                 {...{
                                     checked: table.getIsAllRowsSelected(),
@@ -201,53 +201,30 @@ const Billing = () => {
                             }}
                         />
                     ),
-                    size: 10,
+                    minSize: 15,  
+                    maxSize: 15,  
+                    width: 15
                 },
-                {
-                    id: 'account_name',
+                // {
+                //     id: 'account_name',
 
-                    header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Account Name")}</span>
-                        </div>,
-                    cell: info => <FinancialAccountName financialAccountId={info.row.original.financial_account} />,
-                    minSize: 150,  // Ensure the column doesn't shrink below this size
-                    maxSize: 150,  // Prevent resizing beyond this size
-                    width: 150     // Explicitly set the width
-                },
+                //     header: () =>
+                //         <div>
+                //             <span>{t("Account Name")}</span>
+                //         </div>,
+                //     cell: info => <FinancialAccountName financialAccountId={info.row.original.financial_account} />,
+                //     minSize: 150,  
+                //     maxSize: 150,  
+                //     width: 150     
+                // },
                 {
                     id: 'created_by',
                     header: () =>
-                        <div className={'header-item-container'}>
-                            <span className={'header-item-title'}>{t("Created By")}</span>
-                        </div>,
+                            <span>{t("Created By")}</span>,
                     cell: info => info.row.original?.created_by,
-                    size: 60
-                },
-                {
-                    id: 'sub_transaction',
-                    header: () =>
-                        <div className={'header-item-container'}>
-                            <span className={'header-item-title'}>{t('')}</span>
-                        </div>,
-                    cell: ({ row }) => {
-                        return row.getCanExpand() ?
-                            <div
-                                data-bs-toggle="tooltip"
-                                title={row.getIsExpanded() ? t("Close SubTransaction") : t("Open SubTransaction")}
-                                style={{
-                                    transform: row.getIsExpanded() ? 'rotate(90deg)' : 'rotate(180deg)',
-                                    transition: 'transform 0.3s ease-in-out'
-                                }}
-                                onClick={row.getToggleExpandedHandler()}
-                            >
-                                <i className="ri-arrow-right-s-line"></i>
-                            </div>
-                            : '';
-                    },
-                    minSize: 10,  // Ensure the column doesn't shrink below this size
-                    maxSize: 10,  // Prevent resizing beyond this size
-                    width: 10     // Explicitly set the width
+                    minSize: 60,  
+                    maxSize: 60,  
+                    width: 60  
                 },
                 {
                     accessorKey: 'transaction_type',
@@ -256,99 +233,88 @@ const Billing = () => {
                             {getTransactionTypeCell(info)}
                         </div>,
                     header: () =>
-                        <div className='header-item-container'>
+                        <div>
                             <span className={'header-item-title'}>{t("Transaction Type")}</span>
                         </div>,
-                    size: 50
+                    minSize: 50,  
+                    maxSize: 50,  
+                    width: 50  
                 },
                 {
                     accessorKey: 'transaction',
                     cell: info => info.getValue(),
                     header: () =>
-                        <div className='header-item-container'>
+                        <div>
                             <span className={'header-item-title'}>{t("Document Number")}</span>
-                            {/*<DebouncedInput type="number"*/}
-                            {/*             fromName={'transaction_id_from'}*/}
-                            {/*             toName={'transaction_id_to'}*/}
-                            {/*             onFromChange={handleFilterValueChange}*/}
-                            {/*             onToChange={handleFilterValueChange}*/}
-                            {/*             fromValue={filters.transaction_id_from}*/}
-                            {/*             toValue={filters.transaction_id_to}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 20
+                    minSize: 60,  
+                    maxSize: 60,  
+                    width: 60  
                 },
                 {
                     accessorKey: 'user_specified_id',
                     cell: info =>
-                        <span className={'line-clamp-1'}
+                        <span 
+                            style={{WebkitLineClamp: 1, 
+                                width: 80,   
+                                overflow: "hidden", 
+                                textOverflow: 'ellipsis',
+                                display: "-webkit-inline-flex"
+                            }}
+                            className={'line-clamp-1'}
                               data-tooltip-content={info.row.original.user_specified_id}
                               data-tooltip-id="global-tooltip"
                         >
                             {info.row.original.user_specified_id}
                         </span>,
                     header: () =>
-                        <div className='header-item-container'>
+                        <div>
                             <span className={'header-item-title'}>{t("Transaction Id")}</span>
-                            {/*<DebouncedInput  type={'text'} className='filter-component'*/}
-                            {/*                 value={filters.user_specified_id}*/}
-                            {/*                 onChange={handleFilterValueChange}*/}
-                            {/*                 name={'user_specified_id'}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 50
+                    minSize: 80,  
+                    maxSize: 80,  
+                    width: 80  
                 },
                 {
                     accessorKey: 'date',
                     cell: info => info.row.original.date,
                     header: () =>
-                        <div className='header-item-container'>
+                        <div>
                             <span className={'header-item-title'}>{t("Date")}</span>
-                            {/*<DateRangeFilter*/}
-                            {/*    fromName={'date_from'}*/}
-                            {/*    toName={'date_to'}*/}
-                            {/*    onFromChange={handleFilterValueChange}*/}
-                            {/*    onToChange={handleFilterValueChange}*/}
-                            {/*    fromValue={filters.date_from}*/}
-                            {/*    toValue={filters.date_to}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 65
+                    minSize: 60,  
+                    maxSize: 60,  
+                    width: 60  
                 },
                 {
                     accessorKey: 'time',
                     cell: info => info.getValue(),
                     header: () =>
-                        <div className='header-item-container'>
+                        <div>
                             <span className={'header-item-title'}>{t("Time")}</span>
-                            {/*<RangeFilter type="time"*/}
-                            {/*             fromName={'time_from'}*/}
-                            {/*             toName={'time_to'}*/}
-                            {/*             onFromChange={handleFilterValueChange}*/}
-                            {/*             onToChange={handleFilterValueChange}*/}
-                            {/*             fromValue={filters.time_from}*/}
-                            {/*             toValue={filters.time_to}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 60
+                    minSize: 60,  
+                    maxSize: 60,  
+                    width: 60  
                 },
                 {
                     accessorKey: 'description',
                     cell: info =>
-                        <span className={'line-clamp-1'}
+                        <p    style={{WebkitLineClamp: 1, 
+                                    width: 70,   
+                                    overflow: "hidden", 
+                                    textOverflow: 'ellipsis',
+                                    display: "-webkit-inline-flex"
+                                }}
                               data-tooltip-content={info.row.original.description}
-                              data-tooltip-id="global-tooltip">
+                              data-tooltip-id="tooltip">
                             {info.row.original.description}
-                        </span>,
+                        </p>,
                     header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Description")}</span>
-                            {/*<DebouncedInput type={'text'} className='filter-component'*/}
-                            {/*                name={'description'}*/}
-                            {/*                value={filters.description}*/}
-                            {/*                onChange={handleFilterValueChange} />*/}
-                        </div>,
-                    size: 80
+                            <span>{t("Description")}</span>,
+                    minSize: 70,  
+                    maxSize: 70,  
+                    width: 70     
                 },
                 {
                     accessorKey: 'transaction_brief',
@@ -359,10 +325,12 @@ const Billing = () => {
                             {getTransactionBriefCell(info)}
                         </span>,
                     header: () =>
-                        <div className={'header-item-container'}>
+                        <div>
                             <span className={'header-item-title'} >{t("Transaction Brief")}</span>
                         </div>,
-                    size: 250
+                    minSize: 100,  
+                    maxSize: 100,  
+                    width: 100  
                 },
                 {
                     accessorKey: 'currency',
@@ -371,7 +339,9 @@ const Billing = () => {
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Currency Type")}</span>
                         </div>,
-                    size: 50
+                    minSize: 50,  
+                    maxSize: 50,  
+                    width: 50  
                 },
                 {
                     id: 'debtor_amount',
@@ -383,16 +353,10 @@ const Billing = () => {
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Debtor")}</span>
-                            {/*<RangeFilter type="number"*/}
-                            {/*             fromName={'debtor_from_value'}*/}
-                            {/*             toName={'debtor_to_value'}*/}
-                            {/*             onFromChange={handleFilterValueChange}*/}
-                            {/*             onToChange={handleFilterValueChange}*/}
-                            {/*             fromValue={filters.debtor_from_value}*/}
-                            {/*             toValue={filters.debtor_to_value}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 90,
+                    minSize: 90,  
+                    maxSize: 90,  
+                    width: 90  
                 },
                 {
                     id: 'creditor_amount',
@@ -403,16 +367,10 @@ const Billing = () => {
                     header: () =>
                         <div className='header-item-container'>
                             <span className={'header-item-title'}>{t("Creditor")}</span>
-                            {/*<RangeFilter type="number"*/}
-                            {/*             fromName={'creditor_from_value'}*/}
-                            {/*             toName={'creditor_to_value'}*/}
-                            {/*             onFromChange={handleFilterValueChange}*/}
-                            {/*             onToChange={handleFilterValueChange}*/}
-                            {/*             fromValue={filters.creditor_from_value}*/}
-                            {/*             toValue={filters.creditor_to_value}*/}
-                            {/*/>*/}
                         </div>,
-                    size: 90,
+                    minSize: 90,  
+                    maxSize: 90,  
+                    width: 90  
                 },
                 {
                     accessorKey: 'balance',
@@ -429,7 +387,9 @@ const Billing = () => {
                             {/*             toValue={filters.balance_to_value}*/}
                             {/*/>*/}
                         </div>,
-                    size: 90,
+                    minSize: 90,  
+                    maxSize: 90,  
+                    width: 90  
                 },
             ]
         )

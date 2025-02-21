@@ -1,5 +1,5 @@
 import React from "react";
-import { Col } from "reactstrap";
+import { Col, Label } from "reactstrap";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Link } from "react-router-dom";
@@ -16,10 +16,10 @@ const AuthSlider = () => {
                     <div className="position-relative h-100 d-flex flex-column">
                         <div className="mb-4">
                             <Link to="/dashboard" className="d-block">
-                                <img src={logoLight} alt="" height="18" />
+                                <Label className="fs-20 text-white" >ZALEX</Label>
                             </Link>
                         </div>
-                        <div className="mt-auto">
+                        {/* <div className="mt-auto">
                             <div className="mb-3">
                                 <i className="ri-double-quotes-l display-4 text-success"></i>
                             </div>
@@ -44,7 +44,7 @@ const AuthSlider = () => {
                                 </div>
                             </Carousel>
 
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </Col>

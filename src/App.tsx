@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 //import Scss
 import './assets/scss/themes.scss';
@@ -10,6 +11,7 @@ import Route from './Routes';
 import fakeBackend from "./helpers/AuthType/fakeBackend";
 import {ToastContainer} from "react-toastify";
 
+
 // Activating fake backend
 fakeBackend();
 
@@ -18,6 +20,7 @@ function App() {
     <React.Fragment>
       <ToastContainer autoClose={2000} closeButton={false} limit={2} />
       <Route />
+      <ReactTooltip id="tooltip" style={{fontSize: '18px'}} />
     </React.Fragment>
   );
 }

@@ -43,7 +43,7 @@ interface Props {
 
 const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
     const getSpecificFormFieldsInitial = useCallback(() => {
-        if(activeTransactionData?.transaction_type !== 'buy-and-sell-cash') {
+        if(!['buy-and-sell-cash', 'sell-cash', 'buy-cash'].includes(String(activeTransactionData?.transaction_type))) {
             return structuredClone(initialResetForm);
         }
 
