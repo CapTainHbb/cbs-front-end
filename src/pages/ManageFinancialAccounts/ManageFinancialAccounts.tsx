@@ -6,14 +6,14 @@ import {
     CardBody,
     CardHeader,
     Col,
-    Container, DropdownItem, DropdownMenu, DropdownToggle,
+    Container, 
     Form, FormFeedback,
     Input,
     Label,
     Modal,
     ModalBody, ModalFooter,
     ModalHeader,
-    Row, Table, UncontrolledDropdown
+    Row,
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {t} from "i18next";
@@ -355,16 +355,16 @@ const ManageFinancialAccounts = () => {
                                                         <SelectAccountGroup accountGroupId={validation.values.parentGroup}
                                                                             onChangeAccountGroup={onAccountGroupChange}
                                                         />
+                                                        {validation.touched.parentGroup &&
+                                                        validation.errors.parentGroup ? (
+                                                            <Label className='text-danger'>
+                                                                {t(validation.errors.parentGroup)}
+                                                            </Label>
+                                                        ) : null}
                                                         {!isEdit &&
                                                             <InitialBalanceForm currencyAccounts={initialCurrencyAccounts}
                                                                                 setCurrencyAccounts={setInitialCurrencyAccounts} />
                                                         }
-                                                        {validation.touched.parentGroup &&
-                                                        validation.errors.parentGroup ? (
-                                                            <FormFeedback type="invalid">
-                                                                {validation.errors.parentGroup}
-                                                            </FormFeedback>
-                                                        ) : null}
                                                     </Col>
                                                 </Row>
                                             </ModalBody>

@@ -240,13 +240,19 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                                     </Col>
                                 </FormGroup>
                             </Row>
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'creditor'} />
-                            <Col md={4}>
-                                <FinancialAccountViewDetail
-                                    financialAccountId={formik.values?.creditorFinancialAccount}
-                                    forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
-                                />
-                            </Col>
+                            <Row>
+                                <ReceivedPaidFeeContainer 
+                                        formik={formik} 
+                                        prefixName={'creditor'} 
+                                        partyAmount={formik.values.amount}
+                                    />
+                                <Col md={4}>
+                                    <FinancialAccountViewDetail
+                                        financialAccountId={formik.values?.creditorFinancialAccount}
+                                        forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
+                                    />
+                                </Col>
+                            </Row>
                         </PartyContainer>
 
 
@@ -282,7 +288,11 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                                     </Col>
                                 </FormGroup>
                             </Row>
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'debtor'} />
+                            <ReceivedPaidFeeContainer 
+                                formik={formik} 
+                                prefixName={'debtor'} 
+                                partyAmount={formik.values.amount}
+                            />
                             <Col md={4}>
                                 <FinancialAccountViewDetail
                                     financialAccountId={formik.values?.debtorFinancialAccount}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col, FormGroup, Input, Label, Row} from "reactstrap";
+import {Col, FormGroup, Input, Row} from "reactstrap";
 import {t} from "i18next";
 import Flatpickr from "react-flatpickr";
 import {getToday} from "../../../helpers/date";

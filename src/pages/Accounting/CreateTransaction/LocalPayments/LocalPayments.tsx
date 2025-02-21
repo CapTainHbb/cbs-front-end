@@ -210,7 +210,10 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                                                 )}
                                             </Col>
                                         </FormGroup>
-                                        <ReceivedPaidFeeContainer formik={formik} prefixName={'creditor'} />
+                                        <ReceivedPaidFeeContainer 
+                                            partyAmount={formik.values.totalAmount}
+                                            formik={formik} 
+                                            prefixName={'creditor'} />
                                     </Row>
                                 </Col>
                                 <Col md={4}>
@@ -250,7 +253,11 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                                             </Col>
                                         </FormGroup>
                                     </Row>
-                                    <ReceivedPaidFeeContainer formik={formik} prefixName={'debtor'} />  
+                                    <ReceivedPaidFeeContainer 
+                                            partyAmount={formik.values.totalAmount}
+                                            formik={formik} 
+                                            prefixName={'debtor'} 
+                                        />  
                                 </Col>
                                 <Col md={4}>
                                     <FinancialAccountViewDetail

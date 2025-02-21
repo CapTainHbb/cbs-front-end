@@ -3,7 +3,6 @@ import {t} from "i18next";
 import {CurrencyAccount} from "../Accounting/types";
 import {Col, Input, Label, Table} from "reactstrap";
 import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
-import {Currency} from "../Reports/utils";
 import {useSelector} from "react-redux";
 
 interface Props {
@@ -37,12 +36,12 @@ const InitialBalanceForm: React.FC<Props> = ({ currencyAccounts, setCurrencyAcco
             <Table className={'table table-striped'}>
                 <tbody>
                     {currencyAccounts?.map?.((currencyAccount: CurrencyAccount, index) => (
-                        <tr key={index}>
-                            <td className='fw-medium'>
+                        <tr key={index} className='m-0 p-0'>
+                            <td className='fw-medium m-0 p-0'>
                                 <CurrencyNameAndFlag
                                     currencyId={currencyAccount.currency}/>
                             </td>
-                            <td className={''}>
+                            <td className={'m-0 p-0'}>
                                 <Input dir={'ltr'} type={'number'} bsSize={'sm'} value={currencyAccount.initial_balance} onChange={(e: any) => onInitialBalanceChange(currencyAccount, e)} />
                             </td>
                         </tr>

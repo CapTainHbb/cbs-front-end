@@ -1,5 +1,4 @@
 import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import isEqual from 'lodash/isEqual';
 import TableExtraHeaderContainer from "./TableExtraHeaderContainer";
 import {
     ColumnDef, ExpandedState,

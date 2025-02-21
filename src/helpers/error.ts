@@ -1,4 +1,3 @@
-import {t} from "i18next";
 
 
 export const normalizeDjangoError = (error: any): string => {

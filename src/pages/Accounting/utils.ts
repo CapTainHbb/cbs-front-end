@@ -1,5 +1,4 @@
 import {t} from "i18next";
-import {useCallback} from "react";
 
 export const determineCreditorOrDebtor = (balance: number) => {
     if(balance > 0) {

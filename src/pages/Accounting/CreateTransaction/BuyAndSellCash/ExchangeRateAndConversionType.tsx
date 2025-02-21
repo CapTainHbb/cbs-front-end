@@ -60,8 +60,8 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
     <Row className="align-items-center">
       <Col md={8}>
         <FormGroup row>
-            <Label md={6} >{t("Conversion Operator")}</Label>
-            <Col>
+            <Label md={2} >{t("Conversion Operator")}</Label>
+            <Col md={3}>
                 <Select 
                     options={conversionTypeOptions}
                     onChange={onConversionTypeChange}

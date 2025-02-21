@@ -38,9 +38,17 @@ export const formatNumber = (number: any) => {
     // Format the integer part with commas
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-    // Check if the decimal part is non-zero or undefined
-    return decimalPart && parseInt(decimalPart) !== 0
-        ? `${formattedInteger}.${decimalPart}`
+    // If there's no decimal part, return the formatted integer
+    if (!decimalPart) {
+        return formattedInteger;
+    }
+
+    // Remove trailing zeros from the decimal part
+    const trimmedDecimal = decimalPart.replace(/0+$/, '');
+
+    // If the trimmed decimal part is not empty, append it to the formatted integer
+    return trimmedDecimal.length > 0
+        ? `${formattedInteger}.${trimmedDecimal}`
         : formattedInteger;
 };
 

@@ -1,7 +1,6 @@
 import React, {useMemo} from 'react';
 import Select from 'react-select';
 import {t} from "i18next";
-import {TransactionType} from "./types";
 
 interface Props {
     transactionType?: string;

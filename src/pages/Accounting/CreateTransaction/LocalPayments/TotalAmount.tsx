@@ -1,9 +1,6 @@
 import React from 'react';
-import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
+import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
 import {t} from "i18next";
-import SelectCurrency from "../../../Reports/SelectCurrency/SelectCurrency";
-import {Currency} from "../../../Reports/utils";
-import LockInputButton from 'Components/Common/LockInputButton';
 import CurrencyNameAndFlag from "../../../Reports/CurrencyNameAndFlag";
 import {useSelector} from "react-redux";
 

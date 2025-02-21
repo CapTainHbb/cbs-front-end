@@ -5,7 +5,6 @@ import DirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/Direct
 import BuyAndSellCash from "../pages/Accounting/CreateTransaction/BuyAndSellCash/BuyAndSellCash";
 import LocalPayments from "../pages/Accounting/CreateTransaction/LocalPayments/LocalPayments";
 import {useSelector} from "react-redux";
-import {authProtectedRoutes} from "../Routes/allRoutes";
 
 const Navdata = () => {
     const history = useNavigate();
@@ -182,110 +181,6 @@ const Navdata = () => {
                 ],
             },
             {
-                id: "apps",
-                label: "Apps",
-                icon: "ri-apps-2-line",
-                link: "/#",
-                needsAuthorization: true,
-                click: function (e: any) {
-                    e.preventDefault();
-                    setIsApps(!isApps);
-                    setIscurrentState('Apps');
-                    updateIconSidebar(e);
-                },
-                stateVariables: isApps,
-                subItems: [
-                    {
-                        id: "chat",
-                        label: "Chat",
-                        link: "/apps-chat",
-                        parentId: "apps",
-                    },
-                    {
-                        id: "mailbox",
-                        label: "Email",
-                        link: "/#",
-                        parentId: "apps",
-                        isChildItem: true,
-                        click: function (e: any) {
-                            e.preventDefault();
-                            setEmail(!isEmail);
-                        },
-                        stateVariables: isEmail,
-                        childItems: [
-                            {
-                                id: 1,
-                                label: "Mailbox",
-                                link: "/apps-mailbox",
-                                parentId: "apps"
-                            },
-                            {
-                                id: 2,
-                                label: "Email Templates",
-                                link: "/#",
-                                parentId: "apps",
-                                isChildItem: true,
-                                stateVariables: isSubEmail,
-                                click: function (e: any) {
-                                    e.preventDefault();
-                                    setSubEmail(!isSubEmail);
-                                },
-                                childItems: [
-                                    { id: 2, label: "Basic Action", link: "/apps-email-basic", parentId: "apps" },
-                                    { id: 3, label: "Ecommerce Action", link: "/apps-email-ecommerce", parentId: "apps" },
-                                ],
-                            },
-                        ]
-                    },
-                    {
-                        id: "tasks",
-                        label: "Tasks",
-                        link: "/#",
-                        isChildItem: true,
-                        click: function (e: any) {
-                            e.preventDefault();
-                            setIsTasks(!isTasks);
-                        },
-                        parentId: "apps",
-                        stateVariables: isTasks,
-                        childItems: [
-                            { id: 1, label: "Kanban Board", link: "/apps-tasks-kanban", parentId: "apps", },
-                            { id: 2, label: "List View", link: "/apps-tasks-list-view", parentId: "apps", },
-                            { id: 3, label: "Task Details", link: "/apps-tasks-details", parentId: "apps", },
-                        ]
-                    },
-                    {
-                        id: "invoices",
-                        label: "Invoices",
-                        link: "/#",
-                        isChildItem: true,
-                        click: function (e: any) {
-                            e.preventDefault();
-                            setIsInvoices(!isInvoices);
-                        },
-                        parentId: "apps",
-                        stateVariables: isInvoices,
-                        childItems: [
-                            { id: 1, label: "List View", link: "/apps-invoices-list" },
-                            { id: 2, label: "Details", link: "/apps-invoices-details" },
-                            { id: 3, label: "Create Invoice", link: "/apps-invoices-create" },
-                        ]
-                    },
-                    {
-                        id: "filemanager",
-                        label: "File Manager",
-                        link: "/apps-file-manager",
-                        parentId: "apps",
-                    },
-                    {
-                        id: "todo",
-                        label: "To Do",
-                        link: "/apps-todo",
-                        parentId: "apps",
-                    },
-                ],
-            },
-            {
                 id: "reports",
                 label: "Reports",
                 icon: "ri-numbers-line",
@@ -390,6 +285,114 @@ const Navdata = () => {
 
     const unAuthorizedMenuItems =
          [
+            {
+                label: t("Apps"),
+                isHeader: true,
+            },
+            {
+                id: "apps",
+                label: "Apps",
+                icon: "ri-apps-2-line",
+                link: "/#",
+                needsAuthorization: true,
+                click: function (e: any) {
+                    e.preventDefault();
+                    setIsApps(!isApps);
+                    setIscurrentState('Apps');
+                    updateIconSidebar(e);
+                },
+                stateVariables: isApps,
+                subItems: [
+                    {
+                        id: "chat",
+                        label: "Chat",
+                        link: "/apps-chat",
+                        parentId: "apps",
+                    },
+                    {
+                        id: "mailbox",
+                        label: "Email",
+                        link: "/#",
+                        parentId: "apps",
+                        isChildItem: true,
+                        click: function (e: any) {
+                            e.preventDefault();
+                            setEmail(!isEmail);
+                        },
+                        stateVariables: isEmail,
+                        childItems: [
+                            {
+                                id: 1,
+                                label: "Mailbox",
+                                link: "/apps-mailbox",
+                                parentId: "apps"
+                            },
+                            {
+                                id: 2,
+                                label: "Email Templates",
+                                link: "/#",
+                                parentId: "apps",
+                                isChildItem: true,
+                                stateVariables: isSubEmail,
+                                click: function (e: any) {
+                                    e.preventDefault();
+                                    setSubEmail(!isSubEmail);
+                                },
+                                childItems: [
+                                    { id: 2, label: "Basic Action", link: "/apps-email-basic", parentId: "apps" },
+                                    { id: 3, label: "Ecommerce Action", link: "/apps-email-ecommerce", parentId: "apps" },
+                                ],
+                            },
+                        ]
+                    },
+                    {
+                        id: "tasks",
+                        label: "Tasks",
+                        link: "/#",
+                        isChildItem: true,
+                        click: function (e: any) {
+                            e.preventDefault();
+                            setIsTasks(!isTasks);
+                        },
+                        parentId: "apps",
+                        stateVariables: isTasks,
+                        childItems: [
+                            { id: 1, label: "Kanban Board", link: "/apps-tasks-kanban", parentId: "apps", },
+                            { id: 2, label: "List View", link: "/apps-tasks-list-view", parentId: "apps", },
+                            { id: 3, label: "Task Details", link: "/apps-tasks-details", parentId: "apps", },
+                        ]
+                    },
+                    {
+                        id: "invoices",
+                        label: "Invoices",
+                        link: "/#",
+                        isChildItem: true,
+                        click: function (e: any) {
+                            e.preventDefault();
+                            setIsInvoices(!isInvoices);
+                        },
+                        parentId: "apps",
+                        stateVariables: isInvoices,
+                        childItems: [
+                            { id: 1, label: "List View", link: "/apps-invoices-list" },
+                            { id: 2, label: "Details", link: "/apps-invoices-details" },
+                            { id: 3, label: "Create Invoice", link: "/apps-invoices-create" },
+                        ]
+                    },
+                    {
+                        id: "filemanager",
+                        label: "File Manager",
+                        link: "/apps-file-manager",
+                        parentId: "apps",
+                    },
+                    {
+                        id: "todo",
+                        label: "To Do",
+                        link: "/apps-todo",
+                        parentId: "apps",
+                    },
+                ],
+            },
             {
                 label: t("Accounting"),
                 isHeader: true,

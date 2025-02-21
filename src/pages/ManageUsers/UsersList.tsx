@@ -36,7 +36,6 @@ import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox';
 
 import * as Yup from "yup";
 import {useFormik} from 'formik';
-import moment from 'moment';
 import CustomTableContainer from 'pages/Reports/CustomTableContainer';
 import {normalizeDjangoError} from "../../helpers/error";
 import ResetPasswordModal from "./ResetPasswordModal";

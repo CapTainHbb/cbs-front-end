@@ -103,7 +103,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return {
             isBuy: isBuy,
             conversionType: createdTransaction?.conversion_type || "multiplication",
-            exchangeRate: createdTransaction?.exchange_rate || "0",
+            exchangeRate: formatNumber(createdTransaction?.exchange_rate) || "0",
             financialAccount: createdTransaction?.creditor_party?.financial_account || null,
             baseCurrency: createdTransaction?.[`${baseParty}_party`]?.currency || null,
             baseAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.amount) || "0",
@@ -163,7 +163,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
 
         data.transaction_type = isBuy? 'buy-cash': 'sell-cash';
         data.is_buy = isBuy;
-        data.exchange_rate = inputFormik.values.exchangeRate;
+        data.exchange_rate = Number(removeNonNumberChars(inputFormik.values.exchangeRate));
         data.conversion_type = inputFormik.values.conversionType;
 
         data[`${baseParty}_party`].financial_account = inputFormik.values.financialAccount;
@@ -264,7 +264,11 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                                 formik={formik}
                                 prefixName={'base'}
                             />
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'base'} />
+                            <ReceivedPaidFeeContainer 
+                                formik={formik} 
+                                prefixName={'base'} 
+                                partyAmount={formik.values.baseAmount}
+                                />    
                         </PartyContainer>
                         <PartyContainer party={formik.values.isBuy? 'creditor': 'debtor'}
                                         headerTitle={t("Against")} >
@@ -273,7 +277,11 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                                 formik={formik}
                                 prefixName={'against'}
                             />
-                            <ReceivedPaidFeeContainer formik={formik} prefixName={'against'} />
+                            <ReceivedPaidFeeContainer 
+                                formik={formik} 
+                                prefixName={'against'} 
+                                partyAmount={formik.values.againstAmount}    
+                            />
                         </PartyContainer>
                         <TransactionDetails formik={formik} />
                         <TransactionFooter formik={formik} />
