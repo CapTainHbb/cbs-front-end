@@ -1,3 +1,4 @@
+import {t} from "i18next";
 
 
 export const normalizeDjangoError = (error: any): string => {
@@ -12,7 +13,7 @@ export const normalizeDjangoError = (error: any): string => {
             } else if (typeof value === 'object' && value !== null) {
                 return extractMessages(value, fieldName);
             } else {
-                return [`${fieldName}: ${String(value)}`];
+                return [`${fieldName}: ${t(String(value))}`];
             }
         });
     };

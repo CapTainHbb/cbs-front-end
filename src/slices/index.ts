@@ -46,11 +46,13 @@ import FileManagerReducer from "./fileManager/reducer";
 // To do
 import TodosReducer from "./todos/reducer";
 
+import BillingFilters from './billingFilters/reducer';
 
 const rootReducer = combineReducers({
     Layout: LayoutReducer,
     Authentication: AuthenticationReducer,
     InitialData: InitialDataReducer,
+    BillingFilters: BillingFilters,
     Account: AccountReducer,
     ForgetPassword: ForgetPasswordReducer,
     Profile: ProfileReducer,

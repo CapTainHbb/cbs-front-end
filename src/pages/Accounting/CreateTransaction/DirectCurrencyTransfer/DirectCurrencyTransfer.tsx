@@ -76,7 +76,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     }, []);
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
-            amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
+            amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')).test('not-zero', t('Value cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
             currency: Yup.string().required(t('Required')),
             creditorFinancialAccount: Yup.string().required(t('Required')),
             creditorReceivedFeeRate: Yup.string().required(t("Required")),
@@ -217,7 +217,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                                     <Label for={`creditorFinancialAccount`} md={2}>{t("Financial Account")}</Label>
 
                                     {/* SelectFinancialAccount */}
-                                    <Col md={6}>
+                                    <Col md={6} sm={12}>
                                         <SelectFinancialAccount
                                             onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue(`creditorFinancialAccount`, acc?.id)}
                                             selectedFinancialAccountId={formik.values?.creditorFinancialAccount}
@@ -226,7 +226,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                                     </Col>
 
                                     {/* Icon */}
-                                    <Col md={1}>
+                                    <Col md={1} sm={12}>
                                         <LockInputButton
                                             isLocked={formik.values.isCreditorFinancialAccountLocked}
                                             onClick={formik.toggleCreditorFinancialAccountLock} />

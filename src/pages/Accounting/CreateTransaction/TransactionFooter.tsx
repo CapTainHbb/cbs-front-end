@@ -11,63 +11,88 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
     return (
-        <Row>
-            <Col>
-                {!formik.isSubmitting && <Button type={'submit'} disabled={(formik.values?.id) && (!formik.values.isEditing)} className={'btn btn-primary'}>
-                    {t("Submit")}
-                </Button>}
-                {formik.isSubmitting && <Spinner color={'primary'} />}
+        <Row className={'g-1'}>
+            <Col md={2} sm={12}>
+                {!formik.isSubmitting && (
+                    <Button
+                        type="submit"
+                        disabled={formik.values?.id && !formik.values.isEditing}
+                        className="btn btn-primary w-100"
+                    >
+                        {t("Submit")}
+                    </Button>
+                )}
+                {formik.isSubmitting && <Spinner color="primary" />}
             </Col>
-            <Col>
-                <Button type={'button'}
-                    className={'btn btn-info'}
+
+            <Col md={2} sm={12}>
+                <Button
+                    type="button"
+                    className="btn btn-info w-100"
                     onClick={() => formik.handleClickNewDocument()}
                 >
-                    <i className={' ri-file-add-fill'} /> {t("Create new document")}
+                    <i className="ri-file-add-fill" /> {t("Create new document")}
                 </Button>
             </Col>
-            <Col>
-                <Button type={'button'}
-                        disabled={!formik.values?.id || formik.values.isCreate}
-                        className={'btn btn-warning'}
-                        onClick={(e: any) => formik.handleClickEditTransaction()}
+
+            <Col md={2} sm={12}>
+                <Button
+                    type="button"
+                    disabled={!formik.values?.id || formik.values.isCreate}
+                    className="btn btn-warning w-100"
+                    onClick={(e: any) => formik.handleClickEditTransaction()}
                 >
-                    <i className={'ri-edit-fill'} /> {formik.values?.isEditing? t("Cancel Edit"): t("Edit")}
+                    <i className="ri-edit-fill" />{" "}
+                    {formik.values?.isEditing ? t("Cancel Edit") : t("Edit")}
                 </Button>
             </Col>
-            <Col>
-                {!formik.values.isDeleting && <Button type={'button'}
+
+            <Col md={2} sm={12}>
+                {!formik.values.isDeleting && (
+                    <Button
+                        type="button"
                         disabled={!formik.values?.id || formik.values.isCreate}
-                        className={'btn btn-danger'}
+                        className="btn btn-danger w-100"
                         onClick={(e: any) => setIsConfirmModalOpen(true)}
-                >
-                    <i className={'ri-delete-bin-fill'} /> {t("Delete")}
-                </Button>}
-                {formik.values.isDeleting && <Spinner color={'danger'} />}
+                    >
+                        <i className="ri-delete-bin-fill" /> {t("Delete")}
+                    </Button>
+                )}
+                {formik.values.isDeleting && <Spinner color="danger" />}
             </Col>
-            <Col>
-                <Button className='btn btn-info'
-                        disabled={!formik.values.previousTransactionId}
-                        onClick={(e: any) => formik.loadTransaction(formik.values.previousTransactionId)}
+
+            <Col md={2} sm={12}>
+                <Button
+                    className="btn btn-info w-100"
+                    disabled={!formik.values.previousTransactionId}
+                    onClick={(e: any) => formik.loadTransaction(formik.values.previousTransactionId)}
                 >
-                    <i className='ri-arrow-right-s-line'/> {t("Previous")}
+                    <i className="ri-arrow-right-s-line" /> {t("Previous")}
                 </Button>
             </Col>
-            <Col>
-                <Button className='btn btn-info'
-                        disabled={!formik.values.nextTransactionId}
-                        onClick={(e: any) => formik.loadTransaction(formik.values.nextTransactionId)}
+
+            <Col md={2} sm={12}>
+                <Button
+                    className="btn btn-info w-100"
+                    disabled={!formik.values.nextTransactionId}
+                    onClick={(e: any) => formik.loadTransaction(formik.values.nextTransactionId)}
                 >
-                    <i className='ri-arrow-left-s-line'/> {t("Next")}
+                    <i className="ri-arrow-left-s-line" /> {t("Next")}
                 </Button>
             </Col>
-            <Col>
-            </Col>
-            <DeleteModal show={isConfirmModalOpen}
-                         onDeleteClick={() => {formik.handleDeleteTransaction(); setIsConfirmModalOpen(false)}}
-                         onCloseClick={() => setIsConfirmModalOpen(false)}
+
+            <Col md={2} sm={12}></Col>
+
+            <DeleteModal
+                show={isConfirmModalOpen}
+                onDeleteClick={() => {
+                    formik.handleDeleteTransaction();
+                    setIsConfirmModalOpen(false);
+                }}
+                onCloseClick={() => setIsConfirmModalOpen(false)}
             />
         </Row>
+
     );
 };
 

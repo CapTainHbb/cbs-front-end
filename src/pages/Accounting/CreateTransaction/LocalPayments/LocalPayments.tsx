@@ -66,7 +66,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
     }, [activeTransactionData]);
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
-            totalAmount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
+            totalAmount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')).test('not-zero', t('Value cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
             creditorFinancialAccount: Yup.string().required(t('Required')),
             creditorReceivedFeeRate: Yup.string().required(t("Required")),
             creditorReceivedFeeAmount: Yup.string().required(t("Required")),
@@ -79,7 +79,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorPaidFeeAmount: Yup.string().required(t("Required")),
             payments: Yup.array().of(
                 Yup.object({
-                    amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')),
+                    amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')).test('not-zero', t('Value cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
                     bank_account: Yup.string(),
                     transaction_id: Yup.string(),
                     date: Yup.string(),

@@ -29,6 +29,7 @@ const SelectFinancialAccountAndTradeType: React.FC<Props> = ({ formik }) => {
                 <SelectFinancialAccount selectedFinancialAccountId={formik.values.financialAccount}
                                         onSelectFinancialAccount={(acc: FinancialAccount) => formik.setFieldValue('financialAccount', acc?.id)}
                 />
+                {formik.errors.financialAccount && (<Label className={'text-danger'}>{t(formik.errors.financialAccount)}</Label>)}
             </Col>
             <Col>
                 <LockInputButton isLocked={formik.values.isFinancialAccountLocked} onClick={formik.toggleFinancialAccountLock} />
@@ -46,7 +47,7 @@ const SelectFinancialAccountAndTradeType: React.FC<Props> = ({ formik }) => {
                     isDisabled={formik.derivedState.areInputsDisabled}
                 />
             </Col>
-            <Col>
+            <Col md={2}>
                 <LockInputButton isLocked={formik.values.isIsBuyLocked} onClick={formik.toggleIsBuyLock} />
             </Col>
         </FormGroup>

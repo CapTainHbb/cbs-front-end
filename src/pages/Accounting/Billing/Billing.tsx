@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../../Reports/CustomTableContainer";
@@ -7,90 +7,32 @@ import IndeterminateCheckbox from "../../Reports/IndetermineCheckbox";
 import {t} from "i18next";
 import BalanceAmount from "../../Reports/BalanceAmount";
 import CreditorDebtorAmount from "../../Reports/CreditorsAndDebtors/CreditorDebtorAmount";
-import {FinancialAccount, Party} from "../types";
+import {Party} from "../types";
 import {useSelector} from "react-redux";
-import {Currency} from "../../Reports/utils";
 import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
 import BillingExtraHeader from "./BillingExtraHeader";
 import { useSearchParams } from 'react-router-dom';
-import FinancialAccountName from "./FinancialAccountName";
 import DirectCurrencyTransfer from "../CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
 import axiosInstance from "../../../helpers/axios_instance";
 import BuyAndSellCash from '../CreateTransaction/BuyAndSellCash/BuyAndSellCash';
 import LocalPayments from '../CreateTransaction/LocalPayments/LocalPayments';
+import {useBillingFilters} from "./hooks/useBillingFilters";
 
-export interface Filters {
-    financial_account?: number,
-    date_from?: string,
-    date_to?: string,
-    time_from?: string,
-    time_to?: string,
-    transaction_type?: string,
-    description?: string,
-    currency?: number,
-    creditor_from_value?: number,
-    creditor_to_value?: number,
-    debtor_from_value?: number,
-    debtor_to_value?: number,
-    balance_from_value?: number,
-    balance_to_value?: number,
-    user_specified_id?: string,
-    transaction_id_from?: string,
-    transaction_id_to?: string,
-}
 
 const Billing = () => {
-
     const currencies = useSelector((state: any) => state.InitialData.currencies);
-    const financialAccounts = useSelector((state: any) => state.InitialData.financialAccounts)
+    const [table, setTable] = useState<any>(undefined);
     const [searchParams] = useSearchParams();
-    const financial_account_id = useMemo(() => {
-        return Number(searchParams.get("financial_account"))
-    }, [searchParams])
+    const {updateFilter, resetFilters} = useBillingFilters();
+    useEffect(() => {
+        if(Number(searchParams.get("financial_account")) === 0) return
+        resetFilters();
+        updateFilter("financial_account", Number(searchParams.get("financial_account")))
+    }, [searchParams]);
+
+    const { filters } = useBillingFilters();
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false)
-
-    const [financialAccount, setFinancialAccount] = useState<FinancialAccount | undefined>(
-        financialAccounts?.find((item: any) => item?.id === financial_account_id)
-    );
-    const [dateFrom, setDateFrom] = useState<string | undefined>(undefined);
-    const [dateTo, setDateTo] = useState<string | undefined>(undefined);
-    const [timeFrom, setTimeFrom] = useState<string | undefined>(undefined);
-    const [timeTo, setTimeTo] = useState<string | undefined>(undefined);
-    const [transactionType, setTransactionType] = useState<string | undefined>(undefined);
-    const [description, setDescription] = useState<string | undefined>(undefined);
-    const [currency, setCurrency] = useState<Currency | undefined>(undefined);
-    const [creditorFromValue, setCreditorFromValue] = useState<number | undefined>(undefined);
-    const [creditorToValue, setCreditorToValue] = useState<number | undefined>(undefined);
-    const [debtorFromValue, setDebtorFromValue] = useState<number | undefined>(undefined);
-    const [debtorToValue, setDebtorToValue] = useState<number | undefined>(undefined);
-    const [balanceFromValue, setBalanceFromValue] = useState<number | undefined>(undefined);
-    const [balanceToValue, setBalanceToValue] = useState<number | undefined>(undefined);
-    const [userSpecifiedId, setUserSpecifiedId] = useState<string | undefined>(undefined);
-    const [transactionIdFrom, setTransactionIdFrom] = useState<string | undefined>(undefined);
-    const [transactionIdTo, setTransactionIdTo] = useState<string | undefined>(undefined);
-
-    const filters: Filters = useMemo(() => {
-        return {
-            financial_account: financialAccount?.id,
-            date_from: dateFrom,
-            date_to: dateTo,
-            time_from: timeFrom,
-            time_to: timeTo,
-            transaction_type: transactionType,
-            description: description,
-            currency: currency?.id,
-            creditor_from_value: creditorFromValue,
-            creditor_to_value: creditorToValue,
-            debtor_from_value: debtorFromValue,
-            debtor_to_value: debtorToValue,
-            balance_from_value: balanceFromValue,
-            balance_to_value: balanceToValue,
-            userSpecified_id: userSpecifiedId,
-            transaction_id_from: transactionIdFrom,
-            transaction_id_to: transactionIdTo,
-        }
-    }, [currency, transactionType, financialAccount])
 
     const getTransactionBriefCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;
@@ -282,9 +224,9 @@ const Billing = () => {
                         <div>
                             <span className={'header-item-title'}>{t("Date")}</span>
                         </div>,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    width: 60  
+                    minSize: 65,
+                    maxSize: 65,
+                    width: 65
                 },
                 {
                     accessorKey: 'time',
@@ -300,12 +242,15 @@ const Billing = () => {
                 {
                     accessorKey: 'description',
                     cell: info =>
-                        <p    style={{WebkitLineClamp: 1, 
-                                    width: 70,   
-                                    overflow: "hidden", 
-                                    textOverflow: 'ellipsis',
-                                    display: "-webkit-inline-flex"
-                                }}
+                        <p
+                            style={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            width: "70px"
+                        }}
                               data-tooltip-content={info.row.original.description}
                               data-tooltip-id="tooltip">
                             {info.row.original.description}
@@ -328,9 +273,9 @@ const Billing = () => {
                         <div>
                             <span className={'header-item-title'} >{t("Transaction Brief")}</span>
                         </div>,
-                    minSize: 100,  
-                    maxSize: 100,  
-                    width: 100  
+                    minSize: 100,
+                    maxSize: 100,
+                    width: 100
                 },
                 {
                     accessorKey: 'currency',
@@ -408,12 +353,7 @@ const Billing = () => {
                         <Card key="direct-currency-transfer-card">
                             <CardHeader>
                                 <BillingExtraHeader
-                                    currency={currency}
-                                    setCurrency={setCurrency}
-                                    financialAccount={financialAccount}
-                                    onChangeFinancialAccount={setFinancialAccount}
-                                    transactionType={transactionType}
-                                    setTransactionType={setTransactionType}
+                                    table={table}
                                     itemsChanged={itemsChanged}
                                     setItemsChanged={setItemsChanged}
                                 />
@@ -427,6 +367,7 @@ const Billing = () => {
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
                                         onDoubleClickRow={handleEditTransaction}
+                                        setTable={setTable}
                                     />
                                     <DirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
                                                             activeTransactionData={activeTransactionData || undefined}

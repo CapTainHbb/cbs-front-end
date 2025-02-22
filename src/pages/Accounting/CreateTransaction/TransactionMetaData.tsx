@@ -9,16 +9,16 @@ interface Props {
 
 const TransactionMetaData: React.FC<Props> = ({ formik }) => {
   return (
-    <Row>
-      <Col>
+    <Row className={' border border-1 border-info-subtle'}>
+      <Col sm={12}>
         <Label>{t("Document Number")}</Label>
         <span>{formik.values?.id}</span>
       </Col>
-      <Col>
+      <Col sm={12}>
         <Label>{t("Created By")}</Label>
         <span>{formik.values?.createdBy?.username}</span>
       </Col>
-      <Col>
+      <Col sm={12}>
         <Label>{t("Created At")}</Label>
         <span>{getFormattedDateTime(new Date(formik.values?.createdAt))?.date} {getFormattedDateTime(new Date(formik.values?.createdAt))?.time}</span>
       </Col>

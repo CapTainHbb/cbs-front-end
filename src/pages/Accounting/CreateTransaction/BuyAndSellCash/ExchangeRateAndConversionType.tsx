@@ -71,9 +71,9 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
             </Col>
         </FormGroup>
         <Row>
-              <FormGroup row>
+              <FormGroup row className={'gap-1'}>
                   <Label md={2}>{t("Exchange Rate")}</Label>
-                  <Col md={4}>
+                  <Col md={3} sm={12}>
                       <Input
                           id={'exchange-rate'}
                           name={"exchangeRate"}
@@ -91,17 +91,17 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
                           <FormFeedback type="invalid">{formik.errors?.exchangeRate}</FormFeedback>
                       ) : null}
                   </Col>
-                  <Col md={3}>
-                      <Button type={'button'} color={'primary'}
+                  <Col md={3} sm={12}>
+                      <Button type={'button'} color={'primary'} className={'w-100'}
                               disabled={formik.derivedState.areInputsDisabled}
                               onClick={onClickRateBasedOnAmounts}
                       >
                           {t("Rate Based on Amounts")}
                       </Button>
                   </Col>
-                  <Col md={3} >
+                  <Col md={3} sm={12}>
                       {isXeRatesLoading && <Spinner size={'small'} />}
-                      {!isXeRatesLoading && <Button type={'button'} color={'primary'}
+                      {!isXeRatesLoading && <Button type={'button'} color={'primary'} className={'w-100'}
                               disabled={formik.derivedState.areInputsDisabled}
                               onClick={onClickRateBasedOnXe}
                       >

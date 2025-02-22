@@ -1,9 +1,10 @@
 import React from 'react';
-import {Col, FormGroup, Input, Label, Row} from "reactstrap";
-import {t} from "i18next";
+import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
+
 import SelectCurrency from "../../../Reports/SelectCurrency/SelectCurrency";
 import {Currency} from "../../../Reports/utils";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     formik: any;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const BuyAndSellAmountAndCurrency: React.FC<Props> = ({  formik, prefixName, onChangeAmountValue }) => {
+    const {t} = useTranslation();
     return (
         <Row>
             <Col md={6}>
@@ -31,6 +33,9 @@ const BuyAndSellAmountAndCurrency: React.FC<Props> = ({  formik, prefixName, onC
                         }
                         disabled={formik.derivedState.areInputsDisabled}
                     />
+                    {formik.touched?.[`${prefixName}Amount`] && formik.errors?.[`${prefixName}Amount`] ? (
+                        <FormFeedback type="invalid">{formik.errors?.[`${prefixName}Amount`]}</FormFeedback>
+                    ) : null}
                 </FormGroup>
             </Col>
             <Col md={6}>

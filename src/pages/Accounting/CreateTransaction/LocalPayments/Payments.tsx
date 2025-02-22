@@ -45,7 +45,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
             {formik.values.payments.map((payment: PaymentDataType, index: number) => (
                 <Row key={index} style={{marginBottom: '2px'}}>
                     {/* Amount Field */}
-                    <Col md={2}>
+                    <Col md={2} sm={12}>
                         <Input
                             id={`payments.${index}.amount`}
                             name={`payments.${index}.amount`}
@@ -66,14 +66,14 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Bank Account Field */}
-                    <Col md={3}>
+                    <Col md={3} sm={12}>
                         <Input
                             id={`payments.${index}.bank_account`}
                             name={`payments.${index}.bank_account`}
                             type="text"
                             onChange={formik.handleChange}
                             value={payment.bank_account}
-                            placeholder={t("Bank Account")}
+                            placeholder={t("Destination Bank Account Info")}
                             disabled={formik.derivedState.areInputsDisabled}
                         />
                         {formik.errors.payments?.[index]?.bank_account && (
@@ -82,7 +82,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Transaction ID Field */}
-                    <Col>
+                    <Col md={2} sm={12}>
                         <Input
                             id={`payments.${index}.payment_transaction_id`}
                             name={`payments.${index}.payment_transaction_id`}
@@ -98,7 +98,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Date Field */}
-                    <Col >
+                    <Col md={2} sm={12}>
                         <Flatpickr
                             className="form-control"
                             name={`payments.${index}.date`}
@@ -117,7 +117,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Time Field */}
-                    <Col>
+                    <Col md={2} sm={12}>
                         <Input
                             id={`payments.${index}.time`}
                             name={`payments.${index}.time`}
@@ -132,8 +132,9 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Delete Button */}
-                    <Col>
-                        <Button 
+                    <Col md={1} sm={12}>
+                        <Button
+                            className={'w-100'}
                             type="button" 
                             color={'danger'} 
                             onClick={() => handleDeletePayment(index)}
@@ -166,7 +167,9 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </FormGroup>
                 </Col>
                 <Col md={3}>
-                    <Button type={'button'} disabled={true} color={remainedPaidAmount === 0? 'success': (remainedPaidAmount < 0? 'warning': 'danger')} className={'btn-label'}>
+                    <Button type={'button'} disabled={true}
+                            color={remainedPaidAmount === 0? 'success': (remainedPaidAmount < 0? 'warning': 'danger')}
+                            className={'btn-label w-100 m-1'}>
                         <i className={remainedPaidAmount === 0? "ri-check-double-line": (remainedPaidAmount < 0? "ri-error-warning-line": "ri-alert-line" )  +
                             ' label-icon align-middle fs-16 me-2'}/>
                         {remainedPaidAmount === 0? t("Fully Paid"): (remainedPaidAmount < 0? t("Extra Paid"): t("Semi Paid"))}
@@ -174,8 +177,9 @@ const Payments: React.FC<Props> = ({ formik }) => {
                 </Col>
             </Row>
             {/* Add Payment Button */}
-            <Button type="button" onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
-                {t("Add Payment")}
+            <Button type="button" className={'align-content-center'} onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
+                <i className={'ri-add-circle-line mx-1'} />
+                <Label>{t("Add Payment")}</Label>
             </Button>
         </Row>
     );

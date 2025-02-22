@@ -8,7 +8,7 @@ interface Props {
 
 const LockInputButton: React.FC<Props> = ({ isLocked, onClick }) => {
   return (
-    <Button type={'button'} color={isLocked? 'info' :'light'} className='rouned-pil' onClick={onClick}>
+    <Button type={'button'} color={isLocked? 'info' :'light'} className='rouned-pil w-100' onClick={onClick}>
         <i className={isLocked? 'ri-lock-2-fill' : 'ri-lock-unlock-fill'}/>
     </Button>
   )

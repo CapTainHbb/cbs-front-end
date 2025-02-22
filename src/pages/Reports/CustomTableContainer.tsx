@@ -36,6 +36,7 @@ interface Props<T, F> {
     onDoubleClickRow?: any;
     itemsChanged: boolean;
     setItemsChanged: any;
+    setTable?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -46,7 +47,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          columns,
                          onDoubleClickRow,
                          itemsChanged,
-                         setItemsChanged
+                         setItemsChanged,
+                         setTable,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -72,8 +74,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
 
-
-
     const table = useReactTable({
         data,
         columns,
@@ -98,6 +98,10 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         onExpandedChange: setExpanded,
         getSubRows: (row: any) => row?.children,
     })
+
+    useEffect(() => {
+        setTable?.(table);
+    }, [table]);
 
     useEffect(() => {
         table.setPageIndex(0);

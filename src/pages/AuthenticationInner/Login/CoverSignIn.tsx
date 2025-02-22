@@ -104,12 +104,6 @@ const CoverSignIn = () => {
                                                                 <button className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon" onClick={() => setPasswordShow(!passwordShow)}><i className="ri-eye-fill align-middle"></i></button>
                                                             </div>
                                                         </div>
-
-                                                        <div className="form-check">
-                                                            <Input className="form-check-input" type="checkbox" value="" id="auth-remember-check" />
-                                                            <Label className="form-check-label" htmlFor="auth-remember-check">{t("Remember me")}</Label>
-                                                        </div>
-
                                                         <div className="mt-4">
                                                             <Button color="success"
                                                                     disabled={loader && true}

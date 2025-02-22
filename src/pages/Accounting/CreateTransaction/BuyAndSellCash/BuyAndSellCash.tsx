@@ -80,16 +80,24 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
             isBuy: Yup.boolean().required(t('Required')),
-            exchangeRate: Yup.string().required(t('Required')),
+            exchangeRate: Yup.string().required(t('Required')).test('not-zero', t('Exchange rate cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
             baseCurrency: Yup.string().required(t('Required')),
             againstCurrency: Yup.string().required(t('Required')),
             financialAccount: Yup.string().required(t('Required')),
-            baseAmount: Yup.string().required(t("Required")),
+            baseAmount: Yup.string().required(t("Required")).test(
+                'not-zero',
+                () => t('Value cannot be zero'),
+                (value) => Number(removeNonNumberChars(value)) !== 0
+            ),
             baseReceivedFeeRate: Yup.string().required(t("Required")),
             baseReceivedFeeAmount: Yup.string().required(t("Required")),
             basePaidFeeRate: Yup.string().required(t("Required")),
             basePaidFeeAmount: Yup.string().required(t("Required")),
-            againstAmount: Yup.string().required(t("Required")),
+            againstAmount: Yup.string().required(t("Required")).test(
+                'not-zero',
+                () => t('Value cannot be zero'),
+                (value) => Number(removeNonNumberChars(value)) !== 0
+            ),
             againstReceivedFeeRate: Yup.string().required(t("Required")),
             againstReceivedFeeAmount: Yup.string().required(t("Required")),
             againstPaidFeeRate: Yup.string().required(t("Required")),
@@ -257,8 +265,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                         <SelectFinancialAccountAndTradeType formik={formik} />
                         <ExchangeRateAndConversionType formik={formik} />
                         <PartyContainer party={formik.values.isBuy? 'debtor': 'creditor'}
-                                        headerTitle={formik.values.isBuy? t("Buy"): t("Sell")}
-                        >
+                                        headerTitle={formik.values.isBuy? t("Buy"): t("Sell")}>
                             <BuyAndSellAmountAndCurrency
                                 onChangeAmountValue={onChangeBaseAmountValue}
                                 formik={formik}

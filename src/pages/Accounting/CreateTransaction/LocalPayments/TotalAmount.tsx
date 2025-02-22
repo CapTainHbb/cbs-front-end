@@ -31,8 +31,8 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
                             }
                             disabled={formik.derivedState.areInputsDisabled}
                         />
-                        {formik.touched.totalAmount && formik.errors.totalAmount ? (
-                            <FormFeedback type="invalid">{formik.errors.totalAmount}</FormFeedback>
+                        {(formik.touched.totalAmount && formik.errors.totalAmount) ? (
+                            <FormFeedback className={'text-danger'}>{formik.errors.totalAmount}</FormFeedback>
                         ) : null}
                     </Col>
                     <Col>
