@@ -1,9 +1,9 @@
 import React from 'react';
 import {Image, Text, View} from "@react-pdf/renderer";
 import {t} from "i18next";
-import {usePDFStyles} from "./hooks/usePdfStyles";
-import {getFormattedToday} from "../../../helpers/date";
-import {CompanyProfile} from "../../CompanyProfile/types";
+import {usePDFStyles} from "../hooks/usePdfStyles";
+import {getFormattedToday} from "../../../../helpers/date";
+import {CompanyProfile} from "../../../CompanyProfile/types";
 
 
 

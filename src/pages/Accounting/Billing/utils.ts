@@ -1,5 +1,5 @@
 import {exportToXLSX} from "../../../helpers/export";
-import {Party} from "../types";
+import {FinancialAccount, Party} from "../types";
 import {t} from "i18next";
 import axiosInstance from "../../../helpers/axios_instance";
 import {GroupedByCurrency} from "./types";
@@ -39,11 +39,10 @@ export const columnsForExport = [
 ]
 
 
-export const onExportXlsxClicked = (data: Party[]) => {
+export const generateXlsx = (data: Party[], selectedFinancialAccount: FinancialAccount) => {
     const columnsForPDF = columnsForExport
     const rowsForPDF = getRowsForExport(data);
-
-    exportToXLSX(columnsForPDF, rowsForPDF)
+    exportToXLSX(columnsForPDF, rowsForPDF, selectedFinancialAccount?.full_name)
 }
 
 export const createTempoDownloadLink = (blob: Blob, fileName: string) => {

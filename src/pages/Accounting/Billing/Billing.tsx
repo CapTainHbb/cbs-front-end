@@ -219,18 +219,18 @@ const Billing = () => {
                 },
                 {
                     accessorKey: 'date',
-                    cell: info => info.row.original.date,
+                    cell: info => <span className={'fw-medium'}>{info.row.original.date}</span>,
                     header: () =>
                         <div>
                             <span className={'header-item-title'}>{t("Date")}</span>
                         </div>,
-                    minSize: 65,
-                    maxSize: 65,
-                    width: 65
+                    minSize: 70,
+                    maxSize: 70,
+                    width: 70
                 },
                 {
                     accessorKey: 'time',
-                    cell: info => info.getValue(),
+                    cell: info => <span className={'fw-medium'}>{String(info.getValue())}</span>,
                     header: () =>
                         <div>
                             <span className={'header-item-title'}>{t("Time")}</span>

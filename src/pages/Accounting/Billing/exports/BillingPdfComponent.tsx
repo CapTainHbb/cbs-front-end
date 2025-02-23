@@ -2,13 +2,13 @@ import React, {useMemo} from 'react';
 import {Document, Page, Text, View} from '@react-pdf/renderer';
 
 import  {t} from "i18next";
-import {columnsForExport, getRowsForExport, PartyForExport} from "./utils";
-import {FinancialAccount, Party} from "../types";
-import {usePDFStyles} from "./hooks/usePdfStyles";
-import PdfHeader from "./PdfHeader";
-import {CompanyProfile} from "../../CompanyProfile/types";
-import {Currency, formatNumber} from "../../Reports/utils";
+import {columnsForExport, getRowsForExport, PartyForExport} from "../utils";
+import {FinancialAccount, Party} from "../../types";
+import {usePDFStyles} from "../hooks/usePdfStyles";
+import {CompanyProfile} from "../../../CompanyProfile/types";
+import {Currency, formatNumber} from "../../../Reports/utils";
 import {abs} from "mathjs";
+import PdfHeader from "./PdfHeader";
 
 
 interface Props {

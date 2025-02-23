@@ -7,10 +7,12 @@ import SelectTransactionType from "../SelectTransactionType";
 import {t} from "i18next";
 import FinancialAccountViewDetail from "../../ManageFinancialAccounts/FinancialAccountViewDetail";
 import SelectFinancialAccount from "../SelectFinancialAccount";
-import DownloadBillingPdf from "./DownloadBillingPdf";
+import DownloadBillingPdf from "./exports/DownloadBillingPdf";
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import Flatpickr from "react-flatpickr";
 import {getFormattedDateTime, getToday} from "../../../helpers/date";
+import {generateXlsx} from "./utils";
+import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
 
 interface Props {
     table: any;
@@ -88,14 +90,10 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                 </Button>
                             </Row>
                             <Row>
-                                <DownloadBillingPdf table={table} />
+                                <DownloadBillingPdf />
                             </Row>
                             <Row>
-                                <Button color='primary' className={'w-100 my-1'}
-                                        disabled={true}
-                                >
-                                    <i className='ri-file-excel-line' /> {t("Export to Xlsx")}
-                                </Button>
+                                <DownloadBillingXlsx />
                             </Row>
                         </Row>
                     </Col>

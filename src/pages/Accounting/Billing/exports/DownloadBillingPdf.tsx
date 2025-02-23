@@ -2,41 +2,29 @@ import {pdf, Text, View} from "@react-pdf/renderer";
 import {t} from "i18next";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {abs} from "mathjs";
-import {FinancialAccount} from "../types";
+import {FinancialAccount} from "../../types";
 import {useSelector} from "react-redux";
-import {usePDFStyles} from "./hooks/usePdfStyles";
-import {Currency, formatNumber} from "../../Reports/utils";
+import {usePDFStyles} from "../hooks/usePdfStyles";
+import {Currency, formatNumber} from "../../../Reports/utils";
+import axiosInstance from "../../../../helpers/axios_instance";
+import {createTempoDownloadLink, groupByCurrency} from "../utils";
+import ExportButton from "./ExportButton";
+import {useBillingFilters} from "../hooks/useBillingFilters";
 import BillingPdfComponent from "./BillingPdfComponent";
-import axiosInstance from "../../../helpers/axios_instance";
-import {createTempoDownloadLink, groupByCurrency} from "./utils";
-import ExportPdfButton from "./ExportPdfButton";
-import {useBillingFilters} from "./hooks/useBillingFilters";
 
 
-interface Props {
-    table: any;
-}
-
-const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
+const DownloadBillingPDF = () => {
     const { currencies, companyProfile, financialAccounts } = useSelector((state: any) => state.InitialData);
-    const [selectedFinancialAccount, setSelectedFinancialAccount] = useState<FinancialAccount | null>(null)
     const commonPDFStyles = usePDFStyles()
 
     const {filters} = useBillingFilters();
 
-    useEffect(() => {
-        setSelectedFinancialAccount(
-            financialAccounts?.find((item: FinancialAccount) => item.id === filters?.financial_account)
-        )
+    const selectedFinancialAccount: FinancialAccount = useMemo(() => {
+        return financialAccounts?.find(((acc: FinancialAccount) => acc.id === filters?.financial_account));
     }, [filters?.financial_account])
 
-    const tableData = useMemo(() => {
-        return table?.getRowModel().rows.map((row: any) => row.original)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [table?.getRowModel().rows]);
-
-    const renderAccountSummaryTableBody = useCallback(async () => {
-        const accountSummary = await groupByCurrency(tableData);
+    const renderAccountSummaryTableBody = useCallback(async (data: any) => {
+        const accountSummary = await groupByCurrency(data);
 
         return accountSummary.map((row: any, index: number) => (
             <View key={index} style={[commonPDFStyles.tableRow]}>
@@ -98,7 +86,7 @@ const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
             </View>
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tableData]);
+    }, []);
 
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -108,7 +96,13 @@ const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
         setIsGenerating(true);
         const generate = async () => {
             try {
-                const accountSummaryRows = await renderAccountSummaryTableBody();
+                const response = await axiosInstance.post('/transactions/', {
+                    filters: filters,
+                    make_paginated: false,
+                    pagination: {}
+                })
+                const accountSummaryRows = await renderAccountSummaryTableBody(response.data);
+
                 let referenceNumber: string = "0";
                 try {
                     const response = await axiosInstance.get('/core/reference-number/')
@@ -120,7 +114,7 @@ const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
                 const blob = await pdf(<BillingPdfComponent
                     referenceNumber={referenceNumber}
                     filters={filters}
-                    tableData={table?.getRowModel().rows.map((row: any) => row.original)}
+                    tableData={response.data}
                     selectedFinancialAccount={selectedFinancialAccount}
                     currencies={currencies}
                     companyProfile={companyProfile}
@@ -135,7 +129,7 @@ const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
                 />).toBlob();
 
 
-                createTempoDownloadLink(blob,selectedFinancialAccount ? `${selectedFinancialAccount.full_name}.pdf` : 'all-transactions.pdf' )
+                createTempoDownloadLink(blob,selectedFinancialAccount ? `${selectedFinancialAccount?.name}.pdf` : 'all-transactions.pdf' )
 
             } catch (error) {
                 console.error('Error generating PDF:', error);
@@ -149,9 +143,11 @@ const DownloadBillingPDF: React.FC<Props> = ({ table }) => {
     };
 
     return (
-        <ExportPdfButton isGenerating={isGenerating}
-                         disabled={isGenerating || !selectedFinancialAccount}
-                         onClick={generateAndDownloadPDF} />
+        <ExportButton isGenerating={isGenerating}
+                      disabled={isGenerating || !selectedFinancialAccount}
+                      onClick={generateAndDownloadPDF}
+                      text={t("Print Billing")}
+        />
     );
 };
 

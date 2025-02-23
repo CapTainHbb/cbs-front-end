@@ -1,24 +1,24 @@
 import React from 'react';
-import {t} from "i18next";
 import {Button, Spinner} from "reactstrap";
 
 interface Props {
     isGenerating: boolean;
     onClick: any;
     disabled: boolean;
+    text: string;
 }
 
-const ExportPdfButton: React.FC<Props> = ({ isGenerating, onClick, disabled }) => {
+const ExportButton: React.FC<Props> = ({ isGenerating, onClick, disabled, text }) => {
     return (
         <Button color='primary' className={'w-100 my-1'}
                 onClick={onClick}
                 disabled={disabled}
         >
             {isGenerating && <Spinner size={'sm'} />}
-            {!isGenerating && <><i className='ri-printer-line' /> <span>{t("Print Billing")}</span></>}
+            {!isGenerating && <><i className='ri-printer-line' /> <span>{text}</span></>}
 
         </Button>
     );
 };
 
-export default ExportPdfButton;
+export default ExportButton;
