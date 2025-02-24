@@ -28,7 +28,10 @@ export const customFormatNumber = (rawInput: any) => {
     }
 
     // Split integer and decimal parts
-    const [integerPart, decimalPart] = rawInput.split('.');
+    let [integerPart, decimalPart] = rawInput.split('.');
+
+    // Remove leading zeros from the integer part
+    integerPart = integerPart.replace(/^0+/, '') || '0';  // Ensure it doesn't turn empty if input is '0'
 
     // Format the integer part with commas
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -38,5 +41,6 @@ export const customFormatNumber = (rawInput: any) => {
 
     // Handle the case where the user types only '.'
     if (rawInput.startsWith('.')) formattedValue = '.' + decimalPart;
+
     return formattedValue;
 }

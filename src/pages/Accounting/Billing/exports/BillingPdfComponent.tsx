@@ -9,6 +9,7 @@ import {CompanyProfile} from "../../../CompanyProfile/types";
 import {Currency, formatNumber} from "../../../Reports/utils";
 import {abs} from "mathjs";
 import PdfHeader from "./PdfHeader";
+import {useSelector} from "react-redux";
 
 
 interface Props {
@@ -28,8 +29,8 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                                                   accountSummaryColumns, accountSummaryRows, referenceNumber}) => {
     const commonPDFStyles = usePDFStyles()
     const transactionRowsForPDF = useMemo(() => {
-        return getRowsForExport(tableData);
-    }, [tableData]);
+        return getRowsForExport(tableData, currencies);
+    }, [tableData, currencies]);
 
     return (
         <Document>
@@ -119,7 +120,7 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                             <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>{party.date}</Text>
                             <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>{party.time}</Text>
                             <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>
-                                {currencies.find((cur: Currency) => cur.id === party?.currency)?.name}
+                                {party.currency}
                             </Text>
                             <Text
                                 style={[

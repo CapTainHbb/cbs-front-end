@@ -10,7 +10,7 @@ import SelectFinancialAccount from "../SelectFinancialAccount";
 import DownloadBillingPdf from "./exports/DownloadBillingPdf";
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import Flatpickr from "react-flatpickr";
-import {getFormattedDateTime, getToday} from "../../../helpers/date";
+import {getUTCFormattedDateTime, getToday} from "../../../helpers/date";
 import {generateXlsx} from "./utils";
 import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
 
@@ -62,7 +62,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     options={{
                                         dateFormat: "Y-m-d",
                                     }}
-                                    onChange={([selectedDate]) => updateFilter("date_from", getFormattedDateTime(selectedDate).date)}
+                                    onChange={([selectedDate]) => updateFilter("date_from", getUTCFormattedDateTime(selectedDate).date)}
                                     value={filters?.date_from}
 
                                 />
@@ -75,7 +75,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     options={{
                                         dateFormat: "Y-m-d",
                                     }}
-                                    onChange={([selectedDate]) => updateFilter("date_to", getFormattedDateTime(selectedDate).date)}
+                                    onChange={([selectedDate]) => updateFilter("date_to", getUTCFormattedDateTime(selectedDate).date)}
                                     value={filters?.date_to}
                                 />
                             </Col>

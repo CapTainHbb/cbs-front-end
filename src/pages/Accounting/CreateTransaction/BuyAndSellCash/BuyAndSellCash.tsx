@@ -8,7 +8,7 @@ import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import {BuyAndSellCashFormDataType, defaultBuyAndSellCashFormData} from "./types";
 import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
-import {getFormattedDateTime} from "../../../../helpers/date";
+import {getUTCFormattedDateTime} from "../../../../helpers/date";
 import {removeNonNumberChars} from "../../utils";
 import SelectFinancialAccountAndTradeType from './SelectFinancialAccountAndTradeType';
 import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
@@ -162,8 +162,8 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
             creditor_party: structuredClone(defaultBuyAndSellCashFormData.creditor_party)
         };
 
-        const date = getFormattedDateTime(inputFormik.values.dateTime).date;
-        const time = getFormattedDateTime(inputFormik.values.dateTime).time;
+        const date = getUTCFormattedDateTime(inputFormik.values.dateTime).date;
+        const time = getUTCFormattedDateTime(inputFormik.values.dateTime).time;
 
         const isBuy = inputFormik.values.isBuy;
         const baseParty = isBuy? 'debtor': 'creditor';
@@ -250,7 +250,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
 
     useEffect(() => {
         if(isOpen) return;
-        formik.resetFormValues();
+        formik.flushFormValues();
     }, [isOpen])
 
     return (

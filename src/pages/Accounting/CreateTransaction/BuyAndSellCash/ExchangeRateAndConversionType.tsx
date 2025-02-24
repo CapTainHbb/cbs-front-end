@@ -69,28 +69,28 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
                     isDisabled={formik.derivedState.areInputsDisabled}
                 />
             </Col>
+            <Label md={2}>{t("Exchange Rate")}</Label>
+            <Col md={5} sm={12}>
+                <Input
+                    id={'exchange-rate'}
+                    name={"exchangeRate"}
+                    type="text"
+                    value={formik.values?.exchangeRate}
+                    onChange={onExchangeRateChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={t("Enter Rate")}
+                    invalid={
+                        !!(formik.touched?.exchangeRate && formik.errors?.exchangeRate)
+                    }
+                    disabled={formik.derivedState.areInputsDisabled}
+                />
+                {formik.touched?.exchangeRate && formik.errors?.exchangeRate ? (
+                    <FormFeedback type="invalid">{formik.errors?.exchangeRate}</FormFeedback>
+                ) : null}
+            </Col>
         </FormGroup>
         <Row>
               <FormGroup row className={'gap-1'}>
-                  <Label md={2}>{t("Exchange Rate")}</Label>
-                  <Col md={3} sm={12}>
-                      <Input
-                          id={'exchange-rate'}
-                          name={"exchangeRate"}
-                          type="text"
-                          value={formik.values?.exchangeRate}
-                          onChange={onExchangeRateChange}
-                          onBlur={formik.handleBlur}
-                          placeholder={t("Enter Rate")}
-                          invalid={
-                              !!(formik.touched?.exchangeRate && formik.errors?.exchangeRate)
-                          }
-                          disabled={formik.derivedState.areInputsDisabled}
-                      />
-                      {formik.touched?.exchangeRate && formik.errors?.exchangeRate ? (
-                          <FormFeedback type="invalid">{formik.errors?.exchangeRate}</FormFeedback>
-                      ) : null}
-                  </Col>
                   <Col md={3} sm={12}>
                       <Button type={'button'} color={'primary'} className={'w-100'}
                               disabled={formik.derivedState.areInputsDisabled}

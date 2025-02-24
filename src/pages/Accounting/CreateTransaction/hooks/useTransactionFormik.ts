@@ -6,7 +6,7 @@ import {
     DirectCurrencyTransferTransactionFormDataType
 } from "../DirectCurrencyTransfer/types";
 import {customFormatNumber, removeNonNumberChars} from "../../utils";
-import {createDate, getFormattedDateTime} from "../../../../helpers/date";
+import {createLocalizedDate, getUTCFormattedDateTime} from "../../../../helpers/date";
 import axiosInstance from "../../../../helpers/axios_instance";
 import {toast} from "react-toastify";
 import {normalizeDjangoError} from "../../../../helpers/error";
@@ -52,7 +52,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             id: activeTransactionData?.id || undefined,
             description: activeTransactionData?.description || "",
             userSpecifiedId: activeTransactionData?.user_specified_id || "",
-            dateTime: (activeTransactionData && createDate(activeTransactionData?.date, activeTransactionData?.time)) || initialDateTime,
+            dateTime: (activeTransactionData && createLocalizedDate(activeTransactionData?.date, activeTransactionData?.time)) || initialDateTime,
             createdAt: activeTransactionData?.created_at || undefined,
             createdBy: activeTransactionData?.created_by || undefined,
             isEditing: (!activeTransactionData) && false,
@@ -87,8 +87,8 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
         onSubmit: (values: any) => {
             const commonData = {
                 id: values?.id,
-                date: getFormattedDateTime(values.dateTime).date,
-                time: getFormattedDateTime(values.dateTime).time,
+                date: getUTCFormattedDateTime(values.dateTime).date,
+                time: getUTCFormattedDateTime(values.dateTime).time,
                 description: values?.description,
                 user_specified_id: values?.userSpecifiedId,
             }
@@ -127,7 +127,7 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             nextTransactionId: createdTransaction?.next_transaction || undefined,
             previousTransactionId: createdTransaction?.prev_transaction || undefined,
             userSpecifiedId: createdTransaction?.user_specified_id || "",
-            dateTime: (createdTransaction && createDate(createdTransaction?.date, createdTransaction?.time)) || initialDateTime,
+            dateTime: (createdTransaction && createLocalizedDate(createdTransaction?.date, createdTransaction?.time)) || initialDateTime,
             forceUpdateFinancialAccountsBalance: !formik.values.forceUpdateFinancialAccountsBalance,
             description: createdTransaction?.description || "",
         }
@@ -183,6 +183,14 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             ...getLockableFormFieldsAfterResetForm?.(formik),
         });
         fetchAndSetPreviousTransactionId();
+    }, [formik]);
+
+    formik.flushFormValues = useCallback(async () => {
+        formik.setValues({
+            ...getCommonFormFieldsAfterResetForm(),
+            ...getSpecificFormFieldsInitial(formik),
+            ...getLockableFormFieldsInitial?.(formik),
+        });
     }, [formik]);
 
     formik.handleClickEditTransaction = useCallback(async () => {

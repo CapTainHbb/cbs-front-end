@@ -6,7 +6,7 @@ import {t} from "i18next";
 import {ColumnDef} from "@tanstack/react-table";
 import IndeterminateCheckbox from "../Reports/IndetermineCheckbox";
 import {User, UserProfile} from "./UsersList";
-import {getFormattedDateTime} from "../../helpers/date";
+import {getUTCFormattedDateTime} from "../../helpers/date";
 import Select from "react-select";
 import UsersActivityHistoryExtraHeader from "./UsersActivityHistoryExtraHeader";
 import {useSelector} from "react-redux";
@@ -147,7 +147,7 @@ const UsersActivityHistory = () => {
             },
             {
                 id: 'date',
-                cell: info => getFormattedDateTime(new Date(info.row.original.timestamp)).date,
+                cell: info => getUTCFormattedDateTime(new Date(info.row.original.timestamp)).date,
                 header: () =>
                     <div className='header-item-container'>
                         <span className={'header-item-title'}>{t("Date")}</span>
@@ -164,7 +164,7 @@ const UsersActivityHistory = () => {
             },
             {
                 id: 'time',
-                cell: info => getFormattedDateTime(new Date(info.row.original.timestamp)).time,
+                cell: info => getUTCFormattedDateTime(new Date(info.row.original.timestamp)).time,
                 header: () =>
                     <div className='header-item-container'>
                         <span className={'header-item-title'}>{t("Time")}</span>

@@ -17,6 +17,7 @@ import axiosInstance from "../../../helpers/axios_instance";
 import BuyAndSellCash from '../CreateTransaction/BuyAndSellCash/BuyAndSellCash';
 import LocalPayments from '../CreateTransaction/LocalPayments/LocalPayments';
 import {useBillingFilters} from "./hooks/useBillingFilters";
+import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpers/date";
 
 
 const Billing = () => {
@@ -219,7 +220,7 @@ const Billing = () => {
                 },
                 {
                     accessorKey: 'date',
-                    cell: info => <span className={'fw-medium'}>{info.row.original.date}</span>,
+                    cell: info => <span className={'fw-medium'}>{getLocalizedFormattedDateTime(createLocalizedDate(info.row.original.date, info.row.original.time)).date }</span>,
                     header: () =>
                         <div>
                             <span className={'header-item-title'}>{t("Date")}</span>
@@ -230,14 +231,14 @@ const Billing = () => {
                 },
                 {
                     accessorKey: 'time',
-                    cell: info => <span className={'fw-medium'}>{String(info.getValue())}</span>,
+                    cell: info => <span className={'fw-medium'}>{getLocalizedFormattedDateTime(createLocalizedDate(info.row.original.date, info.row.original.time)).time}</span>,
                     header: () =>
                         <div>
                             <span className={'header-item-title'}>{t("Time")}</span>
                         </div>,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    width: 60  
+                    minSize: 70,
+                    maxSize: 70,
+                    width: 70
                 },
                 {
                     accessorKey: 'description',

@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {PaymentDataType} from './types';
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
 import {t} from 'i18next';
-import {getFormattedTodayDateTime, getToday} from 'helpers/date';
+import {getUTCFormattedTodayDateTime, getToday, getLocalizedFormattedToday} from 'helpers/date';
 import Flatpickr from "react-flatpickr";
 import {removeNonNumberChars} from "../../utils";
 import {formatNumber} from "../../../Reports/utils";
@@ -108,7 +108,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             onChange={([selectedDate]) => {
                                 formik.setFieldValue(`payments.${index}.date`, selectedDate);
                             }}
-                            value={formik.values.dateTime || getToday()}
+                            value={payment.date || getToday()}
                             disabled={formik.derivedState.areInputsDisabled}
                         />
                         {formik.errors.payments?.[index]?.date && (
@@ -122,8 +122,10 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             id={`payments.${index}.time`}
                             name={`payments.${index}.time`}
                             type="time"
-                            onChange={formik.handleChange}
-                            value={payment.time || getFormattedTodayDateTime().time}
+                            onChange={(e) => {
+                                formik.setFieldValue(`payments.${index}.time`, e.target.value);
+                            }}
+                            value={payment.time || getUTCFormattedTodayDateTime().time}
                             disabled={formik.derivedState.areInputsDisabled}
                         />
                         {formik.errors.payments?.[index]?.time && (

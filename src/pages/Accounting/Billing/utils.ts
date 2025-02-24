@@ -10,18 +10,18 @@ export interface PartyForExport extends Pick<Party, 'transaction_type' |
     creditor_amount?: number;
 }
 
-export const getRowsForExport = (data: Party[]) => {
+export const getRowsForExport = (data: Party[], currencies: any) => {
     return data?.map((party: Party, index: number) => {
         const partyForExport: PartyForExport = {
-            transaction_type: party.transaction_type,
+            transaction_type: t(party.transaction_type),
             transaction: party.transaction,
             date: party.date,
             time: party.time,
-            currency: party.currency,
+            currency: currencies.find((acc: FinancialAccount) => acc.id === party.currency).name ,
             type: party.type,
-            balance: party.balance,
             debtor_amount: party?.type === 'debtor' ? party.amount : 0,
             creditor_amount: party?.type === 'creditor' ? party.amount : 0,
+            balance: party.balance,
         }
         return partyForExport
     });
@@ -39,9 +39,9 @@ export const columnsForExport = [
 ]
 
 
-export const generateXlsx = (data: Party[], selectedFinancialAccount: FinancialAccount) => {
+export const generateXlsx = (data: Party[], selectedFinancialAccount: FinancialAccount, currencies: any) => {
     const columnsForPDF = columnsForExport
-    const rowsForPDF = getRowsForExport(data);
+    const rowsForPDF = getRowsForExport(data, currencies);
     exportToXLSX(columnsForPDF, rowsForPDF, selectedFinancialAccount?.full_name)
 }
 

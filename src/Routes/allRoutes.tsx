@@ -48,6 +48,7 @@ import UsersActivityHistory from "../pages/ManageUsers/UsersActivityHistory";
 import UsersList from "pages/ManageUsers/UsersList";
 import ManageCurrencies from "../pages/ManageCurrencies/ManageCurrencies";
 import ManageFinancialAccounts from "../pages/ManageFinancialAccounts/ManageFinancialAccounts";
+import ManageCompanyProfile from "../pages/ManageCompanyProfile/ManageCompanyProfile";
 
 
 
@@ -76,6 +77,8 @@ const authProtectedRoutes = [
 
   // manage financial accounts
   { path: "/manage-financial-accounts", component: <ManageFinancialAccounts />, needsAuthorization: true},
+
+  { path: "/manage-company-profile", component: <ManageCompanyProfile />, needsAuthorization: true},
 
   // apps
   { path: "/apps-calendar", component: <Calendar />, needsAuthorization: true },

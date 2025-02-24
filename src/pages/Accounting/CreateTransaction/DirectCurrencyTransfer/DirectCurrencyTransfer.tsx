@@ -18,7 +18,7 @@ import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
 import {removeNonNumberChars} from "../../utils";
-import {getFormattedDateTime} from "../../../../helpers/date";
+import {getUTCFormattedDateTime} from "../../../../helpers/date";
 import SelectFinancialAccount from "../../SelectFinancialAccount";
 import {FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
@@ -135,9 +135,9 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
             debtor_party: structuredClone(defaultDirectCurrencyTransferFormData.debtor_party),
             creditor_party: structuredClone(defaultDirectCurrencyTransferFormData.creditor_party)
         };
-
-        const date = getFormattedDateTime(inputFormik.values.dateTime).date;
-        const time = getFormattedDateTime(inputFormik.values.dateTime).time;
+        console.log(inputFormik.values.dateTime)
+        const date = getUTCFormattedDateTime(inputFormik.values.dateTime).date;
+        const time = getUTCFormattedDateTime(inputFormik.values.dateTime).time;
         const amount = Number(removeNonNumberChars(inputFormik.values.amount));
         data.amount = amount;
         data.debtor_party.financial_account = inputFormik.values.debtorFinancialAccount;
@@ -192,7 +192,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
 
     useEffect(() => {
         if(isOpen) return;
-        formik.resetFormValues();
+        formik.flushFormValues();
     }, [isOpen])
 
     return (

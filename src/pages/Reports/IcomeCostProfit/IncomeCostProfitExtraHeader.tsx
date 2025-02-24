@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Label, Row } from 'reactstrap';
 import Flatpickr from "react-flatpickr";
-import {getFormattedDate} from "../../../helpers/date";
+import {getUTCFormattedDate} from "../../../helpers/date";
 import {t} from "i18next";
 
 interface Props {
@@ -21,7 +21,7 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
             <Label className="form-label mb-0">{t("From Date")}</Label>
             <Flatpickr
               className="form-control"
-              onChange={(e: any) => onChangeFromDate(getFormattedDate(e?.[0]))}
+              onChange={(e: any) => onChangeFromDate(getUTCFormattedDate(e?.[0]))}
               value={fromDate}
               options={{
                 dateFormat: "Y-m-d",
@@ -36,7 +36,7 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
             <Label className="form-label mb-0">{t("To Date")}</Label>
             <Flatpickr
               className="form-control"
-              onChange={(e: any) => onChangeToDate(getFormattedDate(e?.[0]))}
+              onChange={(e: any) => onChangeToDate(getUTCFormattedDate(e?.[0]))}
               value={toDate}
               options={{
                 dateFormat: "Y-m-d",

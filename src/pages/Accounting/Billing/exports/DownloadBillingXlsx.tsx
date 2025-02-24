@@ -10,7 +10,7 @@ import {FinancialAccount} from "../../types";
 const DownloadBillingXlsx = () => {
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
     const {filters} = useBillingFilters();
-    const {financialAccounts} = useSelector((state: any) => state.InitialData.financialAccounts);
+    const {financialAccounts, currencies} = useSelector((state: any) => state.InitialData);
 
     const selectedFinancialAccount = useMemo(() => {
         return financialAccounts?.find((acc: FinancialAccount) => acc.id === filters?.financial_account);
@@ -24,10 +24,10 @@ const DownloadBillingXlsx = () => {
             pagination: {}
         })
         .then(response => {
-            generateXlsx(response.data, selectedFinancialAccount);
+            generateXlsx(response.data, selectedFinancialAccount, currencies);
         }).catch(error => console.error(error)).finally(() => setIsGenerating(false));
 
-    }, [setIsGenerating, filters, selectedFinancialAccount]);
+    }, [setIsGenerating, filters, selectedFinancialAccount, currencies]);
 
     return (
         <ExportButton isGenerating={isGenerating}

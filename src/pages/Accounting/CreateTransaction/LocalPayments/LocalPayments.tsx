@@ -19,7 +19,7 @@ import TotalAmount from "./TotalAmount";
 import PaymentsContainer from './PaymentsContainer';
 import Payments from './Payments';
 import { useSelector } from 'react-redux';
-import { getFormattedDateTime, getFormattedTodayDateTime } from 'helpers/date';
+import {getLocalizedFormattedToday, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
 
 const initialResetForm = {
     totalAmount: "0",
@@ -139,8 +139,8 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             return {
                 ...item,
                 amount: Number(removeNonNumberChars(item.amount)),
-                date: item.date === ""? getFormattedTodayDateTime().date: item.date,
-                time: item.time === ""? getFormattedTodayDateTime().time: item.time,
+                date: item.date === ""? getUTCFormattedTodayDateTime().date: item.date,
+                time: item.time === ""? getUTCFormattedTodayDateTime().time: item.time,
             }
         });
 
@@ -167,7 +167,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
 
     useEffect(() => {
         if(isOpen) return;
-        formik.resetFormValues();
+        formik.flushFormValues();
     }, [isOpen])
 
 

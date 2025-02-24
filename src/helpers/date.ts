@@ -1,27 +1,27 @@
 import moment from "moment";
 
-export const getFormattedDate = (date: Date): string => {
+export const getUTCFormattedDate = (date: Date): string => {
     return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 };
 
-export const getFormattedDateTime = (date: Date): any => {
+export const getUTCFormattedDateTime = (date: Date): any => {
     if(!date) return {time: undefined, date: undefined}
     const formatted_time = date.toISOString().split("T")[1].split('.')[0];
     const formatted_date = date.toISOString().split("T")[0]
+    console.log(formatted_time)
     return {time: formatted_time, date: formatted_date}
 }
-
 
 export const getToday = (): Date => {
     return new Date();
 }
 
 export const getFormattedToday = (): string => {
-    return getFormattedDate(getToday());
+    return getUTCFormattedDate(getToday());
 }
 
-export const getFormattedTodayDateTime = (): any => {
-    return getFormattedDateTime(getToday());
+export const getUTCFormattedTodayDateTime = (): any => {
+    return getUTCFormattedDateTime(getToday());
 }
 
 export const handleValidDate = (date: any) => {
@@ -43,7 +43,18 @@ export const handleValidTime = (time: any) => {
     return moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
 };
 
-export const createDate = (dateString: string, timeString: string) => {
-    const dateTimeString = `${dateString}T${timeString}`;
-    return new Date(dateTimeString)
+export const createLocalizedDate = (dateString: string, timeString: string) => {
+    const dateTimeString = `${dateString}T${timeString}Z`; // Ensure it's treated as UTC
+    return moment.utc(dateTimeString).local().toDate();
+};
+
+export const getLocalizedFormattedToday = () => {
+    return getLocalizedFormattedDateTime(getToday());
+}
+
+export const getLocalizedFormattedDateTime = (date: Date) => {
+    if(!date) return {time: undefined, date: undefined}
+    const formatted_time = date.toLocaleTimeString();
+    const formatted_date = date.toLocaleDateString()
+    return {time: formatted_time, date: formatted_date}
 }
