@@ -8,7 +8,6 @@ export const getUTCFormattedDateTime = (date: Date): any => {
     if(!date) return {time: undefined, date: undefined}
     const formatted_time = date.toISOString().split("T")[1].split('.')[0];
     const formatted_date = date.toISOString().split("T")[0]
-    console.log(formatted_time)
     return {time: formatted_time, date: formatted_date}
 }
 

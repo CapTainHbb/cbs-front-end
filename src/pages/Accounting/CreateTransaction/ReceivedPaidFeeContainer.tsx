@@ -20,22 +20,52 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
     const calculatedReceivedRate = useMemo(() => {
         const rate = Number(removeNonNumberChars(formik.values?.[`${prefixName}ReceivedFeeRate`]));
         const amount = Number(removeNonNumberChars(partyAmount));
-        return formatNumber((amount * rate * 0.01).toFixed(2));
+        return (amount * rate * 0.01).toFixed(2);
     }, [partyAmount, formik]);
-    
+
+    const calculatedFinalAmount = useMemo(() => {
+        const amount = Number(removeNonNumberChars(partyAmount));
+        const receivedFee = Number(removeNonNumberChars(formik.values?.[`${prefixName}ReceivedFeeAmount`]));
+        const paidFee = Number(removeNonNumberChars(formik.values?.[`${prefixName}PaidFeeAmount`]));
+        const receivedTotal = Number(calculatedReceivedRate) + receivedFee;
+        const paidTotal = Number(removeNonNumberChars(calculatedPaidRate)) + paidFee;
+
+        const isAdd =
+            (prefixName === 'debtor') ||
+            (prefixName === 'base' && formik.values?.isBuy) ||
+            (prefixName === 'against' && !formik.values?.isBuy);
+
+        return isAdd ? amount + receivedTotal - paidTotal : amount - receivedTotal + paidTotal;
+    }, [partyAmount, formik.values, calculatedReceivedRate, calculatedPaidRate]);
+
+    const finalAmountStyle = useMemo(() => {
+        if(prefixName === 'creditor') {
+            return 'text-success'
+        } else if(prefixName === 'debtor') {
+            return 'text-danger';
+        } else if(prefixName === 'base' && formik.values?.isBuy) {
+            return 'text-danger'
+        } else if(prefixName === 'base' && !formik.values?.isBuy) {
+            return 'text-success'
+        } else if(prefixName === 'against' && formik.values?.isBuy) {
+            return 'text-success'
+        } else if(prefixName === 'against' && !formik.values?.isBuy) {
+            return 'text-danger'
+        }
+    }, [prefixName, formik.values])
     return (
-        <Col>
-            <Row>
-                <Col md={6} className='border border-1 border-subtle-info'>
-                    <Row>
-                        <Col md={2}>
+        <Col >
+            <Row >
+                <Col md={6} className='border border-1 border-subtle-info' >
+                    <Row className={'align-items-center'}>
+                        <Col md={1}>
                             <Row>
                                 <FormGroup>
-                                    <span className={'badge rounded-pill bg-success-subtle text-success'} >{t("Received Fee")}</span>
+                                    <Label className={'fs-11 rounded text-center  bg-success-subtle text-success'} >{t("Received Fee")}</Label>
                                 </FormGroup>
                             </Row>
                         </Col>
-                        <Col md={10}>
+                        <Col md={11}>
                             <Row>
                                 <Col md={7}>
                                     <FormGroup className='align-items-center' row>
@@ -67,7 +97,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                 </Col>
                                 <Col md={5}>
                                     <FormGroup row className='align-items-center'>
-                                        <Col md={2}>
+                                        <Col md={3}>
                                             <Label htmlFor="amount">{t("Amount")}</Label>
                                         </Col>
                                         <Col>
@@ -95,15 +125,15 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                     </Row>
                 </Col>
                 <Col md={6} className='border border-1 border-subtle-info'>
-                    <Row>
-                        <Col md={2}>
+                    <Row className={'align-items-center'}>
+                        <Col md={1}>
                             <Row>
                                 <FormGroup>
-                                    <span className={'badge rounded-pill bg-danger-subtle text-danger'} >{t("Received Fee")}</span>
+                                    <Label className={'fs-11 rounded bg-danger-subtle text-danger'} >{t("Paid Fee")}</Label>
                                 </FormGroup>
                             </Row>
                         </Col>
-                        <Col md={10}>
+                        <Col md={11}>
                             <Row>
                                 <Col md={7}>
                                     <FormGroup row className='align-items-center'>
@@ -135,7 +165,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                 </Col>
                                 <Col md={5}>
                                     <FormGroup row className='align-items-center'>
-                                        <Col md={2}>
+                                        <Col md={3}>
                                             <Label htmlFor="amount">{t("Amount")}</Label>
                                         </Col>
                                         <Col>
@@ -162,6 +192,9 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                         </Col>
                     </Row>
                 </Col>
+            </Row>
+            <Row>
+                <Label className={finalAmountStyle}>{formatNumber(calculatedFinalAmount)}</Label>
             </Row>
         </Col>
     );
