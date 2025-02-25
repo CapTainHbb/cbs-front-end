@@ -179,7 +179,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                 </Col>
             </Row>
             {/* Add Payment Button */}
-            <Button type="button" className={'align-content-center'} onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
+            <Button type="button" color='primary'  className={'align-content-center'} onClick={handleAddPayment} disabled={formik.derivedState.areInputsDisabled}>
                 <i className={'ri-add-circle-line mx-1'} />
                 <Label>{t("Add Payment")}</Label>
             </Button>

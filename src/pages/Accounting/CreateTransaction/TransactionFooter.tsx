@@ -16,8 +16,9 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                 {!formik.isSubmitting && (
                     <Button
                         type="submit"
+                        color='primary'
                         disabled={formik.values?.id && !formik.values.isEditing}
-                        className="btn btn-primary w-100"
+                        className="w-100"
                     >
                         {t("Submit")}
                     </Button>
@@ -28,7 +29,8 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
             <Col md={2} sm={12}>
                 <Button
                     type="button"
-                    className="btn btn-info w-100"
+                    color='primary'
+                    className="w-100"
                     onClick={() => formik.handleClickNewDocument()}
                 >
                     <i className="ri-file-add-fill" /> {t("Create new document")}
@@ -63,7 +65,9 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
 
             <Col md={2} sm={12}>
                 <Button
-                    className="btn btn-info w-100"
+                    type='button'
+                    color='primary'
+                    className="w-100"
                     disabled={!formik.values.previousTransactionId}
                     onClick={(e: any) => formik.loadTransaction(formik.values.previousTransactionId)}
                 >
@@ -73,7 +77,9 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
 
             <Col md={2} sm={12}>
                 <Button
-                    className="btn btn-info w-100"
+                    type='button'
+                    color='primary'
+                    className="w-100"
                     disabled={!formik.values.nextTransactionId}
                     onClick={(e: any) => formik.loadTransaction(formik.values.nextTransactionId)}
                 >
