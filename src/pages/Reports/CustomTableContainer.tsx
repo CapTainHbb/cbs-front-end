@@ -14,6 +14,7 @@ import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
 import {Link} from "react-router-dom";
 import {Row, Table} from "reactstrap";
+import { getLocalizedFormattedDateTime } from 'helpers/date';
 
 
 export interface TableContextType<T, F = any> {
@@ -204,17 +205,9 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                             if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
                             if (row.original?.isHeader) {
-                                return <tr key={row.id} style={{backgroundColor: '#f3f6f9', 
-                                padding: '5px'}}>
-                                    <td>{row.original?.date}</td>
-                                    {row.getVisibleCells().slice(1).map(cell => (
-                                        <td className='p-1'
-                                            key={cell.id}
-                                            style={{ border: 'none', backgroundColor: '#f3f6f9' }}
-                                        >
-                                            
-                                        </td>
-                                    ))}
+                                return <tr key={row.id} className='table-light' style={{padding: '5px'}}>
+                                    <td colSpan={row.getVisibleCells().length} style={{}} >{(new Date(row.original.date)).toLocaleDateString()}</td>
+                                    
                                 </tr>
                             }
                             return (

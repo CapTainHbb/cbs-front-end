@@ -53,7 +53,7 @@ export const getLocalizedFormattedToday = () => {
 
 export const getLocalizedFormattedDateTime = (date: Date) => {
     if(!date) return {time: undefined, date: undefined}
-    const formatted_time = date.toLocaleTimeString();
-    const formatted_date = date.toLocaleDateString()
+    const formatted_time = date?.toLocaleTimeString?.();
+    const formatted_date = date?.toLocaleDateString?.()
     return {time: formatted_time, date: formatted_date}
 }
