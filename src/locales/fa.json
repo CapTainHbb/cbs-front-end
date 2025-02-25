@@ -92,6 +92,7 @@
     "Exchange rate cannot be zero": "نرخ تبدیل نباید صفر باشد",
     "Export to Xlsx": "خروجی اکسل",
     "Fax": "فکس",
+    "Final Amount": "مقدار نهایی",
     "Financial Account": "حساب",
     "Financial Account Balance": "مانده حساب",
     "Financial account created successfully": "حساب با موفقیت ایجاد شد",
@@ -204,6 +205,7 @@
     "Submit": "ثبت",
 
     "Taskboard": "تابلوی وظایف",
+    "The exchange rate must be consistent with the buy and sell values.": "مقدار نرخ تبدیل باید با مقادیر خرید و فروش همخوانی داشته باشد",
     "Trade Type": "نوع معامله",
     "Transfer Amount": "مقدار انتقال",
     "transaction": "تراکنش",

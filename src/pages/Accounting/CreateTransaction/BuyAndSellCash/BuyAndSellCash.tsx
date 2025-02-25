@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import {Container, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
+import {Col, Container, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
 import TransactionDetails from "../TransactionDetails";
@@ -15,6 +15,7 @@ import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
 import PartyContainer from "../PartyContainer";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import BuyAndSellAmountAndCurrency from "./BuyAndSellAmountAndCurrency";
+import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 
 const initialResetForm = {
     isBuy: false,
@@ -42,6 +43,7 @@ interface Props {
 }
 
 const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+
     const getSpecificFormFieldsInitial = useCallback(() => {
         if(!['buy-and-sell-cash', 'sell-cash', 'buy-cash'].includes(String(activeTransactionData?.transaction_type))) {
             return structuredClone(initialResetForm);
@@ -77,10 +79,14 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
             isIsBuyLocked: false,
         }
     }, []);
-    const getSpecificFormFieldsValidation = useCallback(() => {
+    const getSpecificFormFieldsValidation = useCallback((values: any) => {
         return ({
             isBuy: Yup.boolean().required(t('Required')),
-            exchangeRate: Yup.string().required(t('Required')).test('not-zero', t('Exchange rate cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
+            exchangeRate: Yup.string().required(t('Required'))
+                .test('not-zero', t('Exchange rate cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0)
+                .test('valid-exchange-rate',
+                    () => t("The exchange rate must be consistent with the buy and sell values."),
+                    (value) => checkExchangeRateValidity(value, values?.baseAmount, values?.againstAmount, values?.conversionType)),
             baseCurrency: Yup.string().required(t('Required')),
             againstCurrency: Yup.string().required(t('Required')),
             financialAccount: Yup.string().required(t('Required')),
@@ -104,6 +110,16 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
             againstPaidFeeAmount: Yup.string().required(t("Required"))
         });
     }, []);
+    const checkExchangeRateValidity = useCallback(((exchangeRate: string, baseAmount: string, againstAmount: string, conversionType: string) => {
+        const rateNumber = Number(removeNonNumberChars(exchangeRate));
+        const baseAmountNumber = Number(removeNonNumberChars(baseAmount));
+        const againstAmountNumber = Number(removeNonNumberChars(againstAmount));
+        if(conversionType === 'multiplication') {
+            return (baseAmountNumber * rateNumber) === againstAmountNumber;
+        } else {
+            return (baseAmountNumber / rateNumber) === againstAmountNumber;
+        }
+    }), []);
     const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: BuyAndSellCashFormDataType) => {
         const isBuy = createdTransaction?.is_buy || false;
         const baseParty = isBuy? "debtor": "creditor";
@@ -263,7 +279,8 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                     <Container fluid>
                         {!formik.values.isCreate && <TransactionMetaData formik={formik} />}
                         <SelectFinancialAccountAndTradeType formik={formik} />
-                        <ExchangeRateAndConversionType formik={formik} />
+
+
                         <PartyContainer party={formik.values.isBuy? 'debtor': 'creditor'}
                                         headerTitle={formik.values.isBuy? t("Buy"): t("Sell")}>
                             <BuyAndSellAmountAndCurrency
@@ -277,6 +294,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                                 partyAmount={formik.values.baseAmount}
                                 />    
                         </PartyContainer>
+                        <ExchangeRateAndConversionType formik={formik} />
                         <PartyContainer party={formik.values.isBuy? 'creditor': 'debtor'}
                                         headerTitle={t("Against")} >
                             <BuyAndSellAmountAndCurrency

@@ -57,7 +57,7 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
     }, [formik]);
 
     return (
-    <Row className="align-items-center">
+    <Row className="align-items-center border border-1 pt-1">
       <Col md={8}>
         <FormGroup row>
             <Label md={2} >{t("Conversion Operator")}</Label>
@@ -89,33 +89,27 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
                 ) : null}
             </Col>
         </FormGroup>
-        <Row>
-              <FormGroup row className={'gap-1'}>
-                  <Col md={3} sm={12}>
-                      <Button type={'button'} color={'primary'} className={'w-100'}
-                              disabled={formik.derivedState.areInputsDisabled}
-                              onClick={onClickRateBasedOnAmounts}
-                      >
-                          {t("Rate Based on Amounts")}
-                      </Button>
-                  </Col>
-                  <Col md={3} sm={12}>
-                      {isXeRatesLoading && <Spinner size={'small'} />}
-                      {!isXeRatesLoading && <Button type={'button'} color={'primary'} className={'w-100'}
-                              disabled={formik.derivedState.areInputsDisabled}
-                              onClick={onClickRateBasedOnXe}
-                      >
-                          {t("Rate Based on XE")}
-                      </Button>}
-                  </Col>
-              </FormGroup>
-          </Row>
       </Col>
       <Col md={4}>
-          <FinancialAccountViewDetail
-              financialAccountId={formik.values?.[`financialAccount`]}
-              forceUpdate={formik.values.forceUpdateFinancialAccountsBalance}
-          />
+          <Row className={'gap-1'}>
+              <Col md={6} sm={12} className="">
+                  <Button type={'button'} color={'primary'} className={'w-100'}
+                          disabled={formik.derivedState.areInputsDisabled}
+                          onClick={onClickRateBasedOnAmounts}
+                  >
+                      {t("Rate Based on Amounts")}
+                  </Button>
+              </Col>
+              <Col md={5} sm={12}>
+                  {isXeRatesLoading && <Spinner size={'small'} />}
+                  {!isXeRatesLoading && <Button type={'button'} color={'primary'} className={'w-100'}
+                                                disabled={formik.derivedState.areInputsDisabled}
+                                                onClick={onClickRateBasedOnXe}
+                  >
+                      {t("Rate Based on XE")}
+                  </Button>}
+              </Col>
+          </Row>
       </Col>
     </Row>
   )

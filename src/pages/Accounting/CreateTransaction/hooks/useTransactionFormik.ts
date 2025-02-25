@@ -47,6 +47,8 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
         setLastActiveTransactionData(activeTransactionData);
     }, [activeTransactionData]);
 
+
+
     const getCommonTransactionFieldsInitial = useCallback(() => {
         return {
             id: activeTransactionData?.id || undefined,
@@ -77,13 +79,18 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             ...getLockableFormFieldsInitial?.(),
         }
     }, [getCommonTransactionFieldsInitial, getSpecificFormFieldsInitial, getLockableFormFieldsInitial]);
+
+    const [validationSchema, setValidationSchema] = useState(
+        Yup.object({
+            ...getCommonTransactionValidationInitial(),
+            ...getSpecificFormFieldsValidation()
+        }
+    ));
+
     const formik: any = useFormik({
         enableReinitialize: true,
         initialValues: {...getInitialValues()},
-        validationSchema:Yup.object({
-            ...getCommonTransactionValidationInitial(),
-            ...getSpecificFormFieldsValidation()
-        }),
+        validationSchema: validationSchema,
         onSubmit: (values: any) => {
             const commonData = {
                 id: values?.id,
@@ -132,6 +139,13 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
             description: createdTransaction?.description || "",
         }
     }, []);
+
+    useEffect(() => {
+        setValidationSchema(Yup.object({
+            ...getCommonTransactionValidationInitial(),
+            ...getSpecificFormFieldsValidation(formik.values)
+        }));
+    }, [formik.values])
 
     const fetchAndSetPreviousTransactionId = useCallback(() => {
         axiosInstance.get(`${endPointApi}/last-transaction/`)

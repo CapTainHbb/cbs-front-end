@@ -58,14 +58,12 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
             <Row >
                 <Col md={6} className='border border-1 border-subtle-info' >
                     <Row className={'align-items-center'}>
-                        <Col md={1}>
+                        <Col md={12}>
                             <Row>
                                 <FormGroup>
                                     <Label className={'fs-11 rounded text-center  bg-success-subtle text-success'} >{t("Received Fee")}</Label>
                                 </FormGroup>
                             </Row>
-                        </Col>
-                        <Col md={11}>
                             <Row>
                                 <Col md={7}>
                                     <FormGroup className='align-items-center' row>
@@ -126,14 +124,12 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                 </Col>
                 <Col md={6} className='border border-1 border-subtle-info'>
                     <Row className={'align-items-center'}>
-                        <Col md={1}>
+                        <Col md={12}>
                             <Row>
                                 <FormGroup>
                                     <Label className={'fs-11 rounded bg-danger-subtle text-danger'} >{t("Paid Fee")}</Label>
                                 </FormGroup>
                             </Row>
-                        </Col>
-                        <Col md={11}>
                             <Row>
                                 <Col md={7}>
                                     <FormGroup row className='align-items-center'>
@@ -194,7 +190,12 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                 </Col>
             </Row>
             <Row>
-                <Label className={finalAmountStyle}>{formatNumber(calculatedFinalAmount)}</Label>
+                <Col md={2}>
+                    <Label className={finalAmountStyle}>{t("Final Amount")}</Label>
+                </Col>
+                <Col>
+                    <Label className={finalAmountStyle}>{formatNumber(calculatedFinalAmount)}</Label>
+                </Col>
             </Row>
         </Col>
     );

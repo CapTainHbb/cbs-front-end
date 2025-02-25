@@ -9,7 +9,7 @@ interface Props {
 
 const TransactionMetaData: React.FC<Props> = ({ formik }) => {
   return (
-    <Row className={' border border-1 border-info-subtle m-1'}>
+    <Row className={' border border-1 m-1'}>
       <Col md={4} sm={12}>
           <Row>
               <Col>
