@@ -19,6 +19,21 @@ export const removeNonNumberChars = (input: any) => {
     return input?.replace(/[^0-9.]/g, '');
 }
 
+export const removeExtraZerosFromFractional = (input: any): string | null => {
+    if (typeof input !== 'string' && typeof input !== 'number') {
+        return null;
+    }
+
+    const inputStr = String(input).trim();
+
+    // Check if the input is a valid number
+    if (isNaN(Number(inputStr))) {
+        return null;
+    }
+
+    // Remove extra zeros from the fractional part
+    return inputStr.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0*$/, '');
+};
 export const customFormatNumber = (rawInput: any) => {
     rawInput = removeNonNumberChars(rawInput);
 

@@ -4,7 +4,7 @@ import {Button, Col, FormFeedback, FormGroup, Input, Label, Row, Spinner} from '
 import Select from 'react-select';
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 import axiosInstance from "../../../../helpers/axios_instance";
-import {removeNonNumberChars} from "../../utils";
+import {removeExtraZerosFromFractional, removeNonNumberChars} from "../../utils";
 
 interface Props {
     formik: any;
@@ -49,7 +49,7 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
         setIsXeRatesLoading(true);
         axiosInstance.post('/currencies/xe-exchange-rate/', data)
             .then(response => {
-                formik.handleNumberInputChange('exchangeRate', String(response.data));
+                formik.handleNumberInputChange('exchangeRate', removeExtraZerosFromFractional(String(response.data)));
                 formik.updateAgainstAmount(String(response.data), formik.values.conversionType, formik.values.baseAmount);
             })
             .catch(error => console.error(error))
