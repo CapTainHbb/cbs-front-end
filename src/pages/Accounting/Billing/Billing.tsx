@@ -345,6 +345,21 @@ const Billing = () => {
         filters.transaction_id_to, filters?.transaction_type, filters.user_specified_id,
         getTransactionTypeCell, t])
 
+    const preProcessData = useCallback((parties: Party[]): (Party | { date: string; isHeader: true })[] => {
+        const processedList: (Party | { date: string; isHeader: true })[] = [];
+        let lastDate: string | null = null;
+    
+        for (const party of parties) {
+            if (party.date !== lastDate) {
+                processedList.push({ date: party.date, isHeader: true }); // Insert header
+                lastDate = party.date;
+            }
+            processedList.push(party); // Insert actual item
+        }
+        console.log(processedList)
+        return processedList;
+    }, [])
+
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -369,6 +384,7 @@ const Billing = () => {
                                         setItemsChanged={setItemsChanged}
                                         onDoubleClickRow={handleEditTransaction}
                                         setTable={setTable}
+                                        preProcessData={preProcessData}
                                     />
                                     <DirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
                                                             activeTransactionData={activeTransactionData || undefined}

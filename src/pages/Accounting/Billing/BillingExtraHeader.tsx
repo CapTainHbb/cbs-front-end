@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {FinancialAccount} from "../types";
 import {Button, Col, Label, Row} from "reactstrap";
 import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
@@ -10,9 +10,9 @@ import SelectFinancialAccount from "../SelectFinancialAccount";
 import DownloadBillingPdf from "./exports/DownloadBillingPdf";
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import Flatpickr from "react-flatpickr";
-import {getUTCFormattedDateTime, getToday} from "../../../helpers/date";
-import {generateXlsx} from "./utils";
+import {getUTCFormattedDateTime} from "../../../helpers/date";
 import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
+import Select from "react-select";
 
 interface Props {
     table: any;
@@ -28,6 +28,15 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
     const onChangeFinancialAccount = useCallback((acc: FinancialAccount) => {
         updateFilter("financial_account", acc?.id)
     }, [updateFilter])
+
+    const numberOftransactionsOptions = useMemo(() => {
+        return [
+            {label: "30", value: 30},
+            {label: "50", value: 50},
+            {label: "70", value: 70},
+            {label: "100", value: 100},
+        ]
+    }, [])
 
     return (
         <Row>
@@ -54,7 +63,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                             </Col>
                         </Row>
                         <Row>
-                            <Col md={6} sm={12}>
+                            <Col md={3} sm={12}>
                                 <Label>{t("From Date")}</Label>
                                 <Flatpickr
                                     className="form-control"
@@ -67,7 +76,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
 
                                 />
                             </Col>
-                            <Col md={6} sm={12}>
+                            <Col md={3} sm={12}>
                                 <Label>{t("To Date")}</Label>
                                 <Flatpickr
                                     className="form-control"
@@ -77,6 +86,13 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     }}
                                     onChange={([selectedDate]) => updateFilter("date_to", getUTCFormattedDateTime(selectedDate).date)}
                                     value={filters?.date_to}
+                                />
+                            </Col>
+                            <Col md={3} sm={12}>
+                                <Label>{t("Number of Transaction Per Page")}</Label>
+                                <Select 
+                                    options={numberOftransactionsOptions}
+                                    
                                 />
                             </Col>
                         </Row>

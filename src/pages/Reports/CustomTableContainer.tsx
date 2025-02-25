@@ -37,6 +37,7 @@ interface Props<T, F> {
     itemsChanged: boolean;
     setItemsChanged: any;
     setTable?: any;
+    preProcessData?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -49,6 +50,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          itemsChanged,
                          setItemsChanged,
                          setTable,
+                         preProcessData,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -63,14 +65,14 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const [data, setData] = useState<any>([]);
 
     const onFetchDataSuccess = useCallback((data: any) => {
-        setData(data?.data)
+        setData(preProcessData !== undefined? preProcessData(data?.data): data?.data)
         setRowCount(data?.total_rows);
         setPageCount(data?.total_pages);
         setPagination({
             pageIndex: data?.current_page? (data?.current_page - 1): 0,
             pageSize: data?.page_size
         });
-    }, []);
+    }, [preProcessData]);
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
 
@@ -201,6 +203,20 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                             );
 
                             if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
+                            if (row.original?.isHeader) {
+                                return <tr key={row.id} style={{backgroundColor: '#f3f6f9', 
+                                padding: '5px'}}>
+                                    <td>{row.original?.date}</td>
+                                    {row.getVisibleCells().slice(1).map(cell => (
+                                        <td className='p-1'
+                                            key={cell.id}
+                                            style={{ border: 'none', backgroundColor: '#f3f6f9' }}
+                                        >
+                                            
+                                        </td>
+                                    ))}
+                                </tr>
+                            }
                             return (
                                 <tr key={row.id}
                                 style={{cursor: onDoubleClickRow !== undefined? 'pointer': ''}}
