@@ -4,6 +4,8 @@ import {t} from "i18next";
 import SelectCurrency from "../../../Reports/SelectCurrency/SelectCurrency";
 import {Currency} from "../../../Reports/utils";
 import LockInputButton from 'Components/Common/LockInputButton';
+import NumberToWords from "../../../../Components/Common/NumberToWords/NumberToWords";
+import {removeNonNumberChars} from "../../utils";
 
 interface Props {
     formik: any;
@@ -12,7 +14,7 @@ interface Props {
 const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
     return (
         <Row>
-            <Col md={6}>
+            <Col md={7}>
                 <FormGroup className='align-items-center'>
                     <Label htmlFor="amount">{t("Transfer Amount")}</Label>
                     <Input
@@ -31,9 +33,11 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
                     {formik.touched.amount && formik.errors.amount ? (
                         <FormFeedback type="invalid">{formik.errors.amount}</FormFeedback>
                     ) : null}
+                    <NumberToWords value={Number(removeNonNumberChars(formik.values.amount))}
+                                   currencyId={formik.values.currency} />
                 </FormGroup>
             </Col>
-            <Col md={6}>
+            <Col md={5}>
                 <FormGroup>
                     <Label htmlFor="currency">{t("Currency Type")}</Label>
                     <Row className='align-items-center'>

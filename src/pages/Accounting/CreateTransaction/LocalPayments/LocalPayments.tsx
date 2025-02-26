@@ -202,7 +202,6 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                                                     disabled={formik.derivedState.areInputsDisabled}
                                                 />
                                             </Col>
-
                                             {/* Error Message */}
                                             <Col md={3}>
                                                 {formik.touched?.creditorFinancialAccount && formik.errors?.creditorFinancialAccount && (

@@ -3,6 +3,8 @@ import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
 import {t} from "i18next";
 import CurrencyNameAndFlag from "../../../Reports/CurrencyNameAndFlag";
 import {useSelector} from "react-redux";
+import NumberToWords from "../../../../Components/Common/NumberToWords/NumberToWords";
+import {removeNonNumberChars} from "../../utils";
 
 interface Props {
     formik: any;
@@ -14,10 +16,10 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
         <Row>
             <Col>
                 <FormGroup className='align-items-center' row>
-                    <Col>
+                    <Col md={1}>
                         <Label htmlFor="amount">{t("Transfer Amount")}</Label>
                     </Col>
-                    <Col md={8}>
+                    <Col md={3}>
                         <Input
                             id="amount"
                             name="amount"
@@ -35,7 +37,11 @@ const TransferAmountAndCurrency: React.FC<Props> = ({ formik }) => {
                             <FormFeedback className={'text-danger'}>{formik.errors.totalAmount}</FormFeedback>
                         ) : null}
                     </Col>
-                    <Col>
+                    <Col md={7}>
+                        <NumberToWords value={Number(removeNonNumberChars(formik.values.totalAmount))}
+                                       currencyId={localCurrency?.id} />
+                    </Col>
+                    <Col md={1}>
                         <CurrencyNameAndFlag currencyId={localCurrency?.id} />
                     </Col>
                 </FormGroup>
