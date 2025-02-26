@@ -356,7 +356,6 @@ const Billing = () => {
             }
             processedList.push(party); // Insert actual item
         }
-        console.log(processedList)
         return processedList;
     }, [])
 

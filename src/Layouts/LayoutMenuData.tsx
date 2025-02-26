@@ -397,7 +397,20 @@ const Navdata = () => {
                 label: t("Accounting"),
                 isHeader: true,
             },
-             {
+            {
+                 id: "billing",
+                 label: "Billing",
+                 icon: "ri-file-paper-2-fill",
+                 link: '/accounting-billing',
+                 click: function (e: any) {
+                     e.preventDefault();
+                     setIsBilling(!isBilling);
+                     setIscurrentState('Billing');
+                     updateIconSidebar(e);
+                 },
+                 stateVariables: isBilling,
+             },
+            {
                  id: "create-new-document",
                  label: "Create New Document",
                  icon: "ri-file-add-fill",
@@ -442,19 +455,6 @@ const Navdata = () => {
                      }
                  ],
              },
-            {
-                id: "billing",
-                label: "Billing",
-                icon: "ri-file-paper-2-fill",
-                link: '/accounting-billing',
-                click: function (e: any) {
-                    e.preventDefault();
-                    setIsBilling(!isBilling);
-                    setIscurrentState('Billing');
-                    updateIconSidebar(e);
-                },
-                stateVariables: isBilling,
-            },
             {
                 id: "general-ledger",
                 label: "General Ledger",

@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {FinancialAccount} from "../types";
 import {Button, Col, Label, Row} from "reactstrap";
 import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
@@ -13,6 +13,8 @@ import Flatpickr from "react-flatpickr";
 import {getUTCFormattedDateTime} from "../../../helpers/date";
 import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
 import Select from "react-select";
+import {Link} from "react-router-dom";
+import ChangePageContainer from "../../Reports/ChangePageContainer";
 
 interface Props {
     table: any;
@@ -24,19 +26,21 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                              itemsChanged}) => {
 
     const { filters, updateFilter } = useBillingFilters();
-
+    const [pageSize, setPageSize] = useState<number>(table?.getState().pagination.pageSize);
     const onChangeFinancialAccount = useCallback((acc: FinancialAccount) => {
         updateFilter("financial_account", acc?.id)
     }, [updateFilter])
 
-    const numberOftransactionsOptions = useMemo(() => {
+    const pageSizeOptions = useMemo(() => {
         return [
             {label: "30", value: 30},
             {label: "50", value: 50},
             {label: "70", value: 70},
             {label: "100", value: 100},
+            {label: "150", value: 150},
+            {label: "200", value: 200},
         ]
-    }, [])
+    }, []);
 
     return (
         <Row>
@@ -63,7 +67,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                             </Col>
                         </Row>
                         <Row>
-                            <Col md={3} sm={12}>
+                            <Col md={2} sm={12}>
                                 <Label>{t("From Date")}</Label>
                                 <Flatpickr
                                     className="form-control"
@@ -76,7 +80,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
 
                                 />
                             </Col>
-                            <Col md={3} sm={12}>
+                            <Col md={2} sm={12}>
                                 <Label>{t("To Date")}</Label>
                                 <Flatpickr
                                     className="form-control"
@@ -89,10 +93,14 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                 />
                             </Col>
                             <Col md={3} sm={12}>
-                                <Label>{t("Number of Transaction Per Page")}</Label>
+                                <Label>{t("Number of Last Transactions Per Page")}</Label>
                                 <Select 
-                                    options={numberOftransactionsOptions}
-                                    
+                                    options={pageSizeOptions}
+                                    onChange={(item: any) => {
+                                        table?.setPageSize?.(item?.value);
+                                        setPageSize(item.value);
+                                    }}
+                                    value={pageSizeOptions?.find((item) => item.value === pageSize) || pageSizeOptions[0] }
                                 />
                             </Col>
                         </Row>
@@ -101,23 +109,24 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                     <Col md={3} sm={12}>
                         <Row className={'my-1'}>
                             <Row>
-                                <Button color='primary' className={'w-100 my-1'} onClick={() => setItemsChanged(!itemsChanged)}>
-                                    <i className='ri-refresh-fill' /> {t("Refresh")}
+                                <Button color='primary' className={'w-100 my-1'}
+                                        onClick={() => setItemsChanged(!itemsChanged)}>
+                                    <i className='ri-refresh-fill'/> {t("Refresh")}
                                 </Button>
                             </Row>
                             <Row>
-                                <DownloadBillingPdf />
+                                <DownloadBillingPdf/>
                             </Row>
                             <Row>
-                                <DownloadBillingXlsx />
+                                <DownloadBillingXlsx/>
                             </Row>
                         </Row>
                     </Col>
                 </Row>
             </Col>
 
-            <Col style={{ maxHeight: "250px", overflowY: "auto" }} md={3} sm={12}>
-                <FinancialAccountViewDetail financialAccountId={filters?.financial_account} forceUpdate={itemsChanged} />
+            <Col style={{maxHeight: "250px", overflowY: "auto"}} md={3} sm={12}>
+                <FinancialAccountViewDetail financialAccountId={filters?.financial_account} forceUpdate={itemsChanged}/>
             </Col>
         </Row>
 

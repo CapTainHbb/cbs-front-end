@@ -1,4 +1,4 @@
-import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useState} from 'react';
 import TableExtraHeaderContainer from "./TableExtraHeaderContainer";
 import {
     ColumnDef, ExpandedState,
@@ -12,9 +12,8 @@ import {
 import {useFetchDataFromApi} from "./hooks";
 import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
-import {Link} from "react-router-dom";
 import {Row, Table} from "reactstrap";
-import { getLocalizedFormattedDateTime } from 'helpers/date';
+import ChangePageContainer from "./ChangePageContainer";
 
 
 export interface TableContextType<T, F = any> {
@@ -120,14 +119,13 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             filters: filters
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex]);
+    }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex, pagination?.pageSize]);
 
     const onUpdateTable = useCallback(() => {
         setItemsChanged?.(!itemsChanged);
     }, [itemsChanged, setItemsChanged])
 
-    const totalPages = Math.ceil(table.getRowCount() / table.getState().pagination.pageSize);
-    const pageOptions = Array.from({ length: totalPages }, (_, i) => i);
+
 
     return (
         <Fragment>
@@ -138,6 +136,16 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
+                    <div className="d-flex align-items-center p-1 text-center text-sm-start gap-1">
+                        <div className="col-sm">
+                            <div className="text-muted">
+                                {t("Showing")}
+                                <span className="fw-semibold ms-1">{pagination.pageSize}</span> {t("of")}
+                                <span className="fw-semibold ms-1">{data.length}</span> {t("Results")}
+                            </div>
+                        </div>
+                        <ChangePageContainer table={table} />
+                    </div>
                     <Table className={'table table-hover table-bordered'}>
                         <thead className={"table-light"}>
                         {table.getHeaderGroups().map(headerGroup => (
@@ -205,8 +213,12 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                             if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
                             if (row.original?.isHeader) {
-                                return <tr key={row.id} className='table-light' style={{padding: '5px'}}>
-                                    <td colSpan={row.getVisibleCells().length} style={{}} >{(new Date(row.original.date)).toLocaleDateString()}</td>
+                                return <tr key={row.id} className='table-primary text-primary fs-18 fw-semibold'>
+                                    <td colSpan={row.getVisibleCells().length}
+                                        style={{padding: '0px'}}
+                                    >
+                                        {(new Date(row.original.date)).toLocaleDateString()}
+                                    </td>
                                     
                                 </tr>
                             }
@@ -235,62 +247,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                         </tbody>
                     </Table>
                 </div>
-                <Row className="align-items-center mt-2 g-3 text-center text-sm-start">
-                    <div className="col-sm">
-                        <div className="text-muted">
-                            {t("Showing")}
-                            <span className="fw-semibold ms-1">{pagination.pageSize}</span> {t("of")}
-                            <span className="fw-semibold ms-1">{data.length}</span> {t("Results")}
-                        </div>
-                    </div>
-                    <div className="col-sm-auto">
-                        <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">
-                            <li className={!table.getCanPreviousPage() ? "page-item disabled" : "page-item"}>
-                                <Link to="#" className="page-link" onClick={table.previousPage}>
-                                    {t("Previous")}
-                                </Link>
-                            </li>
-
-                            {pageOptions.map((item, key) => {
-                                const currentPage = table.getState().pagination.pageIndex;
-
-                                // Logic to show only nearby pages with ellipsis
-                                const shouldShow =
-                                    item === 0 || // First page
-                                    item === pageOptions.length - 1 || // Last page
-                                    (item >= currentPage - 1 && item <= currentPage + 1); // Around current page
-
-                                const isEllipsisBefore = item === 1 && currentPage > 2;
-                                const isEllipsisAfter = item === pageOptions.length - 2 && currentPage < pageOptions.length - 3;
-
-                                return (
-                                    <React.Fragment key={key}>
-                                        {isEllipsisBefore && <li className="page-item disabled"><span className="page-link">...</span></li>}
-                                        {shouldShow && (
-                                            <li className="page-item">
-                                                <Link
-                                                    to="#"
-                                                    className={currentPage === item ? "page-link active" : "page-link"}
-                                                    onClick={() => table.setPageIndex(item)}
-                                                >
-                                                    {item + 1}
-                                                </Link>
-                                            </li>
-                                        )}
-                                        {isEllipsisAfter && <li className="page-item disabled"><span className="page-link">...</span></li>}
-                                    </React.Fragment>
-                                );
-                            })}
-
-                            <li className={!table.getCanNextPage() ? "page-item disabled" : "page-item"}>
-                                <Link to="#" className="page-link" onClick={table.nextPage}>
-                                    {t("Next")}
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-                </Row>
-
             </TableContext.Provider>
         </Fragment>
     );
