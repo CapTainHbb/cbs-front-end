@@ -53,10 +53,6 @@ export const formatNumber = (number: any) => {
 };
 
 
-
-
-
-
 export const determinePartyType = (flowType: string) => {
     return flowType === "incoming" ? "creditor" : "debtor";
 }

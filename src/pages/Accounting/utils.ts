@@ -15,6 +15,7 @@ export const determineCurrencyTextColor = (balance: number) => {
 }
 
 export const removeNonNumberChars = (input: any) => {
+    if(typeof input === 'number') return input
     // Remove invalid characters (allow digits and a single decimal point)
     return input?.replace(/[^0-9.]/g, '');
 }
@@ -34,7 +35,12 @@ export const removeExtraZerosFromFractional = (input: any): string | null => {
     // Remove extra zeros from the fractional part
     return inputStr.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0*$/, '');
 };
-export const customFormatNumber = (rawInput: any) => {
+export const customFormatNumber = (rawInput: any, decimalPartLimit: number = 2) => {
+    if(rawInput === undefined) return undefined;
+
+    if(typeof rawInput === 'number') {
+        rawInput = String(rawInput)
+    }
     rawInput = removeNonNumberChars(rawInput);
 
     const parts = rawInput.split('.');
@@ -46,7 +52,12 @@ export const customFormatNumber = (rawInput: any) => {
     let [integerPart, decimalPart] = rawInput.split('.');
 
     // Remove leading zeros from the integer part
-    integerPart = integerPart.replace(/^0+/, '') || '0';  // Ensure it doesn't turn empty if input is '0'
+    integerPart = integerPart.replace(/^0+/, '') || '0'; // Ensure it doesn't turn empty if input is '0'
+
+    // Limit decimal places
+    if (decimalPartLimit > 0 && decimalPart !== undefined) {
+        decimalPart = decimalPart.slice(0, decimalPartLimit);
+    }
 
     // Format the integer part with commas
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -58,4 +69,12 @@ export const customFormatNumber = (rawInput: any) => {
     if (rawInput.startsWith('.')) formattedValue = '.' + decimalPart;
 
     return formattedValue;
+}
+
+export const formatRateNumber = (rawInput: any) => {
+    return customFormatNumber(rawInput, 4)
+}
+
+export const formatExchangeRateNumber = (rawInput: any) => {
+    return customFormatNumber(rawInput, 10);
 }

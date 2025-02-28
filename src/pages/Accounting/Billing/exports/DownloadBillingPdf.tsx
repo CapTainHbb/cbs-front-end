@@ -11,6 +11,7 @@ import {createTempoDownloadLink, groupByCurrency} from "../utils";
 import ExportButton from "./ExportButton";
 import {useBillingFilters} from "../hooks/useBillingFilters";
 import BillingPdfComponent from "./BillingPdfComponent";
+import { customFormatNumber } from "pages/Accounting/utils";
 
 
 const DownloadBillingPDF = () => {
@@ -43,7 +44,7 @@ const DownloadBillingPDF = () => {
                                 : commonPDFStyles.debtorColumn,
                     ]}
                 >
-                    {formatNumber(abs(row?.previous_balance))}
+                    {customFormatNumber(abs(row?.previous_balance))}
                 </Text>
                 <Text
                     key={2}
@@ -55,7 +56,7 @@ const DownloadBillingPDF = () => {
                             : commonPDFStyles.zeroValue,
                     ]}
                 >
-                    {formatNumber(row?.total_debtor)}
+                    {customFormatNumber(row?.total_debtor)}
                 </Text>
                 <Text
                     key={3}
@@ -67,7 +68,7 @@ const DownloadBillingPDF = () => {
                             : commonPDFStyles.zeroValue,
                     ]}
                 >
-                    {formatNumber(row?.total_creditor)}
+                    {customFormatNumber(row?.total_creditor)}
                 </Text>
                 <Text
                     key={4}
@@ -81,7 +82,7 @@ const DownloadBillingPDF = () => {
                                 : commonPDFStyles.debtorColumn,
                     ]}
                 >
-                    {formatNumber(abs(row?.balance))}
+                    {customFormatNumber(abs(row?.balance))}
                 </Text>
             </View>
         ));

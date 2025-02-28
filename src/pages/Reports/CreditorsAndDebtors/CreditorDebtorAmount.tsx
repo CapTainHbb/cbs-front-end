@@ -1,6 +1,6 @@
 import React from 'react';
-import { formatNumber } from '../utils';
 import {abs} from "mathjs";
+import { customFormatNumber } from 'pages/Accounting/utils';
 
 interface Props {
     party_type: string;
@@ -22,7 +22,7 @@ const CreditorDebtorAmount : React.FC<Props> = ({ party_type, type, amount }) =>
             style={{
                 color: type==='creditor' && amount > 0 ? '#008e00' : '#ec0000'
             }}>
-            {formatNumber(abs(amount))}
+            {customFormatNumber(abs(amount))}
         </p>
     );
 };

@@ -1,21 +1,19 @@
 import React, {useCallback, useEffect} from 'react';
-import {Col, Container, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
+import {Container, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
 import TransactionDetails from "../TransactionDetails";
 import TransactionFooter from "../TransactionFooter";
 import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import {BuyAndSellCashFormDataType, defaultBuyAndSellCashFormData} from "./types";
-import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
 import {getUTCFormattedDateTime} from "../../../../helpers/date";
-import {removeNonNumberChars} from "../../utils";
+import {customFormatNumber, formatExchangeRateNumber, formatRateNumber, removeNonNumberChars} from "../../utils";
 import SelectFinancialAccountAndTradeType from './SelectFinancialAccountAndTradeType';
 import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
 import PartyContainer from "../PartyContainer";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import BuyAndSellAmountAndCurrency from "./BuyAndSellAmountAndCurrency";
-import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 
 const initialResetForm = {
     isBuy: false,
@@ -55,20 +53,23 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return {
             isBuy: isBuy,
             conversionType: activeTransactionData?.conversion_type || "multiplication",
-            exchangeRate: (activeTransactionData && formatNumber(activeTransactionData?.exchange_rate)) || "0",
+            exchangeRate: (activeTransactionData && formatExchangeRateNumber(activeTransactionData?.exchange_rate)) || "0",
             financialAccount: activeTransactionData?.creditor_party?.financial_account || null,
             baseCurrency: activeTransactionData?.[`${baseParty}_party`]?.currency || null,
-            baseAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.amount) || "0",
-            baseReceivedFeeRate: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.rate) || "0",
-            baseReceivedFeeAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.amount) || "0",
-            basePaidFeeRate: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.rate) || "0",
-            basePaidFeeAmount: formatNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.amount) || "0",
+            baseAmount: customFormatNumber(activeTransactionData?.[`${baseParty}_party`]?.amount) || "0",
+            baseReceivedFeeRate: formatRateNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.rate) || "0",
+            baseReceivedFeeAmount: customFormatNumber(activeTransactionData?.[`${baseParty}_party`]?.interest.amount) || "0",
+            basePaidFeeRate: formatRateNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.rate) || "0",
+            basePaidFeeAmount: customFormatNumber(activeTransactionData?.[`${baseParty}_party`]?.cost?.amount) || "0",
             againstCurrency: activeTransactionData?.[`${againstParty}_party`]?.currency || null,
-            againstAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.amount) || "0",
-            againstReceivedFeeRate: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.rate) || "0",
-            againstReceivedFeeAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.amount) || "0",
-            againstPaidFeeRate: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.rate) || "0",
-            againstPaidFeeAmount: formatNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.amount) || "0",
+            againstAmount: customFormatNumber(activeTransactionData?.[`${againstParty}_party`]?.amount) || "0",
+            againstReceivedFeeRate: formatRateNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.rate) || "0",
+            againstReceivedFeeAmount: customFormatNumber(activeTransactionData?.[`${againstParty}_party`]?.interest?.amount) || "0",
+            againstPaidFeeRate: formatRateNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.rate) || "0",
+            againstPaidFeeAmount: customFormatNumber(activeTransactionData?.[`${againstParty}_party`]?.cost?.amount) || "0",
+            isFocusedOnBaseAmount: false,
+            isFocusedOnAgainstAmount: false,
+            isFocusedOnExchangeRate: false,
         }
     }, [activeTransactionData]);
     const getLockableFormFieldsInitial = useCallback(() => {
@@ -83,10 +84,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return ({
             isBuy: Yup.boolean().required(t('Required')),
             exchangeRate: Yup.string().required(t('Required'))
-                .test('not-zero', t('Exchange rate cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0)
-                .test('valid-exchange-rate',
-                    () => t("The exchange rate must be consistent with the buy and sell values."),
-                    (value) => checkExchangeRateValidity(value, values?.baseAmount, values?.againstAmount, values?.conversionType)),
+                .test('not-zero', t('Exchange rate cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
             baseCurrency: Yup.string().required(t('Required')),
             againstCurrency: Yup.string().required(t('Required')),
             financialAccount: Yup.string().required(t('Required')),
@@ -110,16 +108,6 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
             againstPaidFeeAmount: Yup.string().required(t("Required"))
         });
     }, []);
-    const checkExchangeRateValidity = useCallback(((exchangeRate: string, baseAmount: string, againstAmount: string, conversionType: string) => {
-        const rateNumber = Number(removeNonNumberChars(exchangeRate));
-        const baseAmountNumber = Number(removeNonNumberChars(baseAmount));
-        const againstAmountNumber = Number(removeNonNumberChars(againstAmount));
-        if(conversionType === 'multiplication') {
-            return (baseAmountNumber * rateNumber) === againstAmountNumber;
-        } else {
-            return (baseAmountNumber / rateNumber) === againstAmountNumber;
-        }
-    }), []);
     const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: BuyAndSellCashFormDataType) => {
         const isBuy = createdTransaction?.is_buy || false;
         const baseParty = isBuy? "debtor": "creditor";
@@ -127,20 +115,20 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         return {
             isBuy: isBuy,
             conversionType: createdTransaction?.conversion_type || "multiplication",
-            exchangeRate: formatNumber(createdTransaction?.exchange_rate) || "0",
+            exchangeRate: formatExchangeRateNumber(createdTransaction?.exchange_rate) || "0",
             financialAccount: createdTransaction?.creditor_party?.financial_account || null,
             baseCurrency: createdTransaction?.[`${baseParty}_party`]?.currency || null,
-            baseAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.amount) || "0",
-            baseReceivedFeeRate: formatNumber(createdTransaction?.[`${baseParty}_party`]?.interest.rate) || "0",
-            baseReceivedFeeAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.interest.amount) || "0",
-            basePaidFeeRate: formatNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.rate) || "0",
-            basePaidFeeAmount: formatNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.amount) || "0",
+            baseAmount: customFormatNumber(createdTransaction?.[`${baseParty}_party`]?.amount) || "0",
+            baseReceivedFeeRate: formatRateNumber(createdTransaction?.[`${baseParty}_party`]?.interest.rate) || "0",
+            baseReceivedFeeAmount: customFormatNumber(createdTransaction?.[`${baseParty}_party`]?.interest.amount) || "0",
+            basePaidFeeRate: formatRateNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.rate) || "0",
+            basePaidFeeAmount: customFormatNumber(createdTransaction?.[`${baseParty}_party`]?.cost?.amount) || "0",
             againstCurrency: createdTransaction?.[`${againstParty}_party`]?.currency || null,
-            againstAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.amount) || "0",
-            againstReceivedFeeRate: formatNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.rate) || "0",
-            againstReceivedFeeAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.amount) || "0",
-            againstPaidFeeRate: formatNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.rate) || "0",
-            againstPaidFeeAmount: formatNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.amount) || "0",
+            againstAmount: customFormatNumber(createdTransaction?.[`${againstParty}_party`]?.amount) || "0",
+            againstReceivedFeeRate: formatRateNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.rate) || "0",
+            againstReceivedFeeAmount: customFormatNumber(createdTransaction?.[`${againstParty}_party`]?.interest?.amount) || "0",
+            againstPaidFeeRate: formatRateNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.rate) || "0",
+            againstPaidFeeAmount: customFormatNumber(createdTransaction?.[`${againstParty}_party`]?.cost?.amount) || "0",
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
@@ -236,30 +224,29 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         let newAgainstValue = '';
         if(conversionType === 'multiplication')
         {
-            newAgainstValue = String(baseAmountNumber * exchangeRateNumber);
+            newAgainstValue = String(Math.round(baseAmountNumber * exchangeRateNumber));
         } else {
-            newAgainstValue = String(baseAmountNumber / exchangeRateNumber);
+            newAgainstValue = String(Math.round(baseAmountNumber / exchangeRateNumber));
         }
         formik.handleNumberInputChange("againstAmount", newAgainstValue);
     }, [formik]);
     formik.toggleIsBuyLock = useCallback((e: any) => {
         formik.setFieldValue('isIsBuyLocked', !formik.values.isIsBuyLocked);
-    }, [formik.values.isIsBuyLocked]);
+    }, [formik, formik.values.isIsBuyLocked]);
     formik.toggleFinancialAccountLock = useCallback((e: any) => {
         formik.setFieldValue('isFinancialAccountLocked', !formik.values.isFinancialAccountLocked);
-    }, [formik.values.isFinancialAccountLocked]);
+    }, [formik, formik.values.isFinancialAccountLocked]);
     formik.toggleBaseCurrencyLock = useCallback((e: any) => {
         formik.setFieldValue('isBaseCurrencyLocked', !formik.values.isBaseCurrencyLocked);
-    }, [formik.values.isBaseCurrencyLocked]);
+    }, [formik, formik.values.isBaseCurrencyLocked]);
     formik.toggleAgainstCurrencyLock = useCallback((e: any) => {
         formik.setFieldValue('isAgainstCurrencyLocked', !formik.values.isAgainstCurrencyLocked);
-    }, [formik.values.isAgainstCurrencyLocked]);
+    }, [formik, formik.values.isAgainstCurrencyLocked]);
     const onChangeBaseAmountValue = useCallback((e: any) => {
         formik.handleNumberInputChange(`baseAmount`, e.target.value);
         formik.updateAgainstAmount(formik.values.exchangeRate,
-            formik.values.conversionType, e.target.value);
-    }, [formik]);
-
+        formik.values.conversionType, e.target.value);
+    }, [formik, formik.values.conversionType, formik.values.exchangeRate]);
     const onChangeAgainstAmountValue = useCallback((e: any) => {
         formik.handleNumberInputChange(`againstAmount`, e.target.value);
     }, [formik]);

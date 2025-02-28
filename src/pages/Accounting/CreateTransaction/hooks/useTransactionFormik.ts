@@ -5,7 +5,7 @@ import {t} from "i18next";
 import {
     DirectCurrencyTransferTransactionFormDataType
 } from "../DirectCurrencyTransfer/types";
-import {customFormatNumber, removeNonNumberChars} from "../../utils";
+import {customFormatNumber, formatExchangeRateNumber, formatRateNumber} from "../../utils";
 import {createLocalizedDate, getUTCFormattedDateTime} from "../../../../helpers/date";
 import axiosInstance from "../../../../helpers/axios_instance";
 import {toast} from "react-toastify";
@@ -236,6 +236,13 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
     formik.handleNumberInputChange = (name: string, value: string) => {
         formik.setFieldValue(name, customFormatNumber(value));
     };
+    formik.handleRateNumberInputChange = (name: string, value: string) => {
+        formik.setFieldValue(name, formatRateNumber(value));
+    }
+    formik.handleExchangeRateInputChange = (name: string, value: string) => {
+        formik.setFieldValue(name, formatExchangeRateNumber(value));
+    }
+
 
     return {
         formik

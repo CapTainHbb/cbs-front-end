@@ -1,6 +1,6 @@
 import React from 'react';
 import {abs} from "mathjs";
-import {formatNumber} from "./utils";
+import { customFormatNumber } from 'pages/Accounting/utils';
 
 interface Props {
     amount: number;
@@ -16,7 +16,7 @@ const BalanceAmount: React.FC<Props> = ({ amount }) => {
            style={{
                color: amount > 0 ? '#008e00' : '#ec0000'
            }}>
-            {formatNumber(abs(amount))}
+            {customFormatNumber(abs(amount))}
         </p>
     );
 };

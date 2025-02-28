@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
 
 import SelectCurrency from "../../../Reports/SelectCurrency/SelectCurrency";
@@ -14,6 +14,27 @@ interface Props {
 
 const BuyAndSellAmountAndCurrency: React.FC<Props> = ({  formik, prefixName, onChangeAmountValue }) => {
     const {t} = useTranslation();
+    const amountCompnentRef = useRef<HTMLInputElement>(null);
+    
+    useEffect(() => {
+        const component = amountCompnentRef.current;
+        const fieldName = prefixName === 'base'? 'isFocusedOnBaseAmount': 'isFocusedOnAgainstAmount'
+        const handleFocus = () => formik.setFieldValue(fieldName, true);
+        const handleBlur = () => formik.setFieldValue(fieldName, false);
+    
+        if (component) {
+          component.addEventListener('focus', handleFocus, true);
+          component.addEventListener('blur', handleBlur, true);
+        }
+    
+        return () => {
+          if (component) {
+            component.removeEventListener('focus', handleFocus, true);
+            component.removeEventListener('blur', handleBlur, true);
+          }
+        };
+      }, []);
+    
     return (
         <Row>
             <Col md={4}>
@@ -25,6 +46,7 @@ const BuyAndSellAmountAndCurrency: React.FC<Props> = ({  formik, prefixName, onC
                     </Col>
                     <Col md={10}>
                         <Input
+                            innerRef={amountCompnentRef}
                             type={'text'}
                             name={`${prefixName}Amount`}
                             value={formik.values?.[`${prefixName}Amount`]}

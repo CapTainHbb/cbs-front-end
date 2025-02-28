@@ -6,10 +6,10 @@ import {columnsForExport, getRowsForExport, PartyForExport} from "../utils";
 import {FinancialAccount, Party} from "../../types";
 import {usePDFStyles} from "../hooks/usePdfStyles";
 import {CompanyProfile} from "../../../CompanyProfile/types";
-import {Currency, formatNumber} from "../../../Reports/utils";
+import {Currency} from "../../../Reports/utils";
 import {abs} from "mathjs";
 import PdfHeader from "./PdfHeader";
-import {useSelector} from "react-redux";
+import { customFormatNumber } from 'pages/Accounting/utils';
 
 
 interface Props {
@@ -129,7 +129,7 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                                     Number(party.debtor_amount) > 0 ? commonPDFStyles.debtorColumn : commonPDFStyles.zeroValue,
                                 ]}
                             >
-                                {formatNumber(party.debtor_amount)}
+                                {customFormatNumber(party.debtor_amount)}
                             </Text>
                             <Text
                                 style={[
@@ -138,7 +138,7 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                                     Number(party.creditor_amount) > 0 ? commonPDFStyles.creditorColumn : commonPDFStyles.zeroValue,
                                 ]}
                             >
-                                {formatNumber(party.creditor_amount)}
+                                {customFormatNumber(party.creditor_amount)}
                             </Text>
                             <Text
                                 style={[
@@ -151,7 +151,7 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                                             : commonPDFStyles.debtorColumn,
                                 ]}
                             >
-                                {formatNumber(abs(Number(party.balance)))}
+                                {customFormatNumber(abs(Number(party.balance)))}
                             </Text>
                         </View>
                     ))}

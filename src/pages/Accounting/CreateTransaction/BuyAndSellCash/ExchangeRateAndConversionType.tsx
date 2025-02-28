@@ -1,17 +1,37 @@
 import { t } from 'i18next';
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row, Spinner} from 'reactstrap';
 import Select from 'react-select';
-import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 import axiosInstance from "../../../../helpers/axios_instance";
-import {removeExtraZerosFromFractional, removeNonNumberChars} from "../../utils";
+import {removeExtraZerosFromFractional} from "../../utils";
+import { calculateNewExchangeRate } from './utils';
 
 interface Props {
     formik: any;
 }
 
 const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
+    const exhcangeRateComponentRef = useRef<HTMLInputElement>(null);
     const [isXeRatesLoading, setIsXeRatesLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        const component = exhcangeRateComponentRef.current;
+    
+        const handleFocus = () => formik.setFieldValue("isFocusedOnExchangeRate", true);
+        const handleBlur = () => formik.setFieldValue("isFocusedOnExchangeRate", false);
+    
+        if (component) {
+          component.addEventListener('focus', handleFocus, true);
+          component.addEventListener('blur', handleBlur, true);
+        }
+    
+        return () => {
+          if (component) {
+            component.removeEventListener('focus', handleFocus, true);
+            component.removeEventListener('blur', handleBlur, true);
+          }
+        };
+      }, []);
 
     const conversionTypeOptions = useMemo(() => {
         return [
@@ -21,25 +41,15 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
     }, [t])
 
     const onExchangeRateChange = useCallback((e: any) => {
-        formik.handleNumberInputChange('exchangeRate', e.target.value);
+        formik.handleExchangeRateInputChange('exchangeRate', e.target.value);
         formik.updateAgainstAmount(e.target.value, formik.values.conversionType, formik.values.baseAmount);
-    }, [formik]);
+    }, [formik.values.conversionType, formik.values.baseAmount]);
 
     const onConversionTypeChange = useCallback((item: any) => {
         formik.setFieldValue('conversionType', item.value);
         formik.updateAgainstAmount(formik.values.exchangeRate, item.value, formik.values.baseAmount);
-    }, [formik]);
+    }, [formik.values.exchangeRate, formik.values.baseAmount]);
 
-    const onClickRateBasedOnAmounts = useCallback((e: any) => {
-        let newExchangeRate = '';
-        if(formik.values.conversionType === 'multiplication') {
-            newExchangeRate = String(Number(removeNonNumberChars(formik.values.againstAmount)) / Number(removeNonNumberChars(formik.values.baseAmount)));
-        } else {
-            newExchangeRate = String(Number(removeNonNumberChars(formik.values.baseAmount)) / Number(removeNonNumberChars(formik.values.againstAmount)));
-        }
-        formik.handleNumberInputChange('exchangeRate', newExchangeRate);
-        formik.updateAgainstAmount(newExchangeRate, formik.values.conversionType, formik.values.baseAmount);
-    }, [formik]);
 
     const onClickRateBasedOnXe = useCallback(async (e: any) => {
         const data = {
@@ -49,12 +59,20 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
         setIsXeRatesLoading(true);
         axiosInstance.post('/currencies/xe-exchange-rate/', data)
             .then(response => {
-                formik.handleNumberInputChange('exchangeRate', removeExtraZerosFromFractional(String(response.data)));
+                formik.handleExchangeRateInputChange('exchangeRate', removeExtraZerosFromFractional(String(response.data)));
                 formik.updateAgainstAmount(String(response.data), formik.values.conversionType, formik.values.baseAmount);
             })
             .catch(error => console.error(error))
             .finally(() => setIsXeRatesLoading(false));
     }, [formik]);
+
+    useEffect(() => {
+        if(formik.values.isFocusedOnExchangeRate || !(formik.values.isFocusedOnBaseAmount || formik.values.isFocusedOnAgainstAmount)) {
+            return;  
+        } 
+        const newRate = calculateNewExchangeRate(formik.values.baseAmount, formik.values.againstAmount, formik.values.conversionType)
+        formik.handleExchangeRateInputChange('exchangeRate', newRate);
+    }, [formik.values.baseAmount, formik.values.againstAmount]);
 
     return (
     <Row className="align-items-center border border-1 pt-1">
@@ -73,6 +91,7 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
             <Col md={5} sm={12}>
                 <Input
                     id={'exchange-rate'}
+                    innerRef={exhcangeRateComponentRef}
                     name={"exchangeRate"}
                     type="text"
                     value={formik.values?.exchangeRate}
@@ -84,23 +103,15 @@ const ExchangeRateAndConversionType: React.FC<Props> = ({ formik }) => {
                     }
                     disabled={formik.derivedState.areInputsDisabled}
                 />
-                {formik.touched?.exchangeRate && formik.errors?.exchangeRate ? (
+                {formik.errors?.exchangeRate ? (
                     <FormFeedback type="invalid">{formik.errors?.exchangeRate}</FormFeedback>
                 ) : null}
             </Col>
         </FormGroup>
       </Col>
       <Col md={4}>
-          <Row className={'gap-1'}>
-              <Col md={6} sm={12} className="">
-                  <Button type={'button'} color={'primary'} className={'w-100'}
-                          disabled={formik.derivedState.areInputsDisabled}
-                          onClick={onClickRateBasedOnAmounts}
-                  >
-                      {t("Rate Based on Amounts")}
-                  </Button>
-              </Col>
-              <Col md={5} sm={12}>
+          <Row>
+              <Col md={6} sm={12}>
                   {isXeRatesLoading && <Spinner size={'small'} />}
                   {!isXeRatesLoading && <Button type={'button'} color={'primary'} className={'w-100'}
                                                 disabled={formik.derivedState.areInputsDisabled}

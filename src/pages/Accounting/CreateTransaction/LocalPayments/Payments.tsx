@@ -2,10 +2,9 @@ import React, {useMemo} from 'react';
 import {PaymentDataType} from './types';
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
 import {t} from 'i18next';
-import {getUTCFormattedTodayDateTime, getToday, getLocalizedFormattedToday} from 'helpers/date';
+import {getUTCFormattedTodayDateTime, getToday} from 'helpers/date';
 import Flatpickr from "react-flatpickr";
-import {removeNonNumberChars} from "../../utils";
-import {formatNumber} from "../../../Reports/utils";
+import {customFormatNumber, removeNonNumberChars} from "../../utils";
 
 
 interface Props {
@@ -52,7 +51,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             type="text"
                             onBlur={formik.handleBlur}
                             placeholder={t("Enter Amount")}
-                            value={formatNumber(payment.amount)}
+                            value={customFormatNumber(payment.amount)}
                             onChange={(e: any) => formik.handleNumberInputChange(`payments.${index}.amount`, e.target.value)}
                             disabled={formik.derivedState.areInputsDisabled}
                             invalid={
@@ -154,7 +153,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             <Label>{t("Total Paid Amount")}</Label>
                         </Col>
                         <Col>
-                            <Label>{formatNumber(totalPaidAmount)}</Label>
+                            <Label>{customFormatNumber(totalPaidAmount)}</Label>
                         </Col>
                     </FormGroup>
                 </Col>
@@ -164,7 +163,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             <Label>{t("Remained Paid Amount")}</Label>
                         </Col>
                         <Col>
-                            <Label dir={'ltr'}>{formatNumber(remainedPaidAmount)}</Label>
+                            <Label dir={'ltr'}>{customFormatNumber(remainedPaidAmount)}</Label>
                         </Col>
                     </FormGroup>
                 </Col>

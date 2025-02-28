@@ -6,20 +6,18 @@ import TransactionMetaData from "../TransactionMetaData";
 import PartyContainer from "../PartyContainer";
 import SelectFinancialAccount from "../../SelectFinancialAccount";
 import {defaultInterestCostProps, FinancialAccount} from "../../types";
-import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
 import TransactionDetails from "../TransactionDetails";
 import TransactionFooter from "../TransactionFooter";
-import {formatNumber} from "../../../Reports/utils";
 import * as Yup from "yup";
-import {removeNonNumberChars} from "../../utils";
+import {customFormatNumber, formatRateNumber, removeNonNumberChars} from "../../utils";
 import {useTransactionFormik} from "../hooks/useTransactionFormik";
 import TotalAmount from "./TotalAmount";
 import PaymentsContainer from './PaymentsContainer';
 import Payments from './Payments';
 import { useSelector } from 'react-redux';
-import {getLocalizedFormattedToday, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
+import {getUTCFormattedTodayDateTime} from 'helpers/date';
 
 const initialResetForm = {
     totalAmount: "0",
@@ -50,17 +48,17 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
         }
 
         return {
-            totalAmount: (activeTransactionData && formatNumber(activeTransactionData?.total_amount)) || "0",
+            totalAmount: (activeTransactionData && customFormatNumber(activeTransactionData?.total_amount)) || "0",
             creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
-            creditorReceivedFeeRate: formatNumber(activeTransactionData?.creditor_interest.rate) || "0",
-            creditorReceivedFeeAmount: formatNumber(activeTransactionData?.creditor_interest.amount) || "0",
-            creditorPaidFeeRate: formatNumber(activeTransactionData?.creditor_cost?.rate) || "0",
-            creditorPaidFeeAmount: formatNumber(activeTransactionData?.creditor_cost?.amount) || "0",
+            creditorReceivedFeeRate: formatRateNumber(activeTransactionData?.creditor_interest.rate) || "0",
+            creditorReceivedFeeAmount: customFormatNumber(activeTransactionData?.creditor_interest.amount) || "0",
+            creditorPaidFeeRate: formatRateNumber(activeTransactionData?.creditor_cost?.rate) || "0",
+            creditorPaidFeeAmount: customFormatNumber(activeTransactionData?.creditor_cost?.amount) || "0",
             debtorFinancialAccount: activeTransactionData?.debtor_financial_account || null,
-            debtorReceivedFeeRate: formatNumber(activeTransactionData?.debtor_interest?.rate) || "0",
-            debtorReceivedFeeAmount: formatNumber(activeTransactionData?.debtor_interest?.amount) || "0",
-            debtorPaidFeeRate: formatNumber(activeTransactionData?.debtor_cost?.rate) || "0",
-            debtorPaidFeeAmount: formatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
+            debtorReceivedFeeRate: formatRateNumber(activeTransactionData?.debtor_interest?.rate) || "0",
+            debtorReceivedFeeAmount: customFormatNumber(activeTransactionData?.debtor_interest?.amount) || "0",
+            debtorPaidFeeRate: formatRateNumber(activeTransactionData?.debtor_cost?.rate) || "0",
+            debtorPaidFeeAmount: customFormatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
             payments: activeTransactionData?.payments || [],
         }
     }, [activeTransactionData]);
@@ -90,17 +88,17 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
     }, []);
     const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: LocalPaymentsFormDataType) => {
         return {
-            totalAmount: (createdTransaction && formatNumber(createdTransaction?.total_amount)) || "0",
+            totalAmount: (createdTransaction && customFormatNumber(createdTransaction?.total_amount)) || "0",
             creditorFinancialAccount: createdTransaction?.creditor_financial_account || null,
-            creditorReceivedFeeRate: formatNumber(createdTransaction?.creditor_interest.rate) || "0",
-            creditorReceivedFeeAmount: formatNumber(createdTransaction?.creditor_interest.amount) || "0",
-            creditorPaidFeeRate: formatNumber(createdTransaction?.creditor_cost?.rate) || "0",
-            creditorPaidFeeAmount: formatNumber(createdTransaction?.creditor_cost?.amount) || "0",
+            creditorReceivedFeeRate: formatRateNumber(createdTransaction?.creditor_interest.rate) || "0",
+            creditorReceivedFeeAmount: customFormatNumber(createdTransaction?.creditor_interest.amount) || "0",
+            creditorPaidFeeRate: formatRateNumber(createdTransaction?.creditor_cost?.rate) || "0",
+            creditorPaidFeeAmount: customFormatNumber(createdTransaction?.creditor_cost?.amount) || "0",
             debtorFinancialAccount: createdTransaction?.debtor_financial_account || null,
-            debtorReceivedFeeRate: formatNumber(createdTransaction?.debtor_interest?.rate) || "0",
-            debtorReceivedFeeAmount: formatNumber(createdTransaction?.debtor_interest?.amount) || "0",
-            debtorPaidFeeRate: formatNumber(createdTransaction?.debtor_cost?.rate) || "0",
-            debtorPaidFeeAmount: formatNumber(createdTransaction?.debtor_cost?.amount) || "0",
+            debtorReceivedFeeRate: formatRateNumber(createdTransaction?.debtor_interest?.rate) || "0",
+            debtorReceivedFeeAmount: customFormatNumber(createdTransaction?.debtor_interest?.amount) || "0",
+            debtorPaidFeeRate: formatRateNumber(createdTransaction?.debtor_cost?.rate) || "0",
+            debtorPaidFeeAmount: customFormatNumber(createdTransaction?.debtor_cost?.amount) || "0",
             payments: createdTransaction?.payments || [],
         }
     }, []);

@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import {Col, FormFeedback, FormGroup, Input, Label, Row} from "reactstrap";
 import {t} from "i18next";
-import { removeNonNumberChars } from '../utils';
-import {formatNumber} from "../../Reports/utils";
+import { customFormatNumber, removeNonNumberChars } from '../utils';
 
 interface Props {
     formik: any;
@@ -14,13 +13,13 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
     const calculatedPaidRate = useMemo(() => {
         const rate = Number(removeNonNumberChars(formik.values?.[`${prefixName}PaidFeeRate`]));
         const amount = Number(removeNonNumberChars(partyAmount));
-        return formatNumber((amount * rate * 0.01).toFixed(2));
+        return customFormatNumber((amount * rate * 0.01));
     }, [partyAmount, formik]);
 
     const calculatedReceivedRate = useMemo(() => {
         const rate = Number(removeNonNumberChars(formik.values?.[`${prefixName}ReceivedFeeRate`]));
         const amount = Number(removeNonNumberChars(partyAmount));
-        return (amount * rate * 0.01).toFixed(2);
+        return customFormatNumber(amount * rate * 0.01);
     }, [partyAmount, formik]);
 
     const calculatedFinalAmount = useMemo(() => {
@@ -34,8 +33,9 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
             (prefixName === 'debtor') ||
             (prefixName === 'base' && formik.values?.isBuy) ||
             (prefixName === 'against' && !formik.values?.isBuy);
-
-        return isAdd ? amount + receivedTotal - paidTotal : amount - receivedTotal + paidTotal;
+        
+        const result = isAdd ? amount + receivedTotal - paidTotal : amount - receivedTotal + paidTotal;
+        return customFormatNumber(result)
     }, [partyAmount, formik.values, calculatedReceivedRate, calculatedPaidRate]);
 
     const finalAmountStyle = useMemo(() => {
@@ -76,7 +76,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                                 name={"debtorReceivedFeeRate"}
                                                 type="text"
                                                 value={formik.values?.[`${prefixName}ReceivedFeeRate`]}
-                                                onChange={(e: any) => formik.handleNumberInputChange(`${prefixName}ReceivedFeeRate`, e.target.value)}
+                                                onChange={(e: any) => formik.handleRateNumberInputChange(`${prefixName}ReceivedFeeRate`, e.target.value)}
                                                 onBlur={formik.handleBlur}
                                                 placeholder={t("Enter Rate")}
                                                 invalid={
@@ -89,7 +89,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                             ) : null}
                                         </Col>
                                         <Col>
-                                            <Label>{formatNumber(calculatedReceivedRate)}</Label>
+                                            <Label>{calculatedReceivedRate}</Label>
                                         </Col>
                                     </FormGroup>
                                 </Col>
@@ -142,7 +142,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                                 name={"debtorPaidFeeRate"}
                                                 type="text"
                                                 value={formik.values?.[`${prefixName}PaidFeeRate`]}
-                                                onChange={(e: any) => formik.handleNumberInputChange(`${prefixName}PaidFeeRate`, e.target.value)}
+                                                onChange={(e: any) => formik.handleRateNumberInputChange(`${prefixName}PaidFeeRate`, e.target.value)}
                                                 onBlur={formik.handleBlur}
                                                 placeholder={t("Enter Rate")}
                                                 invalid={
@@ -155,7 +155,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                                             ) : null}
                                         </Col>
                                         <Col>
-                                            <Label>{formatNumber(calculatedPaidRate)}</Label>
+                                            <Label>{calculatedPaidRate}</Label>
                                         </Col>
                                     </FormGroup>
                                 </Col>
@@ -194,7 +194,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
                     <Label className={finalAmountStyle}>{t("Final Amount")}</Label>
                 </Col>
                 <Col>
-                    <Label className={finalAmountStyle}>{formatNumber(calculatedFinalAmount)}</Label>
+                    <Label className={finalAmountStyle}>{calculatedFinalAmount}</Label>
                 </Col>
             </Row>
         </Col>
