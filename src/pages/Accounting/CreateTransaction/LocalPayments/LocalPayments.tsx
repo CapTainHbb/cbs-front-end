@@ -17,7 +17,7 @@ import TotalAmount from "./TotalAmount";
 import PaymentsContainer from './PaymentsContainer';
 import Payments from './Payments';
 import { useSelector } from 'react-redux';
-import {getUTCFormattedTodayDateTime} from 'helpers/date';
+import {createLocalizedDate, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
 
 const initialResetForm = {
     totalAmount: "0",
@@ -47,6 +47,16 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             return structuredClone(initialResetForm);
         }
 
+
+        let payments = activeTransactionData.payments.map((payment: PaymentDataType) => {
+            return {
+                amount: payment.amount,
+                bank_account: payment.bank_account,
+                payment_transaction_id: payment.payment_transaction_id,
+                dateTime: createLocalizedDate(payment.date, payment.time),
+            }
+        });
+
         return {
             totalAmount: (activeTransactionData && customFormatNumber(activeTransactionData?.total_amount)) || "0",
             creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
@@ -59,7 +69,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorReceivedFeeAmount: customFormatNumber(activeTransactionData?.debtor_interest?.amount) || "0",
             debtorPaidFeeRate: formatRateNumber(activeTransactionData?.debtor_cost?.rate) || "0",
             debtorPaidFeeAmount: customFormatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
-            payments: activeTransactionData?.payments || [],
+            payments: payments,
         }
     }, [activeTransactionData]);
     const getSpecificFormFieldsValidation = useCallback(() => {
@@ -80,13 +90,21 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                     amount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')).test('not-zero', t('Value cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
                     bank_account: Yup.string(),
                     transaction_id: Yup.string(),
-                    date: Yup.string(),
-                    time: Yup.string(),
+                    dateTime: Yup.string(),
                 })
             ).min(1, 'At least one payment is required'),
         });
     }, []);
     const getSpecificFormFieldsAfterSubmission = useCallback((createdTransaction: LocalPaymentsFormDataType) => {
+        let payments = createdTransaction.payments.map((payment: PaymentDataType) => {
+            return {
+                amount: payment.amount,
+                bank_account: payment.bank_account,
+                payment_transaction_id: payment.payment_transaction_id,
+                dateTime: createLocalizedDate(payment.date, payment.time),
+            }
+        });
+
         return {
             totalAmount: (createdTransaction && customFormatNumber(createdTransaction?.total_amount)) || "0",
             creditorFinancialAccount: createdTransaction?.creditor_financial_account || null,
@@ -99,7 +117,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorReceivedFeeAmount: customFormatNumber(createdTransaction?.debtor_interest?.amount) || "0",
             debtorPaidFeeRate: formatRateNumber(createdTransaction?.debtor_cost?.rate) || "0",
             debtorPaidFeeAmount: customFormatNumber(createdTransaction?.debtor_cost?.amount) || "0",
-            payments: createdTransaction?.payments || [],
+            payments: payments,
         }
     }, []);
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
@@ -135,13 +153,13 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
 
         data.payments = inputFormik.values.payments.map((item: PaymentDataType) => {
             return {
-                ...item,
+                bank_account: item.bank_account,
+                payment_transaction_id: item.payment_transaction_id,
                 amount: Number(removeNonNumberChars(item.amount)),
-                date: item.date === ""? getUTCFormattedTodayDateTime().date: item.date,
-                time: item.time === ""? getUTCFormattedTodayDateTime().time: item.time,
+                date: item.dateTime? getUTCFormattedDateTime(item.dateTime).date: getUTCFormattedTodayDateTime().date,
+                time: item.dateTime? getUTCFormattedDateTime(item.dateTime).time: getUTCFormattedTodayDateTime().time,
             }
         });
-
         return data;
     },[localCurrency])
 

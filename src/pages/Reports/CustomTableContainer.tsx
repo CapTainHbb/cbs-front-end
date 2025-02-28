@@ -68,10 +68,12 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         setData(preProcessData !== undefined? preProcessData(data?.data): data?.data)
         setRowCount(data?.total_rows);
         setPageCount(data?.total_pages);
-        setPagination({
-            pageIndex: data?.current_page? (data?.current_page - 1): 0,
-            pageSize: data?.page_size
-        });
+        if(data?.page_size && data?.current_page) {
+            setPagination({
+                pageIndex: data?.current_page? (data?.current_page - 1): 0,
+                pageSize: data?.page_size
+            });
+        }
     }, [preProcessData]);
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});

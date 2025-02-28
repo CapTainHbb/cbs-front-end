@@ -134,7 +134,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
             debtor_party: structuredClone(defaultDirectCurrencyTransferFormData.debtor_party),
             creditor_party: structuredClone(defaultDirectCurrencyTransferFormData.creditor_party)
         };
-        console.log(inputFormik.values.dateTime)
+
         const date = getUTCFormattedDateTime(inputFormik.values.dateTime).date;
         const time = getUTCFormattedDateTime(inputFormik.values.dateTime).time;
         const amount = Number(removeNonNumberChars(inputFormik.values.amount));

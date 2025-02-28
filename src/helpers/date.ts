@@ -57,3 +57,38 @@ export const getLocalizedFormattedDateTime = (date: Date) => {
     const formatted_date = date?.toLocaleDateString?.()
     return {time: formatted_time, date: formatted_date}
 }
+
+export const getNowLocalTime = (): string => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0'); // Get hours (00-23)
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // Get minutes (00-59)
+    const seconds = "00"; // Manually set seconds to "82"
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+export const convertUtcTimeToLocal = (utcTime: string): string => {
+    // Split the UTC time string into hours, minutes, and seconds
+    const [utcHours, utcMinutes, utcSeconds] = utcTime.split(':').map(Number);
+
+    // Create a Date object with the current date and the parsed UTC time
+    const now = new Date();
+    const utcDate = new Date(
+        Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate(),
+            utcHours,
+            utcMinutes,
+            utcSeconds
+        )
+    );
+
+    // Convert the UTC date to local time
+    const localHours = String(utcDate.getHours()).padStart(2, '0');
+    const localMinutes = String(utcDate.getMinutes()).padStart(2, '0');
+    const localSeconds = String(utcDate.getSeconds()).padStart(2, '0');
+
+    // Format the local time as a string
+    return `${localHours}:${localMinutes}:${localSeconds}`;
+}

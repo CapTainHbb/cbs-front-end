@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {PaymentDataType} from './types';
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
 import {t} from 'i18next';
-import {getUTCFormattedTodayDateTime, getToday} from 'helpers/date';
+import {getToday, getNowLocalTime} from 'helpers/date';
 import Flatpickr from "react-flatpickr";
 import {customFormatNumber, removeNonNumberChars} from "../../utils";
 
@@ -21,6 +21,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
             payment_transaction_id: '',
             date: '',
             time: '',
+            dateTime: '',
         };
         formik.setFieldValue('payments', [...formik.values.payments, newPayment]);
     };
@@ -100,35 +101,19 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     <Col md={2} sm={12}>
                         <Flatpickr
                             className="form-control"
-                            name={`payments.${index}.date`}
+                            name={`payments.${index}.dateTime`}
                             options={{
-                                dateFormat: "Y-m-d",
+                                enableTime: true,
+                                dateFormat: "Y-m-d H:i",
                             }}
                             onChange={([selectedDate]) => {
-                                formik.setFieldValue(`payments.${index}.date`, selectedDate);
+                                formik.setFieldValue(`payments.${index}.dateTime`, selectedDate);
                             }}
-                            value={payment.date || getToday()}
+                            value={payment.dateTime ||  getToday()}
                             disabled={formik.derivedState.areInputsDisabled}
                         />
-                        {formik.errors.payments?.[index]?.date && (
-                            <div>{formik.errors.payments[index].date}</div>
-                        )}
-                    </Col>
-
-                    {/* Time Field */}
-                    <Col md={2} sm={12}>
-                        <Input
-                            id={`payments.${index}.time`}
-                            name={`payments.${index}.time`}
-                            type="time"
-                            onChange={(e) => {
-                                formik.setFieldValue(`payments.${index}.time`, e.target.value);
-                            }}
-                            value={payment.time || getUTCFormattedTodayDateTime().time}
-                            disabled={formik.derivedState.areInputsDisabled}
-                        />
-                        {formik.errors.payments?.[index]?.time && (
-                            <div>{formik.errors.payments[index].time}</div>
+                        {formik.errors.payments?.[index]?.dateTime && (
+                            <div>{formik.errors.payments[index].dateTime}</div>
                         )}
                     </Col>
 

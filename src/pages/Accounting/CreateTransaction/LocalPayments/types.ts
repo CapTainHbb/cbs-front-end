@@ -39,4 +39,5 @@ export interface PaymentDataType {
     payment_transaction_id: string;
     date: string;
     time: string;
+    dateTime: any;
 }

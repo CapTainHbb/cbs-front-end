@@ -23,17 +23,16 @@ import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpe
 const Billing = () => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const [table, setTable] = useState<any>(undefined);
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
     const [searchParams] = useSearchParams();
     const {updateFilter, resetFilters} = useBillingFilters();
     useEffect(() => {
         if(Number(searchParams.get("financial_account")) === 0) return
-        resetFilters();
         updateFilter("financial_account", Number(searchParams.get("financial_account")))
     }, [searchParams]);
 
     const { filters } = useBillingFilters();
 
-    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
     const getTransactionBriefCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;

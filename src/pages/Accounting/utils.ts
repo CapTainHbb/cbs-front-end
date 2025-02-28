@@ -15,6 +15,7 @@ export const determineCurrencyTextColor = (balance: number) => {
 }
 
 export const removeNonNumberChars = (input: any) => {
+    if (input === undefined) return "0"
     if(typeof input === 'number') return input
     // Remove invalid characters (allow digits and a single decimal point)
     return input?.replace(/[^0-9.]/g, '');
