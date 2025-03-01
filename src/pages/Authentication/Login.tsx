@@ -42,7 +42,7 @@ const Login = (props: any) => {
         return <Navigate to="/" />;
     }
 
-    document.title = "Basic SignIn | Velzon - React Admin & Dashboard Template";
+    document.title = "SignIn | ZALEX - Financial Software";
     return (
         <React.Fragment>
             <ParticlesAuth>

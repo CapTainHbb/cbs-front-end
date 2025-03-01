@@ -136,3 +136,11 @@ export const defaultTransaction: Transaction = {
     is_edit_enabled: false,
 }
 
+export interface AccumulatedAmountType {
+    currency?: Currency;
+    balance: number;
+    debtor_amount: number;
+    creditor_amount: number;
+
+}
+

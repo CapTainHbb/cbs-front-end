@@ -9,7 +9,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 
-import {useFetchDataFromApi} from "./hooks";
+import {useAdvancedRowClick, useFetchDataFromApi} from "./hooks";
 import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
 import {Row, Table} from "reactstrap";
@@ -38,6 +38,7 @@ interface Props<T, F> {
     setItemsChanged: any;
     setTable?: any;
     preProcessData?: any;
+    onSelectedRowsChange?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -51,6 +52,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          setItemsChanged,
                          setTable,
                          preProcessData,
+                         onSelectedRowsChange,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -102,9 +104,16 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         getSubRows: (row: any) => row?.children,
     })
 
+    const {handleRowClick} = useAdvancedRowClick({
+        table, rowSelection, setRowSelection});
+
     useEffect(() => {
         setTable?.(table);
     }, [table]);
+
+    useEffect(() => {
+        onSelectedRowsChange?.(table.getSelectedRowModel().rows)
+    }, [rowSelection, data]);
 
     useEffect(() => {
         table.setPageIndex(0);
@@ -124,9 +133,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
     const onUpdateTable = useCallback(() => {
         setItemsChanged?.(!itemsChanged);
-    }, [itemsChanged, setItemsChanged])
-
-
+    }, [setItemsChanged, itemsChanged])
 
     return (
         <Fragment>
@@ -225,7 +232,11 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                             }
                             return (
                                 <tr key={row.id}
-                                style={{cursor: onDoubleClickRow !== undefined? 'pointer': ''}}
+                                style={{
+                                    cursor: onDoubleClickRow !== undefined? 'pointer': '',
+                                }}
+                                className={rowSelection[row.id]? 'table-primary' : ''}
+                                onClick={(e: any) => {row.toggleSelected(); handleRowClick(row.id, e)}}
                                 onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
                                 >                          
                                     {row.getVisibleCells().map(cell => (

@@ -5,10 +5,9 @@ interface AdvancedRowClickProps {
     table: any;
     rowSelection: any;
     setRowSelection: any;
-    onRowsSelection?: any;
 }
 
-export const useAdvancedRowClick = ({table, rowSelection, setRowSelection, onRowsSelection  }: AdvancedRowClickProps) => {
+export const useAdvancedRowClick = ({table, rowSelection, setRowSelection,   }: AdvancedRowClickProps) => {
     const [lastClickedRow, setLastClickedRow] = useState<string | null>(null);
     const handleRowClick = useCallback(
         (rowId: string, event: React.MouseEvent) => {
@@ -25,6 +24,8 @@ export const useAdvancedRowClick = ({table, rowSelection, setRowSelection, onRow
 
                     // Select all rows in the range
                     for (let i = start; i <= end; i++) {
+                        if(rows[i]?.original?.isHeader === true) continue;
+
                         updatedSelection[rows[i].id] = true;
                     }
 
@@ -38,19 +39,9 @@ export const useAdvancedRowClick = ({table, rowSelection, setRowSelection, onRow
         [lastClickedRow, rowSelection, setRowSelection, table]
     );
 
-    const isAnyRowSelected = useMemo(() => {
-        return table.getSelectedRowModel().rows.length !== 0;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [table.getSelectedRowModel().rows])
-
-    useEffect(() => {
-        onRowsSelection?.(table.getSelectedRowModel().rows);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [onRowsSelection, table.getSelectedRowModel().rows]);
 
     return {
-        handleRowClick,
-        isAnyRowSelected
+        handleRowClick
     }
 }
 

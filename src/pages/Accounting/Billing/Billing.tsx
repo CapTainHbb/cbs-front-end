@@ -18,13 +18,16 @@ import BuyAndSellCash from '../CreateTransaction/BuyAndSellCash/BuyAndSellCash';
 import LocalPayments from '../CreateTransaction/LocalPayments/LocalPayments';
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpers/date";
+import DraggableTableFooter from "./DraggableTableFooter";
 
 
 const Billing = () => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const [table, setTable] = useState<any>(undefined);
-    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
+    const [itemsChanged, setItemsChanged] = useState<boolean>(false);
+    const [isFooterComponentOpen, setIsFooterComponentOpen] = useState<boolean>(false);
     const [searchParams] = useSearchParams();
+    const [selectedRows, setSelectedRows] = useState<any>([]);
     const {updateFilter, resetFilters} = useBillingFilters();
     useEffect(() => {
         if(Number(searchParams.get("financial_account")) === 0) return
@@ -32,7 +35,6 @@ const Billing = () => {
     }, [searchParams]);
 
     const { filters } = useBillingFilters();
-
 
     const getTransactionBriefCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;
@@ -359,6 +361,13 @@ const Billing = () => {
         return processedList;
     }, [])
 
+    useEffect(() => {
+        setIsFooterComponentOpen(selectedRows?.length !== 0)
+    }, [selectedRows]);
+
+
+    document.title = "Billing | ZALEX - Financial Software";
+
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -384,6 +393,7 @@ const Billing = () => {
                                         onDoubleClickRow={handleEditTransaction}
                                         setTable={setTable}
                                         preProcessData={preProcessData}
+                                        onSelectedRowsChange={(rows: any) => setSelectedRows(rows)}
                                     />
                                     <DirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}
                                                             activeTransactionData={activeTransactionData || undefined}
@@ -416,6 +426,10 @@ const Billing = () => {
                     </Col>
                 </Container>
             </div>
+            {isFooterComponentOpen && <DraggableTableFooter
+                                        onCloseClicked={() => setIsFooterComponentOpen(false)}
+                                        selectedRows={selectedRows?.map((row: any) => row.original)}
+            />}
         </React.Fragment>
     );
 };
