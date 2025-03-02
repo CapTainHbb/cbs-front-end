@@ -346,13 +346,13 @@ const Billing = () => {
         filters.transaction_id_to, filters?.transaction_type, filters.user_specified_id,
         getTransactionTypeCell, t])
 
-    const preProcessData = useCallback((parties: Party[]): (Party | { date: string; isHeader: true })[] => {
-        const processedList: (Party | { date: string; isHeader: true })[] = [];
+    const preProcessData = useCallback((parties: Party[]): (Party | { headerContent: any; isHeader: true })[] => {
+        const processedList: (Party | { headerContent: any; isHeader: true })[] = [];
         let lastDate: string | null = null;
     
         for (const party of parties) {
             if (party.date !== lastDate) {
-                processedList.push({ date: party.date, isHeader: true }); // Insert header
+                processedList.push({ headerContent: (new Date(party.date)).toLocaleDateString(), isHeader: true }); // Insert header
                 lastDate = party.date;
             }
             processedList.push(party); // Insert actual item

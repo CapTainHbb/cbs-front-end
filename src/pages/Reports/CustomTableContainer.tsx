@@ -158,110 +158,115 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                         </div>
                         {hasPagination && <ChangePageContainer table={table} />}
                     </div>
-                    <Table className={'table table-hover table-bordered'}>
-                        <thead className={"table-light"}>
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <tr key={headerGroup.id}>
-                                {headerGroup.headers.map(header => (
-                                    <th
-                                        key={header.id} // Pass key separately here
-                                        colSpan={header.colSpan}
-                                        style={{
-                                            width: `${header.getSize()}px`, // Ensure it applies the size
-                                            minWidth: `${header.column.columnDef.minSize}px`,
-                                            maxWidth: `${header.column.columnDef.maxSize}px`,
-                                        }}
-                                    >
-                                        <div className={'h-full'}>
-                                            {header.isPlaceholder ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </div>
-                                        <div
-                                            {...{
-                                                onDoubleClick: () => header.column.resetSize(),
-                                                onMouseDown: header.getResizeHandler(),
-                                                onTouchStart: header.getResizeHandler(),
-                                                className: `resizer  ${
-                                                    table.options.columnResizeDirection
-                                                } ${
-                                                    header.column.getIsResizing() ? 'isResizing' : ''
-                                                }`,
-                                            }}
-                                        />
-                                    </th>
-                                ))}
-                            </tr>
-                        ))}
-                        </thead>
-
-                        <tbody>
-                        {itemsAreLoading && Array.from({length: 10},
-                            (_, index) => (
-                                <tr key={index}>
-                                    {
-                                        table.getAllLeafColumns()
-                                            .filter(column => column.getIsVisible())
-                                            .map(column => {
-                                                return (
-                                                    <td key={column.id} style={{
-                                                        width: column.getSize(),
-                                                    }}>
-                                                        <RectLoader/>
-                                                    </td>
-                                                )
-                                            })
-                                    }
-                                </tr>
-                            ))
-                        }
-                        {!itemsAreLoading && table.getRowModel().rows.map(row => {
-                            // Access the `hideCondition` from the column's meta
-                            const shouldHide = columns.some((column: any) =>
-                                column.meta?.hideCondition?.(row)
-                            );
-
-                            if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
-                            if (row.original?.isHeader) {
-                                return <tr key={row.id} className='table-primary text-primary fs-18 fw-semibold'>
-                                    <td colSpan={row.getVisibleCells().length}
-                                        style={{padding: '0px'}}
-                                    >
-                                        {(new Date(row.original.date)).toLocaleDateString()}
-                                    </td>
-
-                                </tr>
-                            }
-                            return (
-                                <tr key={row.id}
+                    <div
+                        style={{
+                            maxHeight: '600px',
+                            overflowY: 'auto',
+                            overflowX: 'auto',
+                            position: 'relative',
+                        }}
+                    >
+                        <Table className={'table table-hover table-bordered'}>
+                            <thead
+                                className={"table-light"}
                                 style={{
-                                    cursor: onDoubleClickRow !== undefined? 'pointer': '',
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 1,
+                                    background: '#f8f9fa',
                                 }}
-                                className={rowSelection[row.id]? 'table-primary' : ''}
-                                onClick={(e: any) => {row.toggleSelected(); handleRowClick(row.id, e)}}
-                                onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
-                                >
-                                    {row.getVisibleCells().map(cell => (
-                                        <td
-                                            className={'p-1'}
-                                            key={cell.id}
-                                            style={{
-                                                width: cell.column.getSize(),
-                                            }}
+                            >
+                                {table.getHeaderGroups().map(headerGroup => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map(header => (
+                                            <th
+                                                key={header.id} // Pass key separately here
+                                                colSpan={header.colSpan}
+                                                style={{
+                                                    width: `${header.getSize()}px`, // Ensure it applies the size
+                                                    minWidth: `${header.column.columnDef.minSize}px`,
+                                                    maxWidth: `${header.column.columnDef.maxSize}px`,
+                                                }}
+                                            >
+                                                <div>
+                                                    {header.isPlaceholder ? null
+                                                        : flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                </div>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+
+                            <tbody>
+                            {itemsAreLoading && Array.from({length: 10},
+                                (_, index) => (
+                                    <tr key={index}>
+                                        {
+                                            table.getAllLeafColumns()
+                                                .filter(column => column.getIsVisible())
+                                                .map(column => {
+                                                    return (
+                                                        <td key={column.id} style={{
+                                                            width: column.getSize(),
+                                                        }}>
+                                                            <RectLoader/>
+                                                        </td>
+                                                    )
+                                                })
+                                        }
+                                    </tr>
+                                ))
+                            }
+                            {!itemsAreLoading && table.getRowModel().rows.map(row => {
+                                // Access the `hideCondition` from the column's meta
+                                const shouldHide = columns.some((column: any) =>
+                                    column.meta?.hideCondition?.(row)
+                                );
+
+                                if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
+                                if (row.original?.isHeader) {
+                                    return <tr key={row.id} className='table-primary text-primary fs-18 fw-semibold'>
+                                        <td colSpan={row.getVisibleCells().length}
+                                            style={{padding: '0px'}}
                                         >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
+                                            {row.original?.headerContent}
                                         </td>
-                                    ))}
-                                </tr>
-                            )
-                        })}
-                        </tbody>
-                    </Table>
+
+                                    </tr>
+                                }
+                                return (
+                                    <tr key={row.id}
+                                    style={{
+                                        cursor: onDoubleClickRow !== undefined? 'pointer': '',
+                                    }}
+                                    className={`${rowSelection[row.id]? 'table-primary' : ''}`}
+                                    onClick={(e: any) => {row.toggleSelected(); handleRowClick(row.id, e)}}
+                                    onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
+                                    >
+                                        {row.getVisibleCells().map(cell => (
+                                            <td
+                                                key={cell.id}
+                                                style={{
+                                                    padding: '2px',
+                                                    width: cell.column.getSize(),
+                                                }}
+                                            >
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
             </TableContext.Provider>
         </Fragment>
