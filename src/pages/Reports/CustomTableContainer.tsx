@@ -172,7 +172,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 style={{
                                     position: 'sticky',
                                     top: 0,
-                                    zIndex: 1,
+                                    zIndex: 0,
                                     background: '#f8f9fa',
                                 }}
                             >
