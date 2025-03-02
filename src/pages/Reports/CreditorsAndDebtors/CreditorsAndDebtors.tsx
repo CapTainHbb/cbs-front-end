@@ -110,6 +110,7 @@ const CreditorsAndDebtors = () => {
                                         filters={filters}
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
+                                        hasPagination={false}
                                     />
                                 </React.Fragment >
                             </CardBody>

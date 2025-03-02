@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export const getUTCFormattedDate = (date: Date): string => {
-    return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    return date.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
 };
 
 export const getUTCFormattedDateTime = (date: Date): any => {

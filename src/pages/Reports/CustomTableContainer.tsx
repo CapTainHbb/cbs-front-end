@@ -12,7 +12,7 @@ import {
 import {useAdvancedRowClick, useFetchDataFromApi} from "./hooks";
 import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
-import {Row, Table} from "reactstrap";
+import {Table} from "reactstrap";
 import ChangePageContainer from "./ChangePageContainer";
 
 
@@ -39,6 +39,7 @@ interface Props<T, F> {
     setTable?: any;
     preProcessData?: any;
     onSelectedRowsChange?: any;
+    hasPagination?: boolean;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -53,6 +54,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          setTable,
                          preProcessData,
                          onSelectedRowsChange,
+                         hasPagination = true,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -154,7 +156,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 <span className="fw-semibold ms-1">{data.length}</span> {t("Results")}
                             </div>
                         </div>
-                        <ChangePageContainer table={table} />
+                        {hasPagination && <ChangePageContainer table={table} />}
                     </div>
                     <Table className={'table table-hover table-bordered'}>
                         <thead className={"table-light"}>
@@ -229,7 +231,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                     >
                                         {(new Date(row.original.date)).toLocaleDateString()}
                                     </td>
-                                    
+
                                 </tr>
                             }
                             return (
@@ -240,7 +242,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 className={rowSelection[row.id]? 'table-primary' : ''}
                                 onClick={(e: any) => {row.toggleSelected(); handleRowClick(row.id, e)}}
                                 onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
-                                >                          
+                                >
                                     {row.getVisibleCells().map(cell => (
                                         <td
                                             className={'p-1'}

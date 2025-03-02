@@ -1,7 +1,7 @@
 import BreadCrumb from 'Components/Common/BreadCrumb'
 import React, { useMemo, useState } from 'react'
 import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
-import IncomeCostProfitExtraHeader from './IncomeCostProfitExtraHeader';
+import GeneralReportExtraHeader from './GeneralReportExtraHeader';
 import CustomTableContainer from '../CustomTableContainer';
 import { ColumnDef } from '@tanstack/react-table';
 import IndeterminateCheckbox from '../IndetermineCheckbox';
@@ -90,9 +90,10 @@ const IncomeCostProfit = () => {
           <Col lg={12}>
             <Card>
                 <CardHeader>
-                    <IncomeCostProfitExtraHeader 
+                    <GeneralReportExtraHeader
                         fromDate={fromDate} onChangeFromDate={setFromDate}
                         toDate={toDate} onChangeToDate={setToDate}
+                        itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
                      />
                 </CardHeader>
                 <CardBody>
@@ -103,6 +104,7 @@ const IncomeCostProfit = () => {
                             loadItemsApi='statistics-information/income-cost-profit/'
                             columns={(columns || [])}
                             filters={filters}
+                            hasPagination={false}
                         />
                     </React.Fragment >
                 </CardBody>

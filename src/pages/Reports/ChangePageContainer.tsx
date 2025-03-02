@@ -10,7 +10,6 @@ const ChangePageContainer: React.FC<Props> = ({ table }) => {
 
     const totalPages = Math.ceil(table?.getRowCount() / table?.getState().pagination.pageSize);
     const pageOptions = Array.from({ length: totalPages }, (_, i) => i)
-
     return (
         <div className="col-sm-auto">
             <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">

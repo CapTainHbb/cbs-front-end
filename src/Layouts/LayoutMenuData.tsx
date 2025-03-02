@@ -203,7 +203,20 @@ const Navdata = () => {
                         label: "Income Cost And Profit",
                         link: "/reports-income-cost-profit",
                         parentId: "dashboard",
-                    }
+                    },
+                    {
+                        id: "gross-fee",
+                        label: "Gross Fee",
+                        link: "/reports-gross-fee",
+                        parentId: "dashboard",
+                    },
+                    {
+                        id: "total-performance",
+                        label: "Total Performance",
+                        link: "/reports-total-performance",
+                        parentId: "dashboard",
+                    },
+
                 ],
             },
             {

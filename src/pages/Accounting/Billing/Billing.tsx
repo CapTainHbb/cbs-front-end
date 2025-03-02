@@ -147,7 +147,7 @@ const Billing = () => {
                     ),
                     minSize: 15,  
                     maxSize: 15,  
-                    width: 15
+                    size: 15
                 },
                 // {
                 //     id: 'account_name',
@@ -168,7 +168,7 @@ const Billing = () => {
                     cell: info => info.row.original?.created_by,
                     minSize: 60,  
                     maxSize: 60,  
-                    width: 60  
+                    size: 60
                 },
                 {
                     accessorKey: 'transaction_type',
@@ -182,7 +182,7 @@ const Billing = () => {
                         </div>,
                     minSize: 50,  
                     maxSize: 50,  
-                    width: 50  
+                    size: 50
                 },
                 {
                     accessorKey: 'transaction',
@@ -193,7 +193,7 @@ const Billing = () => {
                         </div>,
                     minSize: 60,  
                     maxSize: 60,  
-                    width: 60  
+                    size: 60
                 },
                 {
                     accessorKey: 'user_specified_id',
@@ -217,7 +217,7 @@ const Billing = () => {
                         </div>,
                     minSize: 80,  
                     maxSize: 80,  
-                    width: 80  
+                    size: 80
                 },
                 {
                     accessorKey: 'date',
@@ -228,7 +228,7 @@ const Billing = () => {
                         </div>,
                     minSize: 70,
                     maxSize: 70,
-                    width: 70
+                    size: 70
                 },
                 {
                     accessorKey: 'time',
@@ -239,7 +239,7 @@ const Billing = () => {
                         </div>,
                     minSize: 70,
                     maxSize: 70,
-                    width: 70
+                    size: 70
                 },
                 {
                     accessorKey: 'description',
@@ -261,7 +261,7 @@ const Billing = () => {
                             <span>{t("Description")}</span>,
                     minSize: 70,  
                     maxSize: 70,  
-                    width: 70     
+                    size: 70
                 },
                 {
                     accessorKey: 'transaction_brief',
@@ -277,7 +277,7 @@ const Billing = () => {
                         </div>,
                     minSize: 100,
                     maxSize: 100,
-                    width: 100
+                    size: 100
                 },
                 {
                     accessorKey: 'currency',
@@ -288,7 +288,7 @@ const Billing = () => {
                         </div>,
                     minSize: 50,  
                     maxSize: 50,  
-                    width: 50  
+                    size: 50
                 },
                 {
                     id: 'debtor_amount',
@@ -303,7 +303,7 @@ const Billing = () => {
                         </div>,
                     minSize: 90,  
                     maxSize: 90,  
-                    width: 90  
+                    size: 90
                 },
                 {
                     id: 'creditor_amount',
@@ -317,7 +317,7 @@ const Billing = () => {
                         </div>,
                     minSize: 90,  
                     maxSize: 90,  
-                    width: 90  
+                    size: 90
                 },
                 {
                     accessorKey: 'balance',
@@ -336,7 +336,7 @@ const Billing = () => {
                         </div>,
                     minSize: 90,  
                     maxSize: 90,  
-                    width: 90  
+                    size: 90
                 },
             ]
         )

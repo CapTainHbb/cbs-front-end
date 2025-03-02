@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, Label, Row } from 'reactstrap';
+import {Button, Col, Label, Row} from 'reactstrap';
 import Flatpickr from "react-flatpickr";
 import {getUTCFormattedDate} from "../../../helpers/date";
 import {t} from "i18next";
@@ -9,19 +9,23 @@ interface Props {
     onChangeFromDate: any;
     toDate: string;
     onChangeToDate: any;
+    itemsChanged: boolean;
+    setItemsChanged: any;
 }
 
-const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate, toDate, onChangeToDate }) => {
+const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
+                                                          toDate, onChangeToDate,
+                                                      itemsChanged, setItemsChanged}) => {
 
     return (
     <React.Fragment>
-      <Row>
+      <Row className={'align-items-center'}>
         <Col lg={6} >
           <div className="mt-3">
             <Label className="form-label mb-0">{t("From Date")}</Label>
             <Flatpickr
               className="form-control"
-              onChange={(e: any) => onChangeFromDate(getUTCFormattedDate(e?.[0]))}
+              onChange={(e: any) => {onChangeFromDate(getUTCFormattedDate(e?.[0]))}}
               value={fromDate}
               options={{
                 dateFormat: "Y-m-d",
@@ -31,7 +35,7 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
           </div>
         </Col>
 
-        <Col lg={6} >
+        <Col lg={4} >
           <div className="mt-3">
             <Label className="form-label mb-0">{t("To Date")}</Label>
             <Flatpickr
@@ -45,9 +49,14 @@ const IncomeCostProfitExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDa
             />
           </div>
         </Col>
+        <Col lg={2}>
+            <Button type={'button'} color={'primary'} onClick={(e: any) => setItemsChanged(!itemsChanged)} >
+                <i className='ri-refresh-fill'/> {t("Refresh")}
+            </Button>
+        </Col>
       </Row>
     </React.Fragment>
   )
 }
 
-export default IncomeCostProfitExtraHeader
+export default GeneralReportExtraHeader

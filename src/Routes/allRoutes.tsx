@@ -49,6 +49,8 @@ import UsersList from "pages/ManageUsers/UsersList";
 import ManageCurrencies from "../pages/ManageCurrencies/ManageCurrencies";
 import ManageFinancialAccounts from "../pages/ManageFinancialAccounts/ManageFinancialAccounts";
 import ManageCompanyProfile from "../pages/ManageCompanyProfile/ManageCompanyProfile";
+import GrossFee from "../pages/Reports/GrossFee/GrossFee";
+import TotalPerformance from "../pages/Reports/TotalPerformance/TotalPerformance";
 
 
 
@@ -63,6 +65,8 @@ const authProtectedRoutes = [
   // reports
   { path: "/reports-creditors-and-debtors", component: <CreditorsAndDebtors />, needsAuthorization: true },
   { path: "/reports-income-cost-profit", component: <IncomeCostProfit />, needsAuthorization: true},
+  { path: "/reports-gross-fee", component: <GrossFee />, needsAuthorization: true },
+  { path: "/reports-total-performance", component: <TotalPerformance />, needsAuthorization: true },
 
   // accounting
   { path: '/accounting-billing', component: <Billing />},

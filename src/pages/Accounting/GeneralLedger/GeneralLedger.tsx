@@ -124,6 +124,7 @@ const GeneralLedger = () => {
                                     onDoubleClickRow={handleDoubleClickRow}
                                     itemsChanged={itemsChanged}
                                     setItemsChanged={setItemsChanged}
+                                    hasPagination={false}
                                 />
                             </React.Fragment >
                         </CardBody>
