@@ -26,14 +26,13 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
         const amount = Number(removeNonNumberChars(partyAmount));
         const receivedFee = Number(removeNonNumberChars(formik.values?.[`${prefixName}ReceivedFeeAmount`]));
         const paidFee = Number(removeNonNumberChars(formik.values?.[`${prefixName}PaidFeeAmount`]));
-        const receivedTotal = Number(calculatedReceivedRate) + receivedFee;
+        const receivedTotal = Number(removeNonNumberChars(calculatedReceivedRate)) + receivedFee;
         const paidTotal = Number(removeNonNumberChars(calculatedPaidRate)) + paidFee;
 
         const isAdd =
             (prefixName === 'debtor') ||
             (prefixName === 'base' && formik.values?.isBuy) ||
             (prefixName === 'against' && !formik.values?.isBuy);
-        
         const result = isAdd ? amount + receivedTotal - paidTotal : amount - receivedTotal + paidTotal;
         return customFormatNumber(result)
     }, [partyAmount, formik.values, calculatedReceivedRate, calculatedPaidRate]);

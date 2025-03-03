@@ -14,6 +14,7 @@ import i18n, {t} from "i18next";
 import RectLoader from "./RectLoader";
 import {Table} from "reactstrap";
 import ChangePageContainer from "./ChangePageContainer";
+import {scrollToBottom} from "./utils";
 
 
 export interface TableContextType<T, F = any> {
@@ -123,12 +124,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         table.setPageIndex(0);
     }, [filters]);
 
-    function scrollToBottom() {
-        const container = document.getElementById("scrollContainer");
-        if (container) {
-            container.scrollTop = container.scrollHeight;
-        }
-    }
     useEffect(() => {
 
         fetchData({

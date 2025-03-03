@@ -27,7 +27,14 @@ export const defaultCurrency : Currency = {
     alternative_name: "",
 }
 
-
+export function scrollToBottom() {
+    console.log("scrollToBottom");
+    const container = document.getElementById("scrollContainer");
+    if (container) {
+        console.log("scrollToBottom2");
+        container.scrollTop = container.scrollHeight;
+    }
+}
 
 export const formatNumber = (number: any) => {
     if (number == null) return '';
