@@ -80,6 +80,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             });
         }
 
+        setTimeout(scrollToBottom, 200);
+
     }, [preProcessData]);
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
@@ -133,7 +135,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             },
             filters: filters
         });
-        setTimeout(scrollToBottom, 500);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex, pagination?.pageSize]);
 
