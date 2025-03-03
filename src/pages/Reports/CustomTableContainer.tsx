@@ -1,4 +1,4 @@
-import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useState} from 'react';
+import React, {createContext, Fragment, ReactNode, useCallback, useEffect, useRef, useState} from 'react';
 import TableExtraHeaderContainer from "./TableExtraHeaderContainer";
 import {
     ColumnDef, ExpandedState,
@@ -123,6 +123,12 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         table.setPageIndex(0);
     }, [filters]);
 
+    function scrollToBottom() {
+        const container = document.getElementById("scrollContainer");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
     useEffect(() => {
 
         fetchData({
@@ -132,6 +138,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             },
             filters: filters
         });
+        setTimeout(scrollToBottom, 500);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemsChanged, loadItemsApi, filters, pagination?.pageIndex, pagination?.pageSize]);
 
@@ -139,12 +146,14 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         setItemsChanged?.(!itemsChanged);
     }, [setItemsChanged, itemsChanged])
 
+
+
     return (
         <Fragment>
             <TableContext.Provider value={{
                 table, onUpdateTable
             }} >
-                <div className={'table-responsive table-card mb-3'}>
+                <div className={'table-responsive table-card'}>
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
@@ -160,13 +169,16 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     </div>
                     <div
                         style={{
-                            maxHeight: '600px',
+                            maxHeight: '550px',
                             overflowY: 'auto',
                             overflowX: 'auto',
                             position: 'relative',
+                            scrollBehavior: "smooth",
                         }}
+
+                        id={"scrollContainer"}
                     >
-                        <Table className={'table table-hover table-bordered'}>
+                        <Table className={'table table-hover table-bordered'} >
                             <thead
                                 className={"table-light"}
                                 style={{

@@ -94,7 +94,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                             </Col>
                             <Col md={3} sm={12}>
                                 <Label>{t("Number of Last Transactions Per Page")}</Label>
-                                <Select 
+                                <Select
                                     options={pageSizeOptions}
                                     onChange={(item: any) => {
                                         table?.setPageSize?.(item?.value);
@@ -107,9 +107,9 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                     </Col>
 
                     <Col md={3} sm={12}>
-                        <Row className={'my-1'}>
+                        <Row>
                             <Row>
-                                <Button color='primary' className={'w-100 my-1'}
+                                <Button color='primary' className={'w-100'}
                                         onClick={() => setItemsChanged(!itemsChanged)}>
                                     <i className='ri-refresh-fill'/> {t("Refresh")}
                                 </Button>
