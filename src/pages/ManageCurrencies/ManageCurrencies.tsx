@@ -167,37 +167,16 @@ const ManageCurrencies = () => {
                     header: t("Action"),
                     cell: (cellProps: any) => {
                         return (
-                            <ul className="list-inline hstack gap-2 mb-0">
-                                <li className="list-inline-item">
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle
-                                            href="#"
-                                            className="btn btn-soft-primary btn-sm dropdown"
-                                            tag="button"
-                                        >
-                                            <i className="ri-more-fill align-middle"></i>
-                                        </DropdownToggle>
-                                        <DropdownMenu className="dropdown-menu-end">
-                                            <DropdownItem
-                                                className="dropdown-item edit-item-btn"
-                                                href="#"
-                                                onClick={() => { onClickEdit(cellProps.row.original); }}
-                                            >
-                                                <i className="ri-pencil-fill align-bottom me-2 text-muted"></i>{" "}
-                                                {t("Edit")}
-                                            </DropdownItem>
-                                            <DropdownItem
-                                                className="dropdown-item remove-item-btn"
-                                                href="#"
-                                                onClick={() => { onClickDelete(cellProps.row.original); }}
-                                            >
-                                                <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i>{" "}
-                                                {t("Delete")}
-                                            </DropdownItem>
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </li>
-                            </ul>
+                            <div className={'hstack gap-2 mb-0'}>
+                                <button className={'btn btn-soft-success rounded-pill p-1'}
+                                        onClick={() => { onClickEdit(cellProps.row.original); }}>
+                                    <i className="ri-pencil-fill"></i>
+                                </button>
+                                <button className={'btn btn-soft-danger rounded-pill p-1'}
+                                        onClick={() => { onClickDelete(cellProps.row.original); }}>
+                                    <i className="ri-delete-bin-fill"></i>
+                                </button>
+                            </div>
                         );
                     },
                 },

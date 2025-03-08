@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {Container, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
@@ -41,6 +41,7 @@ interface Props {
 }
 
 const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+    const modalRef = useRef(null);
 
     const getSpecificFormFieldsInitial = useCallback(() => {
         if(!['buy-and-sell-cash', 'sell-cash', 'buy-cash'].includes(String(activeTransactionData?.transaction_type))) {
@@ -206,6 +207,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     },[])
 
     const {formik} = useTransactionFormik({
+        modalRef,
         endPointApi: '/transactions/buy-and-sell-cash',
         activeTransactionData,
         isParentModalOpen: isOpen,
@@ -257,7 +259,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
     }, [isOpen])
 
     return (
-        <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
+        <Modal ref={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
                 <h5 className="modal-title">{t("Buy and Sell Cash")}</h5>
             </ModalHeader>

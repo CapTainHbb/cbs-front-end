@@ -184,7 +184,7 @@ const ManageFinancialAccounts = () => {
             setDeleteModal(false);
             setItemsChanged(!itemsChanged)
         }).catch(error => {
-            toast.error(t("Financial account delete failed"))
+            toast.error(error.response?.data?.error);
         })
     }, [itemsChanged]);
 

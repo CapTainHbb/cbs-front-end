@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {LocalPaymentsFormDataType, PaymentDataType, defaultLocalPaymentsFormData} from "./types";
 import {Col, Container, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
@@ -41,6 +41,7 @@ interface Props {
 }
 
 const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+    const modalRef = useRef(null);
     const localCurrency = useSelector((state: any) => state.InitialData.localCurrency);
     const getSpecificFormFieldsInitial = useCallback(() => {
         if (activeTransactionData?.transaction_type !== 'local-payments') {
@@ -164,6 +165,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
     },[localCurrency])
 
     const {formik} = useTransactionFormik({
+        modalRef,
         endPointApi: '/transactions/local-payments',
         activeTransactionData,
         isParentModalOpen: isOpen,
@@ -188,7 +190,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
 
 
     return (
-        <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
+        <Modal ref={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
                 <h5 className="modal-title">{t("Local Payments")}</h5>
             </ModalHeader>

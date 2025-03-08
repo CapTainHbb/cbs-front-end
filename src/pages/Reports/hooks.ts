@@ -10,12 +10,15 @@ interface AdvancedRowClickProps {
 export const useAdvancedRowClick = ({table, rowSelection, setRowSelection,   }: AdvancedRowClickProps) => {
     const [lastClickedRow, setLastClickedRow] = useState<string | null>(null);
     const handleRowClick = useCallback(
-        (rowId: string, event: React.MouseEvent) => {
-            if (event.shiftKey && lastClickedRow) {
+        (inputRow: any, event: React.MouseEvent) => {
+            if(event.shiftKey && event.altKey) {
+                inputRow.toggleSelected();
+            }
+            else if (event.shiftKey && lastClickedRow) {
                 // Find indices of last clicked and current rows
                 const rows = table.getRowModel().rows;
                 const lastClickedIndex = rows.findIndex((row: any) => row.id === lastClickedRow);
-                const currentClickedIndex = rows.findIndex((row: any) => row.id === rowId);
+                const currentClickedIndex = rows.findIndex((row: any) => row.id === inputRow.id);
 
                 if (lastClickedIndex !== -1 && currentClickedIndex !== -1) {
                     // Determine the range to select
@@ -31,10 +34,16 @@ export const useAdvancedRowClick = ({table, rowSelection, setRowSelection,   }: 
 
                     setRowSelection(updatedSelection);
                 }
+            } else {
+                // If the clicked row is already selected, unselect it (optional toggle behavior)
+                if (rowSelection[inputRow.id]) {
+                    setRowSelection({}); // Clear selection
+                } else {
+                    // Unselect all other rows and select the clicked row
+                    setRowSelection({ [inputRow.id]: true });
+                }
             }
-
-            // Update the last clicked row
-            setLastClickedRow(rowId);
+            setLastClickedRow(inputRow.id)
         },
         [lastClickedRow, rowSelection, setRowSelection, table]
     );

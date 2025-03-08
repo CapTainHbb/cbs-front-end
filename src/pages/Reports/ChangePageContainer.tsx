@@ -4,9 +4,10 @@ import {t} from "i18next";
 
 interface Props {
     table: any;
+    itemsAreLoading: boolean;
 }
 
-const ChangePageContainer: React.FC<Props> = ({ table }) => {
+const ChangePageContainer: React.FC<Props> = ({ table, itemsAreLoading }) => {
 
     const totalPages = Math.ceil(table?.getRowCount() / table?.getState().pagination.pageSize);
     const pageOptions = Array.from({ length: totalPages }, (_, i) => i)
@@ -14,7 +15,7 @@ const ChangePageContainer: React.FC<Props> = ({ table }) => {
         <div className="col-sm-auto">
             <ul className="pagination pagination-separated pagination-md justify-content-center justify-content-sm-start mb-0">
                 <li className={!table?.getCanPreviousPage() ? "page-item disabled" : "page-item"}>
-                    <Link to="#" className="page-link" onClick={table?.previousPage}>
+                    <Link to="#" className="page-link" onClick={itemsAreLoading? undefined: table?.previousPage}>
                         {t("Previous")}
                     </Link>
                 </li>
@@ -40,7 +41,7 @@ const ChangePageContainer: React.FC<Props> = ({ table }) => {
                                     <Link
                                         to="#"
                                         className={currentPage === item ? "page-link active" : "page-link"}
-                                        onClick={() => table?.setPageIndex(item)}
+                                        onClick={itemsAreLoading? undefined:  () => table?.setPageIndex(item)}
                                     >
                                         {item + 1}
                                     </Link>
@@ -53,7 +54,7 @@ const ChangePageContainer: React.FC<Props> = ({ table }) => {
                 })}
 
                 <li className={!table?.getCanNextPage() ? "page-item disabled" : "page-item"}>
-                    <Link to="#" className="page-link" onClick={table?.nextPage}>
+                    <Link to="#" className="page-link" onClick={itemsAreLoading? undefined: table?.nextPage}>
                         {t("Next")}
                     </Link>
                 </li>

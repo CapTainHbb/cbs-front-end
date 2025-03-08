@@ -143,6 +143,14 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     }, [setItemsChanged, itemsChanged])
 
 
+    const theadRef = useRef<any>(null);
+    const [theadHeight, setTheadHeight] = useState(0);
+    useEffect(() => {
+        if (theadRef?.current) {
+            // Dynamically measure the height of the <thead>
+            setTheadHeight(theadRef?.current?.offsetHeight + 10);
+        }
+    }, []);
 
     return (
         <Fragment>
@@ -161,7 +169,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                 <span className="fw-semibold ms-1">{data.length}</span> {t("Results")}
                             </div>
                         </div>
-                        {hasPagination && <ChangePageContainer table={table} />}
+                        {hasPagination && <ChangePageContainer itemsAreLoading={itemsAreLoading} table={table} />}
                     </div>
                     <div
                         style={{
@@ -176,6 +184,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     >
                         <Table className={'table table-hover table-bordered'} >
                             <thead
+                                ref={theadRef}
                                 className={"table-light"}
                                 style={{
                                     position: 'sticky',
@@ -237,7 +246,15 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                                 if (shouldHide) return null; // Hide the row if any column's `hideCondition` is true
                                 if (row.original?.isHeader) {
-                                    return <tr key={row.id} className='table-primary text-primary fs-18 fw-semibold'>
+                                    return <tr key={row.id}
+                                               style={{
+                                                   userSelect: 'none',
+                                                   position: 'sticky',
+                                                   top: `${theadHeight}px`,
+                                                   zIndex: 0, /* Ensure it stays above other rows */
+                                                   backgroundColor: 'inherit', /* Ensure background doesn't look out of place */
+                                               }}
+                                               className='table-primary text-primary fs-18 fw-semibold'>
                                         <td colSpan={row.getVisibleCells().length}
                                             style={{padding: '0px'}}
                                         >
@@ -250,9 +267,10 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                     <tr key={row.id}
                                     style={{
                                         cursor: onDoubleClickRow !== undefined? 'pointer': '',
+                                        userSelect: 'none'
                                     }}
                                     className={`${rowSelection[row.id]? 'table-primary' : ''}`}
-                                    onClick={(e: any) => {row.toggleSelected(); handleRowClick(row.id, e)}}
+                                    onClick={(e: any) => {handleRowClick(row, e)}}
                                     onDoubleClick={(e: any) => onDoubleClickRow?.(row.original)}
                                     >
                                         {row.getVisibleCells().map(cell => (

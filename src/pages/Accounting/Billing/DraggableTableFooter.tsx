@@ -1,10 +1,11 @@
 import React, {useEffect, useRef, useState} from "react";
 import ColorPicker from "../../../Components/Common/ColorPicker";
 import {Button, Col, DropdownToggle, Label, Row} from "reactstrap";
-import {t} from "i18next";
+import i18n, {t} from "i18next";
 import ReactDOM from "react-dom";
 import SumOfSelectedRows from "../SumOfSelectedRows";
 import {Party} from "../types";
+import num2words from "../../../Components/Common/NumberToWords/utils";
 
 
 interface Props {
@@ -69,20 +70,28 @@ const DraggableTableFooter: React.FC<Props> = ({ updateRowColorApi,
                 width: "%50"
             }}
         >
-            <Row className="bg-primary p-1 rounded">
+            <Row className="bg-primary rounded">
                 <Col md={1} sm={1} >
-                    <Button type={'button'} color={'primary'} ref={footerRef}
-                            onMouseDown={handleMouseDown} className="cursor-grab">
+                    <Button type={'button'} color={'primary'}
+                            ref={footerRef}
+                            data-tooltip-id="tooltip"
+                            data-tooltip-content={t("Move")}
+                            onMouseDown={handleMouseDown}
+                            className="cursor-grab">
                         <i className="ri-drag-move-2-fill"></i>
                     </Button>
                 </Col>
-                <Col md={1} sm={1} onClick={onCloseClicked} className="cursor-pointer">
+                <Col md={1} sm={1} onClick={onCloseClicked} className="cursor-pointer"
+                     data-tooltip-id="tooltip"
+                     data-tooltip-content={t("Close")}>
                     <Button type={'button'} color={'primary'}>
                         <i className="ri-close-circle-fill"></i>
                     </Button>
                 </Col>
                 <Col md={3} sm={12}>
-                    <Button type={'button'} color={'primary'} className={'w-xl'} >{selectedRows?.length} {t("Rows Selected")}</Button>
+                    <Button type={'button'} color={'primary'} className={'w-xl'} >
+                        {selectedRows?.length} {t("Rows Selected")}
+                    </Button>
                 </Col>
                 <Col md={3} sm={12}>
                     <SumOfSelectedRows selectedRows={selectedRows} />

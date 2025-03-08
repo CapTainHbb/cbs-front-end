@@ -14,6 +14,7 @@ import {BuyAndSellCashFormDataType} from "../BuyAndSellCash/types";
 import {LocalPaymentsFormDataType} from "../LocalPayments/types";
 
 interface TransactionFormikProps {
+    modalRef: any;
     endPointApi: string;
     activeTransactionData?: DirectCurrencyTransferTransactionFormDataType | BuyAndSellCashFormDataType | LocalPaymentsFormDataType;
     isParentModalOpen: boolean;
@@ -26,7 +27,7 @@ interface TransactionFormikProps {
     getSpecificTransactionDataForSubmission: any;
 }
 
-export const useTransactionFormik = ({ endPointApi, activeTransactionData, isParentModalOpen,
+export const useTransactionFormik = ({ modalRef, endPointApi, activeTransactionData, isParentModalOpen,
                                          getSpecificFormFieldsInitial,
                                          getLockableFormFieldsInitial,
                                          getSpecificFormFieldsValidation,
@@ -114,14 +115,24 @@ export const useTransactionFormik = ({ endPointApi, activeTransactionData, isPar
                 })
                 setLastActiveTransactionData(createdTransaction);
                 toast.success(formik.values.isEditing? t("Transaction updated successfully") : t("Transaction created successfully"));
+                updateFinancialAccountsBalance();
             })
             .catch(error => toast.error(normalizeDjangoError(error)))
-            .finally(() => { formik.setSubmitting(false); });
+            .finally(() => {
+                formik.setSubmitting(false);
+                if (modalRef?.current) {
+                    modalRef?.current?.focus?.();
+                }
+            });
         }
     });
     const sendCreateTransactionRequest = useCallback(async (data: any) => {
          return (formik.values.isEditing? axiosInstance.put(`${endPointApi}/${formik?.values?.id}/`, data): axiosInstance.post(`${endPointApi}/`, data));
     }, [formik, endPointApi]);
+
+    const updateFinancialAccountsBalance = useCallback(() => {
+        formik?.setFieldValue('forceUpdateFinancialAccountsBalance', !formik?.values?.forceUpdateFinancialAccountsBalance)
+    }, [formik?.values?.forceUpdateFinancialAccountsBalance]);
 
     const getCommonFormFieldsAfterSubmission = useCallback((createdTransaction: any) => {
         return {

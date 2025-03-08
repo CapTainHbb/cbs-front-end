@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useCallback, useEffect, useRef} from 'react'
 import {
     Col,
     Container,
@@ -23,6 +23,7 @@ import {FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
+import {mod} from "mathjs";
 
 const initialRestForm = {
     amount: "0",
@@ -46,6 +47,8 @@ interface Props {
 }
 
 const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
+    const modalRef = useRef(null);
+
     const getSpecificFormFieldsInitial = useCallback(() => {
         if(activeTransactionData?.transaction_type !== 'direct-currency-transfer') {
             return structuredClone(initialRestForm);
@@ -167,6 +170,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     },[])
 
     const {formik} = useTransactionFormik({
+        modalRef,
         endPointApi: '/transactions/direct-currency-transfer',
         activeTransactionData,
         isParentModalOpen: isOpen,
@@ -195,7 +199,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     }, [isOpen])
 
     return (
-        <Modal isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
+        <Modal innerRef={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
             <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
                 <h5 className="modal-title">{t("Direct Currency Transfer")}</h5>
             </ModalHeader>
