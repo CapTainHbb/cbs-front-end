@@ -6,7 +6,7 @@ import {FinancialAccount} from "../../types";
 import {useSelector} from "react-redux";
 import {usePDFStyles} from "../hooks/usePdfStyles";
 import {Currency} from "../../../Reports/utils";
-import axiosInstance from "../../../../helpers/axios_instance";
+import axiosInstance, { backendResourceApi } from "../../../../helpers/axios_instance";
 import {createTempoDownloadLink, groupByCurrency} from "../utils";
 import ExportButton from "./ExportButton";
 import {useBillingFilters} from "../hooks/useBillingFilters";
@@ -104,7 +104,7 @@ const DownloadBillingPDF = () => {
                     pagination: {}
                 })
                 const accountSummaryRows = await renderAccountSummaryTableBody(response.data);
-                const companyImage = await fetchImageAsBlob(process.env.REACT_APP_BACKEND_RESOURCE_API_URL + companyProfile.profile_photo)
+                const companyImage = await fetchImageAsBlob(backendResourceApi + companyProfile.profile_photo)
                 let referenceNumber: string = "0";
                 try {
                     const response = await axiosInstance.get('/core/reference-number/')
