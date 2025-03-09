@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Dropdown, DropdownMenu, DropdownToggle, Form } from 'reactstrap';
 
 //import images
 import logoSm from "../assets/images/logo-sm.png";
@@ -10,7 +9,6 @@ import logoLight from "../assets/images/logo-light.png";
 //import Components
 import LanguageDropdown from '../Components/Common/LanguageDropdown';
 import FullScreenDropdown from '../Components/Common/FullScreenDropdown';
-import NotificationDropdown from '../Components/Common/NotificationDropdown';
 import ProfileDropdown from '../Components/Common/ProfileDropdown';
 import LightDark from '../Components/Common/LightDark';
 

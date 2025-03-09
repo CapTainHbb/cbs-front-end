@@ -1,11 +1,11 @@
 import {pdf, Text, View} from "@react-pdf/renderer";
 import {t} from "i18next";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {abs} from "mathjs";
 import {FinancialAccount} from "../../types";
 import {useSelector} from "react-redux";
 import {usePDFStyles} from "../hooks/usePdfStyles";
-import {Currency, formatNumber} from "../../../Reports/utils";
+import {Currency} from "../../../Reports/utils";
 import axiosInstance from "../../../../helpers/axios_instance";
 import {createTempoDownloadLink, groupByCurrency} from "../utils";
 import ExportButton from "./ExportButton";

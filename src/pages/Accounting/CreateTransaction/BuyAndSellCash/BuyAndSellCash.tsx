@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef} from 'react';
-import {Container, Form, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
+import {Container, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
 import TransactionDetails from "../TransactionDetails";

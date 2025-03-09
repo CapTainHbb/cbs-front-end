@@ -12,8 +12,6 @@ interface Props {
 
 const InitialBalanceForm: React.FC<Props> = ({ currencyAccounts, setCurrencyAccounts }) => {
 
-    const currencies = useSelector((state: any) => state.InitialData.currencies);
-
     const onInitialBalanceChange = useCallback((currencyAccount: CurrencyAccount, e: any) => {
         setCurrencyAccounts((prevAccounts: CurrencyAccount[]) => {
             return prevAccounts.map((account) =>

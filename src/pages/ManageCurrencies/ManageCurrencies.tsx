@@ -4,11 +4,9 @@ import {
     CardBody,
     CardHeader,
     Col,
-    Container, DropdownItem,
-    DropdownMenu,
-    DropdownToggle, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader,
-    Row, Table,
-    UncontrolledDropdown
+    Container,
+    Form, FormFeedback, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader,
+    Row, Table
 } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {t} from "i18next";

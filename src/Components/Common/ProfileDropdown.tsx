@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../helpers/axios_instance';
 
 //import images
-import avatar1 from "../../assets/images/users/avatar-1.jpg";
 import {t} from "i18next";
 
 const ProfileDropdown = () => {

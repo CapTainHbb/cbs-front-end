@@ -11,7 +11,6 @@ import BalanceAmount from "../BalanceAmount";
 import CreditorsAndDebtorsExtraHeader from "./CreditorsAndDebtorsExtraHeader";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { PartyType, partyTypeOptions } from '../SelectPartyType';
-import {getCurrencyNameById} from "../../../helpers/currency";
 import {CurrencyAccount} from "../../Accounting/types";
 
 

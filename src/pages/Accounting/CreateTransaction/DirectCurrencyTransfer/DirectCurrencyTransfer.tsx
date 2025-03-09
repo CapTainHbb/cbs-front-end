@@ -23,7 +23,6 @@ import {FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
-import {mod} from "mathjs";
 
 const initialRestForm = {
     amount: "0",

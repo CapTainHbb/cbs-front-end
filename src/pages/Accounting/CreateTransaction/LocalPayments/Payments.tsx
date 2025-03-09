@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {PaymentDataType} from './types';
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
 import {t} from 'i18next';
-import {getToday, getNowLocalTime} from 'helpers/date';
+import {getToday} from 'helpers/date';
 import Flatpickr from "react-flatpickr";
 import {customFormatNumber, removeNonNumberChars} from "../../utils";
 
