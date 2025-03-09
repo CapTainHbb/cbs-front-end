@@ -5,7 +5,7 @@ WORKDIR /react
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install --force
+RUN npm install
 
 # Copy source code and build
 COPY . .

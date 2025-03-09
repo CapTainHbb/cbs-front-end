@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import ReactCrop, { Crop, PixelCrop } from "react-image-crop";
 import { FormGroup, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {t} from "i18next";
 
 // Utility function to generate cropped image
 const getCroppedImage = (
@@ -159,14 +160,14 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
                         onClick={handleReset}
                         className="ms-2"
                     >
-                        Remove Image
+                        {t("Remove Image")}
                     </Button>
                 )}
             </div>
 
             {croppedImageUrl && (
                 <div className="mt-2">
-                    <h6>Selected Image Preview</h6>
+                    <h6>{t("Selected Image Preview")}</h6>
                     <img
                         src={croppedImageUrl}
                         alt="Cropped preview"
@@ -214,10 +215,10 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={toggleModal}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button color="primary" onClick={handleConfirmCrop} disabled={!completedCrop}>
-                        Confirm Crop
+                        {t("Confirm Crop")}
                     </Button>
                 </ModalFooter>
             </Modal>

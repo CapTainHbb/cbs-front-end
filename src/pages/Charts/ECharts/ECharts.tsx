@@ -16,7 +16,7 @@ const LineChart = ({ dataColors } : any ) => {
             containLabel: true
         },
         xAxis: {
-            type: 'category' as const,
+            type: 'category',
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
                 lineStyle: {
@@ -79,7 +79,7 @@ const StackedLineChart = ({ dataColors } : any ) => {
             }
         },
         xAxis: {
-            type: 'category' as const,
+            type: 'category',
             boundaryGap: false,
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
@@ -158,7 +158,7 @@ const AreaChart = ({ dataColors } : any ) => {
             containLabel: true
         },
         xAxis: {
-            type: 'category' as const,
+            type: 'category',
             boundaryGap: false,
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
@@ -230,7 +230,7 @@ const StackedAreaChart = ({ dataColors } : any ) => {
             containLabel: true
         },
         xAxis: [{
-            type: 'category' as const,
+            type: 'category',
             boundaryGap: false,
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
@@ -346,7 +346,7 @@ const StepLineChart = ({ dataColors } : any ) => {
             }
         },
         xAxis: {
-            type: 'category' as const,
+            type: 'category',
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
                 lineStyle: {
@@ -437,7 +437,7 @@ const LineYChart = ({ dataColors } : any ) => {
             }
         },
         yAxis: {
-            type: 'category' as const,
+            type: 'category',
             axisLine: {
                 onZero: false,
                 lineStyle: {
@@ -494,7 +494,7 @@ const BasicBarChart = ({ dataColors } : any ) => {
             containLabel: true
         },
         xAxis: {
-            type: 'category' as const,
+            type: 'category',
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
                 lineStyle: {
@@ -678,7 +678,7 @@ const BarLabelChart = ({ dataColors } : any ) => {
             }
         },
         xAxis: [{
-            type: 'category' as const,
+            type: 'category',
             axisTick: {
                 show: false
             },
@@ -788,7 +788,7 @@ const HorizontalBarChart = ({ dataColors } : any ) => {
             }
         },
         yAxis: {
-            type: 'category' as const,
+            type: 'category',
             data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World'],
             axisLine: {
                 lineStyle: {
@@ -862,7 +862,7 @@ const StackedHorizontalBarChart = ({ dataColors } : any ) => {
         },
         color: chartBarStackedColors,
         yAxis: {
-            type: 'category' as const,
+            type: 'category',
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             axisLine: {
                 lineStyle: {
@@ -1460,7 +1460,7 @@ const ParallelChart = ({ dataColors } : any ) => {
         {
             dim: 3,
             name: 'Score',
-            type: 'category' as const,
+            type: 'category',
             data: ['Excellent', 'Good', 'OK', 'Bad']
         }
         ],

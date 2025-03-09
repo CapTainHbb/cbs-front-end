@@ -353,7 +353,7 @@ const ManageCompanyProfile = () => {
                                         <Col lg={4}>
                                             <ImageSelector
                                                 name="image"
-                                                label="Select Image"
+                                                label={t("Select Image")}
                                                 setFieldValue={setFieldValue}
                                                 // initialImageUrl={values.initialImageUrl}
                                             />
@@ -362,7 +362,7 @@ const ManageCompanyProfile = () => {
 
 
                                     <Button type="submit" color="primary">
-                                        Submit
+                                        {t("Submit")}
                                     </Button>
                                 </Form>
                             )}
