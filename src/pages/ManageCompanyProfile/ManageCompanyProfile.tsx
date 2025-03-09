@@ -1,23 +1,38 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
-    Button, Col,
-    Container, Form, FormGroup, FormText, Input, Label,
+    Button,
+    Col,
+    Container,
+    Form,
+    FormGroup,
+    FormText,
+    Input,
+    Label,
     Row,
 } from "reactstrap";
-import {t} from "i18next";
+import { t } from "i18next";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import {ErrorMessage, Field, Formik, useFormik} from "formik";
+import { ErrorMessage, Field, Formik } from "formik";
 import ImageSelector from "../../Components/Common/ImageSelector";
 import axiosInstance from "../../helpers/axios_instance";
 import * as Yup from "yup";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
-    textInput: Yup.string()
-        .required("Text input is required")
-        .min(3, "Text must be at least 3 characters long"),
-    image: Yup.mixed().nullable(),
+    name: Yup.string()
+        .required("Name is required")
+        .min(3, "Name must be at least 3 characters long"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    country: Yup.string(),
+    state: Yup.string(),
+    city: Yup.string(),
+    address: Yup.string(),
+    phone: Yup.string(),
+    zip_code: Yup.string(),
+    fax: Yup.string(),
+    website: Yup.string(),
+    profile_photo: Yup.mixed().nullable(),
 });
 
 // Interface for form values
@@ -33,26 +48,12 @@ interface FormValues {
     fax: string;
     website: string;
     email: string;
-}
-
-// Interface for backend data
-interface BackendData {
-    name: string;
-    profile_photo: File | null;
-    country: string;
-    state: string;
-    city: string;
-    address: string;
-    phone: string;
-    zip_code: string;
-    fax: string;
-    website: string;
-    email: string;
+    initialImageUrl?: string;
 }
 
 const ManageCompanyProfile = () => {
-
-    const initialValues: FormValues = {
+    // State to hold fetched data as initial values
+    const [initialValues, setInitialValues] = useState<FormValues>({
         name: "",
         profile_photo: null,
         country: "",
@@ -64,57 +65,39 @@ const ManageCompanyProfile = () => {
         fax: "",
         website: "",
         email: "",
-    };
+        initialImageUrl: "",
+    });
 
     // Load data from backend on mount
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axiosInstance.get<BackendData>(
-                    "/company-profile/"
-                );
-                return {
-                    name: response.data.name,
-                    profile_photo: response.data.profile_photo,
-                    country: response.data.country,
-                    state: response.data.state,
-                    city: response.data.city,
-                    address: response.data.address,
-                    phone: response.data.phone,
-                    zip_code: response.data.phone,
-                    fax: response.data.fax,
-                    email: response.data.email,
-                    website: response.data.website
-                };
+                const response = await axiosInstance.get("/company/company-profile/");
+                const data = response.data;
+                setInitialValues({
+                    name: data.name || "",
+                    profile_photo: null, // We don't set the file here; use initialImageUrl for display
+                    country: data.country || "",
+                    state: data.state || "",
+                    city: data.city || "",
+                    address: data.address || "",
+                    phone: data.phone || "",
+                    zip_code: data.zip_code || "",
+                    fax: data.fax || "",
+                    email: data.email || "",
+                    website: data.website || "",
+                    initialImageUrl: data.profile_photo || "", // For ImageSelector to display the existing image
+                });
             } catch (error: any) {
-                toast.error(error?.response?.data);
-                return null;
+                toast.error(error?.response?.data || "Error fetching data");
             }
         };
 
-        fetchData().then((data) => {
-            if (data) {
-                formik.setValues({
-                    name: data.name,
-                    profile_photo: data.profile_photo,
-                    country: data.country,
-                    state: data.state,
-                    city: data.city,
-                    address: data.address,
-                    phone: data.phone,
-                    zip_code: data.zip_code,
-                    fax: data.fax,
-                    email: data.email,
-                    website: data.website
-
-                });
-                formik.setFieldValue("initialImageUrl", data.profile_photo);
-            }
-        });
+        fetchData();
     }, []);
 
     // Handle form submission
-    const handleSubmit = async (values: FormValues) => {
+    const handleSubmit = async (values: FormValues, { setSubmitting }: any) => {
         const formData = new FormData();
         formData.append("name", values.name);
         formData.append("country", values.country);
@@ -130,10 +113,9 @@ const ManageCompanyProfile = () => {
             formData.append("profile_photo", values.profile_photo);
         }
 
-
         try {
-            const response = await axiosInstance.post(
-                "/company-profile/",
+            const response = await axiosInstance.put(
+                "/company/company-profile/",
                 formData,
                 {
                     headers: {
@@ -141,33 +123,32 @@ const ManageCompanyProfile = () => {
                     },
                 }
             );
-            toast.success("Form submitted successfully:");
-        } catch (error) {
-            toast.error("Error submitting form");
+            toast.success("Form submitted successfully");
+        } catch (error: any) {
+            toast.error(error?.response?.data || "Error submitting form");
+        } finally {
+            setSubmitting(false);
         }
     };
-
-    const formik = useFormik<FormValues>({
-        initialValues,
-        validationSchema,
-        onSubmit: handleSubmit,
-    });
 
     document.title = "Manage Company Profile | ZALEX - Financial Software";
 
     return (
         <React.Fragment>
-            <div className={'page-content'}>
+            <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title={t("Manage Company Profile")} pageTitle={t("Manage Company Profile")} />
+                    <BreadCrumb
+                        title={t("Manage Company Profile")}
+                        pageTitle={t("Manage Company Profile")}
+                    />
                     <Row>
-
                         <Formik
+                            enableReinitialize // Allow reinitializing when initialValues change
                             initialValues={initialValues}
                             validationSchema={validationSchema}
                             onSubmit={handleSubmit}
                         >
-                            {({ setFieldValue, values }) => (
+                            {({ setFieldValue, values, errors, touched, isSubmitting }) => (
                                 <Form>
                                     <Row>
                                         <Col lg={4}>
@@ -179,13 +160,9 @@ const ManageCompanyProfile = () => {
                                                     name="name"
                                                     id="name"
                                                     placeholder={t("Enter company name")}
-                                                    invalid={!!formik.errors.name && formik.touched.name}
+                                                    invalid={!!errors.name && touched.name}
                                                 />
-                                                <ErrorMessage
-                                                    name="name"
-                                                    component={FormText}
-                                                    // color="danger"
-                                                />
+                                                <ErrorMessage name="name" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -197,13 +174,9 @@ const ManageCompanyProfile = () => {
                                                     name="country"
                                                     id="country"
                                                     placeholder={t("Enter country name")}
-                                                    invalid={!!formik.errors.country && formik.touched.country}
+                                                    invalid={!!errors.country && touched.country}
                                                 />
-                                                <ErrorMessage
-                                                    name="country"
-                                                    component={FormText}
-                                                    // color="danger"
-                                                />
+                                                <ErrorMessage name="country" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -215,13 +188,9 @@ const ManageCompanyProfile = () => {
                                                     name="state"
                                                     id="state"
                                                     placeholder={t("Enter some state")}
-                                                    invalid={!!formik.errors.state && formik.touched.state}
+                                                    invalid={!!errors.state && touched.state}
                                                 />
-                                                <ErrorMessage
-                                                    name="state"
-                                                    component={FormText}
-                                                    // color="danger"
-                                                />
+                                                <ErrorMessage name="state" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -235,13 +204,9 @@ const ManageCompanyProfile = () => {
                                                     name="city"
                                                     id="city"
                                                     placeholder={t("Enter city name")}
-                                                    invalid={!!formik.errors.city && formik.touched.city}
+                                                    invalid={!!errors.city && touched.city}
                                                 />
-                                                <ErrorMessage
-                                                    name="city"
-                                                    component={FormText}
-                                                    // color="danger"
-                                                />
+                                                <ErrorMessage name="city" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -253,12 +218,9 @@ const ManageCompanyProfile = () => {
                                                     name="address"
                                                     id="address"
                                                     placeholder={t("Enter address")}
-                                                    invalid={!!formik.errors.address && formik.touched.address}
+                                                    invalid={!!errors.address && touched.address}
                                                 />
-                                                <ErrorMessage
-                                                    name="address"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="address" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -270,12 +232,9 @@ const ManageCompanyProfile = () => {
                                                     name="phone"
                                                     id="phone"
                                                     placeholder={t("Enter phone number")}
-                                                    invalid={!!formik.errors.phone && formik.touched.phone}
+                                                    invalid={!!errors.phone && touched.phone}
                                                 />
-                                                <ErrorMessage
-                                                    name="phone"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="phone" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -289,12 +248,9 @@ const ManageCompanyProfile = () => {
                                                     name="zip_code"
                                                     id="zip_code"
                                                     placeholder={t("Enter zip code")}
-                                                    invalid={!!formik.errors.zip_code && formik.touched.zip_code}
+                                                    invalid={!!errors.zip_code && touched.zip_code}
                                                 />
-                                                <ErrorMessage
-                                                    name="zip_code"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="zip_code" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -306,12 +262,9 @@ const ManageCompanyProfile = () => {
                                                     name="fax"
                                                     id="fax"
                                                     placeholder={t("Enter fax number")}
-                                                    invalid={!!formik.errors.fax && formik.touched.fax}
+                                                    invalid={!!errors.fax && touched.fax}
                                                 />
-                                                <ErrorMessage
-                                                    name="fax"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="fax" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
@@ -323,12 +276,9 @@ const ManageCompanyProfile = () => {
                                                     name="website"
                                                     id="website"
                                                     placeholder={t("Enter website URL")}
-                                                    invalid={!!formik.errors.website && formik.touched.website}
+                                                    invalid={!!errors.website && touched.website}
                                                 />
-                                                <ErrorMessage
-                                                    name="website"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="website" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -342,26 +292,22 @@ const ManageCompanyProfile = () => {
                                                     name="email"
                                                     id="email"
                                                     placeholder={t("Enter email address")}
-                                                    invalid={!!formik.errors.email && formik.touched.email}
+                                                    invalid={!!errors.email && touched.email}
                                                 />
-                                                <ErrorMessage
-                                                    name="email"
-                                                    component={FormText}
-                                                />
+                                                <ErrorMessage name="email" component={FormText} />
                                             </FormGroup>
                                         </Col>
                                         <Col lg={4}>
                                             <ImageSelector
-                                                name="image"
+                                                name="profile_photo" // Match the name used in handleSubmit
                                                 label={t("Select Image")}
                                                 setFieldValue={setFieldValue}
-                                                // initialImageUrl={values.initialImageUrl}
+                                                initialImageUrl={values.initialImageUrl}
                                             />
                                         </Col>
                                     </Row>
 
-
-                                    <Button type="submit" color="primary">
+                                    <Button type="submit" color="primary" disabled={isSubmitting}>
                                         {t("Submit")}
                                     </Button>
                                 </Form>
