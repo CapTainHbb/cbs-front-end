@@ -11,7 +11,7 @@ export const useAdvancedRowClick = ({table, rowSelection, setRowSelection,   }: 
     const [lastClickedRow, setLastClickedRow] = useState<string | null>(null);
     const handleRowClick = useCallback(
         (inputRow: any, event: React.MouseEvent) => {
-            if(event.shiftKey && event.altKey) {
+            if(event.ctrlKey) {
                 inputRow.toggleSelected();
             }
             else if (event.shiftKey && lastClickedRow) {

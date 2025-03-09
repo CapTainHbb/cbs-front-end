@@ -64,6 +64,17 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
     const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
     const imgRef = useRef<HTMLImageElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const [imageKey, setImageKey] = useState(0);
+
+    useEffect(() => {
+        if(initialImageUrl) {
+            console.log(initialImageUrl);
+            setImageSrc("https://localhost:8000" +  initialImageUrl);
+            setImageKey((prevKey) => prevKey + 1);
+        } else {
+            setImageSrc(null);
+        }
+    }, [initialImageUrl]);
 
     // Toggle modal
     const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -175,10 +186,10 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
                     />
                 </div>
             )}
-
+            <img src={imageSrc || "#"} alt={"j"} className={'w-25 h-25'}/>
             {/* Modal for cropping */}
             <Modal isOpen={isModalOpen} toggle={toggleModal} size="lg" centered>
-                <ModalHeader toggle={toggleModal}>Crop Your Image</ModalHeader>
+                <ModalHeader toggle={toggleModal}>{t("Crop Your Image")}</ModalHeader>
                 <ModalBody style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {imageSrc && (
                         <div

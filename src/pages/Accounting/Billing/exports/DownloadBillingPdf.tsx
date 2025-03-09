@@ -12,6 +12,7 @@ import ExportButton from "./ExportButton";
 import {useBillingFilters} from "../hooks/useBillingFilters";
 import BillingPdfComponent from "./BillingPdfComponent";
 import { customFormatNumber } from "pages/Accounting/utils";
+import {fetchImageAsBlob} from "../../../../helpers/download_image";
 
 
 const DownloadBillingPDF = () => {
@@ -103,7 +104,7 @@ const DownloadBillingPDF = () => {
                     pagination: {}
                 })
                 const accountSummaryRows = await renderAccountSummaryTableBody(response.data);
-
+                const companyImage = await fetchImageAsBlob(process.env.REACT_APP_BACKEND_RESOURCE_API_URL + companyProfile.profile_photo)
                 let referenceNumber: string = "0";
                 try {
                     const response = await axiosInstance.get('/core/reference-number/')
@@ -113,6 +114,7 @@ const DownloadBillingPDF = () => {
                 }
                 // Generate the PDF as a blob
                 const blob = await pdf(<BillingPdfComponent
+                    companyImage={companyImage}
                     referenceNumber={referenceNumber}
                     filters={filters}
                     tableData={response.data}
