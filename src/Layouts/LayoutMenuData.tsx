@@ -247,12 +247,6 @@ const Navdata = () => {
                         link: "/manage-users-users-list",
                         parentId: "manage-users",
                     },
-                    {
-                        id: "users-permission",
-                        label: "Users Permission",
-                        link: "/manage-users-users-permission",
-                        parentId: "manage-users",
-                    }
                 ]
             },
             {

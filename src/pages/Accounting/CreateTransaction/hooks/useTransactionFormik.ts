@@ -37,7 +37,7 @@ export const useTransactionFormik = ({ modalRef, endPointApi, activeTransactionD
                                          getSpecificTransactionDataForSubmission}: TransactionFormikProps) => {
     const [lastActiveTransactionData, setLastActiveTransactionData] = useState(activeTransactionData);
 
-    const initialDateTime = useMemo(() => new Date(), []);
+    const initialDateTime = useMemo(() => new Date(), [isParentModalOpen]);
     useEffect(() => {
         // for first render in fresh create new document
         if(activeTransactionData || !isParentModalOpen) return;

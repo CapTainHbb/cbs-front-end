@@ -51,7 +51,6 @@ import ManageFinancialAccounts from "../pages/ManageFinancialAccounts/ManageFina
 import ManageCompanyProfile from "../pages/ManageCompanyProfile/ManageCompanyProfile";
 import GrossFee from "../pages/Reports/GrossFee/GrossFee";
 import TotalPerformance from "../pages/Reports/TotalPerformance/TotalPerformance";
-import UsersPermission from "pages/ManageUsers/UsersPermission";
 
 
 
@@ -76,7 +75,6 @@ const authProtectedRoutes = [
   // manage users
   { path: "/manage-users-user-activity-history", component: <UsersActivityHistory />, needsAuthorization: true},
   { path: "/manage-users-users-list", component: <UsersList />, needsAuthorization: true},
-  { path: "/manage-users-users-permission", component: <UsersPermission />, needsAuthorization: true},
 
   // manage currencies
   { path: "/manage-currencies", component: <ManageCurrencies />, needsAuthorization: true},

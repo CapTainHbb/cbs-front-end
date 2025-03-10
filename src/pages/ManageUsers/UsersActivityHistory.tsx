@@ -5,19 +5,19 @@ import CustomTableContainer from "../Reports/CustomTableContainer";
 import {t} from "i18next";
 import {ColumnDef} from "@tanstack/react-table";
 import IndeterminateCheckbox from "../Reports/IndetermineCheckbox";
-import {User, UserProfile} from "./UsersList";
 import {getUTCFormattedDateTime} from "../../helpers/date";
 import Select from "react-select";
 import UsersActivityHistoryExtraHeader from "./UsersActivityHistoryExtraHeader";
 import {useSelector} from "react-redux";
+import {User, UserProfile} from "./types";
 
 export const methodTypes =  [
-    {label: 'LOGOUT', value: 'LOGOUT'},
-    {label: 'LOGIN', value: 'LOGIN'},
-    {label: 'GET', value: 'GET'},
-    {label: 'POST', value: 'POST'},
-    {label: 'PUT', value: 'PUT'},
-    {label: 'DELETE', value: 'DELETE'}
+    {label: t('LOGOUT'), value: 'LOGOUT'},
+    {label: t('LOGIN'), value: 'LOGIN'},
+    {label: t('GET'), value: 'GET'},
+    {label: t('POST'), value: 'POST'},
+    {label: t('PUT'), value: 'PUT'},
+    {label: t('DELETE'), value: 'DELETE'}
 ]
 
 interface Filters {
@@ -94,9 +94,9 @@ const UsersActivityHistory = () => {
                 cell: info => info.getValue()?.username,
                 header: () =>
                     <div className='header-item-container'>
-                        <span className={'header-item-title'}>{t("UserName")}</span>
+                        <span className={'header-item-title'}>{t("Username")}</span>
                         <Select isClearable
-                                value={users?.find((option: any) => option.value === user)}
+                                value={users?.find((option: any) => option.value === user)?.username}
                                 onChange={(item: any) => setUser(item?.value)}
                                 className="mb-0"
                                 options={users?.map((user: UserProfile) => {
@@ -125,7 +125,7 @@ const UsersActivityHistory = () => {
                 cell: info => t(info.getValue()),
                 header: () =>
                     <div className='header-item-container'>
-                        <span className={'header-item-title'}>{t("MethodType")}</span>
+                        <span className={'header-item-title'}>{t("Method Type")}</span>
                         <Select isClearable
                                 value={methodTypes.find(option => option.value === methodType)}
                                 onChange={(item: any) => setMethodType(item?.value)}
@@ -184,7 +184,7 @@ const UsersActivityHistory = () => {
                 cell: info => info.getValue(),
                 header: () =>
                     <div className='header-item-container'>
-                        <span className={'header-item-title'}>{t("IpAddress")}</span>
+                        <span className={'header-item-title'}>{t("Ip Address")}</span>
                     </div>,
                 size: 45
             },
@@ -193,7 +193,7 @@ const UsersActivityHistory = () => {
                 cell: info => info.getValue(),
                 header: () =>
                     <div className='header-item-container'>
-                        <span className={'header-item-title'}>{t("UserAgent")}</span>
+                        <span className={'header-item-title'}>{t("User Agent")}</span>
                     </div>,
                 size: 45
             },

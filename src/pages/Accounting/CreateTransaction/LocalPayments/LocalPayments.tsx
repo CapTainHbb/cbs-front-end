@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {LocalPaymentsFormDataType, PaymentDataType, defaultLocalPaymentsFormData} from "./types";
 import {Col, Container, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
@@ -17,22 +17,9 @@ import TotalAmount from "./TotalAmount";
 import PaymentsContainer from './PaymentsContainer';
 import Payments from './Payments';
 import { useSelector } from 'react-redux';
-import {createLocalizedDate, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
+import {createLocalizedDate, getToday, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
 
-const initialResetForm = {
-    totalAmount: "0",
-    creditorFinancialAccount: null,
-    creditorReceivedFeeRate: "0",
-    creditorReceivedFeeAmount: "0",
-    creditorPaidFeeRate: "0",
-    creditorPaidFeeAmount: "0",
-    debtorFinancialAccount: null,
-    debtorReceivedFeeRate: "0",
-    debtorReceivedFeeAmount: "0",
-    debtorPaidFeeRate: "0",
-    debtorPaidFeeAmount: "0",
-    payments: [],
-}
+
 
 interface Props {
     isOpen: boolean;
@@ -42,6 +29,27 @@ interface Props {
 
 const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
     const modalRef = useRef(null);
+    const initialResetForm = useMemo(() => {
+        return {
+            totalAmount: "0",
+            creditorFinancialAccount: null,
+            creditorReceivedFeeRate: "0",
+            creditorReceivedFeeAmount: "0",
+            creditorPaidFeeRate: "0",
+            creditorPaidFeeAmount: "0",
+            debtorFinancialAccount: null,
+            debtorReceivedFeeRate: "0",
+            debtorReceivedFeeAmount: "0",
+            debtorPaidFeeRate: "0",
+            debtorPaidFeeAmount: "0",
+            payments: [{
+                amount: undefined,
+                bank_account: "",
+                payment_transaction_id: "",
+                dateTime: getToday()
+            }],
+        }
+    }, [isOpen])
     const localCurrency = useSelector((state: any) => state.InitialData.localCurrency);
     const getSpecificFormFieldsInitial = useCallback(() => {
         if (activeTransactionData?.transaction_type !== 'local-payments') {
@@ -58,6 +66,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             }
         });
 
+
         return {
             totalAmount: (activeTransactionData && customFormatNumber(activeTransactionData?.total_amount)) || "0",
             creditorFinancialAccount: activeTransactionData?.creditor_financial_account|| null,
@@ -72,7 +81,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             debtorPaidFeeAmount: customFormatNumber(activeTransactionData?.debtor_cost?.amount) || "0",
             payments: payments,
         }
-    }, [activeTransactionData]);
+    }, [activeTransactionData, initialResetForm]);
     const getSpecificFormFieldsValidation = useCallback(() => {
         return ({
             totalAmount: Yup.string().required(t('Required')).min(1, t('Amount cannot be empty')).test('not-zero', t('Value cannot be zero'), (value) => Number(removeNonNumberChars(value)) !== 0),
@@ -121,9 +130,10 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
             payments: payments,
         }
     }, []);
+
     const getSpecificFormFieldsAfterResetForm = useCallback((inputFormik: any) => {
         return structuredClone(initialResetForm)
-    }, []);
+    }, [initialResetForm]);
 
     const getSpecificTransactionDataForSubmission = useCallback((inputFormik: any) => {
         let data = {
@@ -289,7 +299,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                             <Payments formik={formik} />
                         </PaymentsContainer>
                         
-                        <TransactionDetails formik={formik} />
+                        <TransactionDetails formik={formik} isParentModalOpen={isOpen} />
                         <TransactionFooter formik={formik}/>
                     </Container>
                 </Form>

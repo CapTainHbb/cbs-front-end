@@ -297,7 +297,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                                 partyAmount={formik.values.againstAmount}    
                             />
                         </PartyContainer>
-                        <TransactionDetails formik={formik} />
+                        <TransactionDetails formik={formik} isParentModalOpen={isOpen} />
                         <TransactionFooter formik={formik} />
                     </Container>
                 </Form>

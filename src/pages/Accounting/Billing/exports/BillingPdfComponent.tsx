@@ -10,6 +10,8 @@ import {Currency} from "../../../Reports/utils";
 import {abs} from "mathjs";
 import PdfHeader from "./PdfHeader";
 import { customFormatNumber } from 'pages/Accounting/utils';
+import BillingTransactionChunk from "./BillingTransactionChunk";
+import {chunk} from "lodash-es";
 
 
 interface Props {
@@ -24,6 +26,38 @@ interface Props {
     referenceNumber: string;
 }
 
+
+function chunkArray<T>(array: T[], firstChunkSize: number, chunkSize: number): T[][] {
+    // Handle edge cases for invalid chunk sizes
+    if (firstChunkSize <= 0 || chunkSize <= 0) {
+        throw new Error("Chunk sizes must be greater than 0");
+    }
+
+    // If the array is empty, return an empty array
+    if (array.length === 0) {
+        return [];
+    }
+
+    const result: T[][] = [];
+    let i = 0;
+
+    // Handle the first chunk
+    if (i < array.length) {
+        const firstChunkEnd = Math.min(firstChunkSize, array.length);
+        result.push(array.slice(0, firstChunkEnd));
+        i = firstChunkEnd; // Move the index to the end of the first chunk
+    }
+
+    // Handle the remaining chunks
+    while (i < array.length) {
+        const chunkEnd = Math.min(i + chunkSize, array.length);
+        result.push(array.slice(i, chunkEnd));
+        i += chunkSize;
+    }
+
+    return result;
+}
+
 const BillingPDFComponent: React.FC<Props> = ({ tableData,
                                                   filters, currencies, companyProfile, companyImage, selectedFinancialAccount,
                                                   accountSummaryColumns, accountSummaryRows, referenceNumber}) => {
@@ -31,6 +65,10 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
     const transactionRowsForPDF = useMemo(() => {
         return getRowsForExport(tableData, currencies);
     }, [tableData, currencies]);
+
+    const chunks = useMemo(() => {
+        return chunkArray(transactionRowsForPDF, 33, 40);
+    }, [])
 
     return (
         <Document>
@@ -112,49 +150,7 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
 
                 {/* Table Body */}
                 <View style={commonPDFStyles.tableBody}>
-                    {transactionRowsForPDF?.map((party: PartyForExport, index: number) => (
-                        <View key={index} style={commonPDFStyles.tableRow}>
-                            <Text
-                                style={[commonPDFStyles.tableBodyCell, commonPDFStyles.regularColumn]}>{t(party.transaction_type)}</Text>
-                            <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>{party.transaction}</Text>
-                            <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>{party.date}</Text>
-                            <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>{party.time}</Text>
-                            <Text style={[commonPDFStyles.tableBodyCell, commonPDFStyles.smallerColumn]}>
-                                {party.currency}
-                            </Text>
-                            <Text
-                                style={[
-                                    commonPDFStyles.tableBodyCell,
-                                    commonPDFStyles.regularColumn,
-                                    Number(party.debtor_amount) > 0 ? commonPDFStyles.debtorColumn : commonPDFStyles.zeroValue,
-                                ]}
-                            >
-                                {customFormatNumber(party.debtor_amount)}
-                            </Text>
-                            <Text
-                                style={[
-                                    commonPDFStyles.tableBodyCell,
-                                    commonPDFStyles.regularColumn,
-                                    Number(party.creditor_amount) > 0 ? commonPDFStyles.creditorColumn : commonPDFStyles.zeroValue,
-                                ]}
-                            >
-                                {customFormatNumber(party.creditor_amount)}
-                            </Text>
-                            <Text
-                                style={[
-                                    commonPDFStyles.tableBodyCell,
-                                    commonPDFStyles.regularColumn,
-                                    Number(party.balance) > 0
-                                        ? commonPDFStyles.creditorColumn
-                                        : party.balance === 0
-                                            ? commonPDFStyles.zeroValue
-                                            : commonPDFStyles.debtorColumn,
-                                ]}
-                            >
-                                {customFormatNumber(abs(Number(party.balance)))}
-                            </Text>
-                        </View>
-                    ))}
+                    <BillingTransactionChunk dataChunk={chunks[0]} />
                 </View>
 
                 <Text
@@ -162,6 +158,16 @@ const BillingPDFComponent: React.FC<Props> = ({ tableData,
                     render={({pageNumber, totalPages}) => `${t("Page")} ${pageNumber} ${t("Of")} ${totalPages}`}
                 />
             </Page>
+
+            {chunks.slice(1).map((chunk, index) => (
+                <Page style={commonPDFStyles.page}>
+                    <BillingTransactionChunk dataChunk={chunk} />
+                    <Text
+                        style={commonPDFStyles.footer}
+                        render={({pageNumber, totalPages}) => `${t("Page")} ${pageNumber} ${t("Of")} ${totalPages}`}
+                    />
+                </Page>
+            ))}
 
             {/* Second Page for the Account Summary */}
             <Page style={commonPDFStyles.page}>

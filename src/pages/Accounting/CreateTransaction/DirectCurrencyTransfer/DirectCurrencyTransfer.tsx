@@ -302,7 +302,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                                 />
                             </Col>
                         </PartyContainer>
-                        <TransactionDetails formik={formik} />
+                        <TransactionDetails formik={formik} isParentModalOpen={isOpen}/>
                         <TransactionFooter formik={formik}/>
                     </Container>
                 </Form>

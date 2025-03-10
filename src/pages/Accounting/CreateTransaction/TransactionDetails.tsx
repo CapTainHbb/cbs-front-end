@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Col, FormGroup, Input, Row} from "reactstrap";
 import {t} from "i18next";
 import Flatpickr from "react-flatpickr";
 import {getToday} from "../../../helpers/date";
 
 interface Props {
+    isParentModalOpen: boolean;
     formik: any;
 }
 
-const TransactionDetails: React.FC<Props> = ({ formik }) => {
+const TransactionDetails: React.FC<Props> = ({ formik, isParentModalOpen }) => {
 
     return (
         <Row>
@@ -48,7 +49,7 @@ const TransactionDetails: React.FC<Props> = ({ formik }) => {
                         onChange={([selectedDate]) => {
                             formik.setFieldValue('dateTime', selectedDate);
                         }}
-                        value={formik.values.dateTime || getToday()}
+                        value={formik.values.dateTime}
                         disabled={formik.derivedState.areInputsDisabled}
                     />
                     {formik.errors.dateTime && formik.touched.dateTime && (

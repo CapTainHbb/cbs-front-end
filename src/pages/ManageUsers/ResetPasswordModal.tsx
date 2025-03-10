@@ -3,10 +3,10 @@ import {Col, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalFooter, Mo
 import {t} from "i18next";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {UserProfile} from "./UsersList";
 import axiosInstance from "../../helpers/axios_instance";
 import {toast} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
+import {UserProfile} from "./types";
 
 
 interface Props {

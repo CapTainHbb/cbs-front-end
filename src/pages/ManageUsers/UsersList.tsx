@@ -1,5 +1,5 @@
 import {t} from 'i18next';
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import {toast, ToastContainer} from 'react-toastify';
 import axiosInstance from 'helpers/axios_instance';
 import {ColumnDef} from '@tanstack/react-table';
@@ -41,55 +41,9 @@ import {normalizeDjangoError} from "../../helpers/error";
 import ResetPasswordModal from "./ResetPasswordModal";
 import {handleValidDate, handleValidTime} from "../../helpers/date";
 import UsersPermission from './UsersPermission';
+import {roleOptions, statusOptions, UserProfile} from "./types";
 
-const statusOptions = [
-  {label: t("Active"), value: true},
-  {label: t("Inactive"), value: false}
-]
 
-const roleOptions = [
-  {label: t("Admin"), value: "admin"},
-  {label: t("Manager"), value: 'manager'},
-  {label: t("DepartmentManager"), value: 'department_manager'},
-  {label: t("BranchManager"), value: 'branch_manager'},
-  {label: t("Level1Employee"), value: 'level_1_employee'},
-  {label: t("Level2Employee"), value: 'Level_2_employee'},
-  {label: t("Level3Employee"), value: 'level_3_employee'},
-]
-
-export interface User {
-  id?: number;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  is_staff: boolean;
-  is_active: boolean;
-  is_superuser: boolean;
-  last_login?: string;
-  date_joined?: string;
-  password?: string;
-  repeat_password?: string;
-  groups: any;
-  user_permissions: any;
-}
-
-export interface UserProfile {
-  id?: number;
-  user: User;
-  profile_photo?: string;
-  role: string;
-  date_joined: any;
-}
-
-interface Filters {
-  username: string | undefined;
-  first_name: string | undefined;
-  last_name: string | undefined;
-  email: string | undefined;
-  is_active: boolean | undefined;
-  role: string | undefined;
-}
 
 const UsersList = () => {
   const [activeUserProfile, setActiveUserProfile] = useState<UserProfile | null>(null);
@@ -103,40 +57,11 @@ const UsersList = () => {
   const [repeatPasswordShow, setRepeatPasswordShow] = useState<boolean>(false)
   const [resetPasswordModal, setResetPasswordModal] = useState<boolean>(false);
 
-  // profile photo Validation
-  const [profilePhotoStore, setProfilePhotoStore] = useState<any>();
-  const [selectedProfilePhoto, setSelectedProfilePhoto] = useState<any>();
-
-    const handleClick = useCallback((item: any) => {
-        setProfilePhotoStore((prev: any) => {
-            const newData = [...prev, item];
-            validation.setFieldValue('profilePhoto', newData);
-            return newData;
-        });
-    }, []);
-
-    useEffect(() => {
-        setProfilePhotoStore((activeUserProfile && activeUserProfile?.profile_photo) || []);
-    }, [activeUserProfile]);
-    const handleImageChange = (event: any) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const result = e.target?.result as string;
-            validation.setFieldValue('profilePhoto', result);
-            setSelectedProfilePhoto(result);
-        };
-        reader.readAsDataURL(file);
-    };
 
   const toggle = useCallback(() => {
     if (modal) {
       setModal(false);
       setActiveUserProfile(null);
-      setSelectedProfilePhoto('');
-      setProfilePhotoStore('');
     } else {
       setModal(true);
     }
@@ -467,243 +392,246 @@ const UsersList = () => {
                         <ModalBody>
                           <Input type="hidden" id="id-field" />
                           <Row>
-                            <Col className="g-3">
-                              <Row>
-                                <Col lg={6}>
-                                      <Label
-                                        htmlFor="username-field"
-                                        className="form-label"
-                                      >
-                                      {t("User Name")} 
-                                      </Label>
-                                      <Input
-                                        name="userName"
-                                        id="username-field"
-                                        className="form-control"
-                                        placeholder={t("Enter User Name")}
-                                        type="text"
-                                        validate={{
-                                          required: { value: true },
-                                        }}
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.userName || ""}
-                                        invalid={
-                                          validation.touched.userName && validation.errors.userName ? true : false
-                                        }
-                                      />
-                                      {validation.touched.userName && validation.errors.userName ? (
-                                        <FormFeedback type="invalid">{validation.errors.userName}</FormFeedback>
-                                      ) : null}
-                                </Col>
-                                <Col lg={6}>
-                                      <Label
-                                        htmlFor="firstname-field"
-                                        className="form-label"
-                                      >
-                                      {t("First Name")} 
-                                      </Label>
-                                      <Input
-                                        name="firstName"
-                                        id="firstname-field"
-                                        className="form-control"
-                                        placeholder={t("Enter First Name")}
-                                        type="text"
-                                        validate={{
-                                          required: { value: true },
-                                        }}
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.firstName || ""}
-                                        invalid={
-                                          !!(validation.touched.firstName && validation.errors.firstName)
-                                        }
-                                      />
-                                      {validation.touched.firstName && validation.errors.firstName ? (
-                                        <FormFeedback type="invalid">{validation.errors.firstName}</FormFeedback>
-                                      ) : null}
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col lg={6}>
-                                <div>
-                                    <Label
-                                      htmlFor="lastname-field"
-                                      className="form-label"
-                                    >
-                                    {t("Last Name")} 
-                                    </Label>
-                                    <Input
-                                      name="lastName"
-                                      id="lastname-field"
-                                      className="form-control"
-                                      placeholder={t("Enter Last Name")}
-                                      type="text"
-                                      validate={{
-                                        required: { value: true },
-                                      }}
-                                      onChange={validation.handleChange}
-                                      onBlur={validation.handleBlur}
-                                      value={validation.values.lastName || ""}
-                                      invalid={
-                                        !!(validation.touched.lastName && validation.errors.lastName)
-                                      }
-                                    />
-                                    {validation.touched.lastName && validation.errors.lastName ? (
-                                      <FormFeedback type="invalid">{validation.errors.lastName}</FormFeedback>
-                                    ) : null}
+                            <Col md={12} className="g-3">
+                                <Card>
+                                    <CardHeader className={'p-2'} ><Label>{t("User Profile")}</Label></CardHeader>
+                                    <CardBody>
+                                      <Row>
+                                        <Col lg={4}>
+                                              <Label
+                                                htmlFor="username-field"
+                                                className="form-label"
+                                              >
+                                              {t("User Name")}
+                                              </Label>
+                                              <Input
+                                                name="userName"
+                                                id="username-field"
+                                                className="form-control"
+                                                placeholder={t("Enter User Name")}
+                                                type="text"
+                                                validate={{
+                                                  required: { value: true },
+                                                }}
+                                                onChange={validation.handleChange}
+                                                onBlur={validation.handleBlur}
+                                                value={validation.values.userName || ""}
+                                                invalid={
+                                                  validation.touched.userName && validation.errors.userName ? true : false
+                                                }
+                                              />
+                                              {validation.touched.userName && validation.errors.userName ? (
+                                                <FormFeedback type="invalid">{validation.errors.userName}</FormFeedback>
+                                              ) : null}
+                                        </Col>
+                                        <Col lg={4}>
+                                              <Label
+                                                htmlFor="firstname-field"
+                                                className="form-label"
+                                              >
+                                              {t("First Name")}
+                                              </Label>
+                                              <Input
+                                                name="firstName"
+                                                id="firstname-field"
+                                                className="form-control"
+                                                placeholder={t("Enter First Name")}
+                                                type="text"
+                                                validate={{
+                                                  required: { value: true },
+                                                }}
+                                                onChange={validation.handleChange}
+                                                onBlur={validation.handleBlur}
+                                                value={validation.values.firstName || ""}
+                                                invalid={
+                                                  !!(validation.touched.firstName && validation.errors.firstName)
+                                                }
+                                              />
+                                              {validation.touched.firstName && validation.errors.firstName ? (
+                                                <FormFeedback type="invalid">{validation.errors.firstName}</FormFeedback>
+                                              ) : null}
+                                        </Col>
+                                        <Col lg={4}>
+                                              <div>
+                                                  <Label
+                                                      htmlFor="lastname-field"
+                                                      className="form-label"
+                                                  >
+                                                      {t("Last Name")}
+                                                  </Label>
+                                                  <Input
+                                                      name="lastName"
+                                                      id="lastname-field"
+                                                      className="form-control"
+                                                      placeholder={t("Enter Last Name")}
+                                                      type="text"
+                                                      validate={{
+                                                          required: { value: true },
+                                                      }}
+                                                      onChange={validation.handleChange}
+                                                      onBlur={validation.handleBlur}
+                                                      value={validation.values.lastName || ""}
+                                                      invalid={
+                                                          !!(validation.touched.lastName && validation.errors.lastName)
+                                                      }
+                                                  />
+                                                  {validation.touched.lastName && validation.errors.lastName ? (
+                                                      <FormFeedback type="invalid">{validation.errors.lastName}</FormFeedback>
+                                                  ) : null}
 
-                                  </div>
-                                </Col>
-                                
-                                <Col lg={6}>
-                                    <Label
-                                      htmlFor="role-field"
-                                      className="form-label"
-                                    >
-                                      {t("Role")}
-                                    </Label>
+                                              </div>
+                                          </Col>
+                                      </Row>
+                                      <Row>
+                                        <Col lg={4}>
+                                              <Label
+                                                  htmlFor="email-field"
+                                                  className="form-label"
+                                              >
+                                                  {t("Email")}
+                                              </Label>
 
-                                    <Select
-                                      isClearable
-                                      value={roleOptions.find(option => option.value === validation.values.role)}
-                                      onChange={onSelectRoleChange}
-                                      
-                                      className="mb-0"
-                                      options={roleOptions.filter((option: any) => option.value !== 'admin')}
-                                      id="roleinput-choices"
-                                    />
-                                    {validation.touched.role &&
-                                      validation.errors.role ? (
-                                      <FormFeedback type="invalid">
-                                        {validation.errors.role}
-                                      </FormFeedback>
-                                    ) : null}
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col lg={7}>
-                                    <Label
-                                      htmlFor="email-field"
-                                      className="form-label"
-                                    >
-                                      {t("Email")}
-                                    </Label>
+                                              <Input
+                                                  name="email"
+                                                  id="email-field"
+                                                  className="form-control"
+                                                  placeholder={t("Enter Email")}
+                                                  type="text"
+                                                  validate={{
+                                                      required: { value: true },
+                                                  }}
+                                                  onChange={validation.handleChange}
+                                                  onBlur={validation.handleBlur}
+                                                  value={validation.values.email || ""}
+                                                  invalid={
+                                                      validation.touched.email && validation.errors.email ? true : false
+                                                  }
+                                              />
+                                              {validation.touched.email && validation.errors.email ? (
+                                                  <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                                              ) : null}
+                                          </Col>
+                                        <Col lg={4}>
+                                              <Label
+                                                  htmlFor="status-choices"
+                                                  className="form-label font-size-13 text-muted"
+                                              >
+                                                  {t("Status")}
+                                              </Label>
+                                              <Select
+                                                  isClearable
+                                                  value={statusOptions.find(option => option.value === validation.values.isActive)}
+                                                  onChange={onSelectStatusChange}
+                                                  className="mb-0"
+                                                  options={statusOptions}
+                                                  id="statusinput-choices"
+                                              >
+                                              </Select>
 
-                                    <Input
-                                      name="email"
-                                      id="email-field"
-                                      className="form-control"
-                                      placeholder={t("Enter Email")}
-                                      type="text"
-                                      validate={{
-                                        required: { value: true },
-                                      }}
-                                      onChange={validation.handleChange}
-                                      onBlur={validation.handleBlur}
-                                      value={validation.values.email || ""}
-                                      invalid={
-                                        validation.touched.email && validation.errors.email ? true : false
-                                      }
-                                    />
-                                    {validation.touched.email && validation.errors.email ? (
-                                      <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
-                                    ) : null}
-                                </Col>
-                                <Col lg={5}>
-                                    <Label
-                                      htmlFor="status-choices"
-                                      className="form-label font-size-13 text-muted"
-                                    >
-                                      {t("Status")}
-                                    </Label>
-                                    <Select
-                                      isClearable
-                                      value={statusOptions.find(option => option.value === validation.values.isActive)}
-                                      onChange={onSelectStatusChange}
-                                      className="mb-0"
-                                      options={statusOptions}
-                                      id="statusinput-choices"
-                                    >
-                                    </Select>
+                                              {validation.touched.isActive &&
+                                              validation.errors.isActive ? (
+                                                  <FormFeedback type="invalid">
+                                                      {validation.errors.isActive}
+                                                  </FormFeedback>
+                                              ) : null}
+                                          </Col>
+                                        <Col lg={4}>
+                                            <Label
+                                              htmlFor="role-field"
+                                              className="form-label"
+                                            >
+                                              {t("Role")}
+                                            </Label>
 
-                                    {validation.touched.isActive &&
-                                      validation.errors.isActive ? (
-                                      <FormFeedback type="invalid">
-                                        {validation.errors.isActive}
-                                      </FormFeedback>
-                                    ) : null}
-                                </Col>
-                              </Row>
-                              <Row>
-                                {!isEdit && <Col lg={12}>
-                                    <Label
-                                        htmlFor="password-field"
-                                        className="form-label"
-                                    >
-                                        {t("Password")}
-                                    </Label>
-                                    <div className='position-relative auth-pass-inputgroup mb-3'>
-                                        <Input
-                                            name="password"
-                                            id="password-field"
-                                            className="form-control"
-                                            placeholder={t("Enter password")}
-                                            type={passwordShow ? "text" : "password"}
-                                            onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.password || ""}
-                                            invalid={
-                                                validation.touched.password && validation.errors.password ? true : false
-                                            }
-                                        />
-                                        <button
-                                            className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-                                            type="button" id="password-addon" onClick={() => setPasswordShow(!passwordShow)}><i
-                                            className="ri-eye-fill align-middle"></i></button>
-                                        {validation.touched.password && validation.errors.password ? (
-                                            <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
-                                        ) : null}
+                                            <Select
+                                              isClearable
+                                              value={roleOptions.find(option => option.value === validation.values.role)}
+                                              onChange={onSelectRoleChange}
 
-                                    </div>
-                                </Col>}
-                              </Row>
-                              <Row>
-                                {!isEdit && <Col lg={12}>
-                                    <Label
-                                        htmlFor="repeatpassword-field"
-                                        className="form-label"
-                                    >
-                                        {t("Repeat Password")}
-                                    </Label>
-                                    <div className='position-relative auth-pass-inputgroup mb-3'>
-                                        <Input
-                                            name="repeatPassword"
-                                            id="repeatpassword-field"
-                                            className="form-control"
-                                            placeholder={t("Enter Repeat Password")}
-                                            type={repeatPasswordShow ? "text" : "password"}
-                                            onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.repeatPassword || ""}
-                                            invalid={
-                                                validation.touched.repeatPassword && validation.errors.repeatPassword ? true : false
-                                            }
-                                        />
-                                        <button
-                                            className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-                                            type="button" id="password-addon"
-                                            onClick={() => setRepeatPasswordShow(!repeatPasswordShow)}><i
-                                            className="ri-eye-fill align-middle"></i></button>
-                                        {validation.touched.repeatPassword && validation.errors.repeatPassword ? (
-                                            <FormFeedback type="invalid">{validation.errors.repeatPassword}</FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Col>}
-                              </Row>
+                                              className="mb-0"
+                                              options={roleOptions.filter((option: any) => option.value !== 'admin')}
+                                              id="roleinput-choices"
+                                            />
+                                            {validation.touched.role &&
+                                              validation.errors.role ? (
+                                              <FormFeedback type="invalid">
+                                                {validation.errors.role}
+                                              </FormFeedback>
+                                            ) : null}
+                                        </Col>
+                                      </Row>
+                                      <Row>
+                                        {!isEdit && <Col md={6}>
+                                            <Label
+                                                htmlFor="password-field"
+                                                className="form-label"
+                                            >
+                                                {t("Password")}
+                                            </Label>
+                                            <div className='position-relative auth-pass-inputgroup mb-3'>
+                                                <Input
+                                                    name="password"
+                                                    id="password-field"
+                                                    className="form-control"
+                                                    placeholder={t("Enter password")}
+                                                    type={passwordShow ? "text" : "password"}
+                                                    onChange={validation.handleChange}
+                                                    onBlur={validation.handleBlur}
+                                                    value={validation.values.password || ""}
+                                                    invalid={
+                                                        validation.touched.password && validation.errors.password ? true : false
+                                                    }
+                                                />
+                                                <button
+                                                    className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                                                    type="button" id="password-addon" onClick={() => setPasswordShow(!passwordShow)}><i
+                                                    className="ri-eye-fill align-middle"></i></button>
+                                                {validation.touched.password && validation.errors.password ? (
+                                                    <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                                                ) : null}
+
+                                            </div>
+                                        </Col>}
+                                          {!isEdit && <Col md={6}>
+                                              <Label
+                                                  htmlFor="repeatpassword-field"
+                                                  className="form-label"
+                                              >
+                                                  {t("Repeat Password")}
+                                              </Label>
+                                              <div className='position-relative auth-pass-inputgroup mb-3'>
+                                                  <Input
+                                                      name="repeatPassword"
+                                                      id="repeatpassword-field"
+                                                      className="form-control"
+                                                      placeholder={t("Enter Repeat Password")}
+                                                      type={repeatPasswordShow ? "text" : "password"}
+                                                      onChange={validation.handleChange}
+                                                      onBlur={validation.handleBlur}
+                                                      value={validation.values.repeatPassword || ""}
+                                                      invalid={
+                                                          validation.touched.repeatPassword && validation.errors.repeatPassword ? true : false
+                                                      }
+                                                  />
+                                                  <button
+                                                      className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                                                      type="button" id="password-addon"
+                                                      onClick={() => setRepeatPasswordShow(!repeatPasswordShow)}><i
+                                                      className="ri-eye-fill align-middle"></i></button>
+                                                  {validation.touched.repeatPassword && validation.errors.repeatPassword ? (
+                                                      <FormFeedback type="invalid">{validation.errors.repeatPassword}</FormFeedback>
+                                                  ) : null}
+                                              </div>
+                                          </Col>}
+                                      </Row>
+                                      <Row>
+
+                                      </Row>
+                                    </CardBody>
+                                </Card>
                             </Col>
-                            <Col>
-                                <UsersPermission />
+                            <Col md={12}>
+                                <UsersPermission permissionsId={[]} setPermissionsId={undefined} />
                             </Col>
                           </Row>
                         </ModalBody>

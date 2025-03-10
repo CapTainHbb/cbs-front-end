@@ -52,6 +52,20 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
             return 'text-danger'
         }
     }, [prefixName, formik.values])
+
+    const finalAmountLabel = useMemo(() => {
+        if(prefixName === 'creditor' || prefixName === 'debtor') {
+            return t("Final Amount")
+        } else if(prefixName === 'base' && formik.values?.isBuy) {
+            return t("Receivable Amount")
+        } else if(prefixName === 'base' && !formik.values?.isBuy) {
+            return t("Payable Amount")
+        } else if(prefixName === 'against' && formik.values?.isBuy) {
+            return t("Payable Amount")
+        } else if(prefixName === 'against' && !formik.values?.isBuy) {
+            return t("Receivable Amount");
+        }
+    }, [prefixName, formik.values])
     return (
         <Col >
             <Row >
@@ -190,7 +204,7 @@ const ReceivedPaidFeeContainer: React.FC<Props> = ({ formik, prefixName, partyAm
             </Row>
             <Row>
                 <Col md={2}>
-                    <Label className={finalAmountStyle}>{t("Final Amount")}</Label>
+                    <Label className={finalAmountStyle}>{finalAmountLabel}</Label>
                 </Col>
                 <Col>
                     <Label className={finalAmountStyle}>{calculatedFinalAmount}</Label>

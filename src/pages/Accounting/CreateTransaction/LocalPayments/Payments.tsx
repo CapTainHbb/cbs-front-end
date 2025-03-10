@@ -45,7 +45,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
             {formik.values.payments.map((payment: PaymentDataType, index: number) => (
                 <Row key={index} style={{marginBottom: '2px'}}>
                     {/* Amount Field */}
-                    <Col md={2} sm={12}>
+                    <Col md={3} sm={12}>
                         <Input
                             id={`payments.${index}.amount`}
                             name={`payments.${index}.amount`}
@@ -66,7 +66,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                     </Col>
 
                     {/* Bank Account Field */}
-                    <Col md={3} sm={12}>
+                    <Col md={4} sm={12}>
                         <Input
                             id={`payments.${index}.bank_account`}
                             name={`payments.${index}.bank_account`}
