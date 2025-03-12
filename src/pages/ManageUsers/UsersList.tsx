@@ -57,6 +57,7 @@ const UsersList = () => {
   const [repeatPasswordShow, setRepeatPasswordShow] = useState<boolean>(false)
   const [resetPasswordModal, setResetPasswordModal] = useState<boolean>(false);
 
+  const [activeUserPermissions, setActiveUserPermissions] = useState([])
 
   const toggle = useCallback(() => {
     if (modal) {
@@ -152,6 +153,8 @@ const UsersList = () => {
     }, [setItemsChanged, itemsChanged]);
 
   const onClickEditUser = useCallback(async (user: UserProfile) => {
+      console.log(user.user.user_permissions)
+      setActiveUserPermissions(user.user.user_permissions);
       setActiveUserProfile(user);
       setIsEdit(true);
       toggle();
@@ -178,6 +181,7 @@ const UsersList = () => {
   const handleAddUser = useCallback(async (user: UserProfile) => {
       axiosInstance.post("/users/create/", user)
       .then(response => {
+          createPermissions(response.data);
           toast.success(t("User Created Successfully"));
           validation.resetForm();
           toggle();
@@ -194,7 +198,20 @@ const UsersList = () => {
       setItemsChanged(!itemsChanged);
   }, [itemsChanged]);
 
+  const createPermissions = useCallback(async (createdUser: UserProfile) => {
+      axiosInstance.post(`/users/permissions/${createdUser.user.id}/`,
+          {ids: Object.values(activeUserPermissions)}
+      ).then(response => {
+          toast.success(t('User Permissions Created Successfully'));
+      }).catch(error => toast.error(t("Failed to create user permissions")))
+  },  [activeUserPermissions])
 
+  const onClickAddUser = useCallback(async () => {
+      setActiveUserPermissions([])
+      setActiveUserProfile(null);
+      setIsEdit(false);
+      setModal(true);
+  }, [])
 
   const onSelectRoleChange = useCallback((selectedOption: any) => {
       validation.setFieldValue('role', selectedOption?.value);
@@ -358,11 +375,7 @@ const UsersList = () => {
                     <div className="flex-grow-1">
                       <button
                         className="btn btn-primary add-btn"
-                        onClick={() => {
-                          setActiveUserProfile(null);
-                          setIsEdit(false);
-                          setModal(true);
-                        }}
+                        onClick={onClickAddUser}
                       >
                         <i className="ri-add-fill me-1 align-bottom"></i> {t("Add User")}
                       </button>
@@ -631,7 +644,8 @@ const UsersList = () => {
                                 </Card>
                             </Col>
                             <Col md={12}>
-                                <UsersPermission permissionsId={[]} setPermissionsId={undefined} />
+                                <UsersPermission  activeUserPermissions={activeUserPermissions}
+                                                  setActiveUserPermissions={setActiveUserPermissions} />
                             </Col>
                           </Row>
                         </ModalBody>

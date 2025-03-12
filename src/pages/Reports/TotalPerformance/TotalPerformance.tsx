@@ -11,9 +11,10 @@ import {currencyColumns} from "../utils";
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
+import TotalPerformanceExtraHeader from "./TotalPerformanceExtraHeader";
 
 
-interface TotalPerformance {
+interface TotalPerformanceRowType {
     exchanged_amounts: number;
     currency_accounts: CurrencyAccount[];
     flow_type: "incoming" | "outgoing" | "balance";
@@ -22,14 +23,10 @@ interface TotalPerformance {
 
 const TotalPerformance = () => {
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
-
     const [date, setDate] = useState<string>(getFormattedToday());
-
-    const filters = useMemo(() => ({ date }), [date]);
-
     const {referenceCurrencies, referenceCurrency} = useSelector((state: any) => state.InitialData);
 
-    const columns = useMemo<ColumnDef<TotalPerformance>[]>(
+    const columns = useMemo<ColumnDef<TotalPerformanceRowType>[]>(
         () => [
             {
                 id: "select",
@@ -75,6 +72,10 @@ const TotalPerformance = () => {
         [referenceCurrencies, referenceCurrency]
     );
 
+    const urlToFetch = useMemo(() => {
+        return `/statistics-information/total-performance/?date=${date}`;
+    }, [date]);
+
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -83,21 +84,20 @@ const TotalPerformance = () => {
                     <Col lg={12}>
                         <Card>
                             <CardHeader>
-                                {/*<GeneralReportExtraHeader*/}
-                                {/*    setItemsChanged={setItemsChanged}*/}
-                                {/*    itemsChanged={itemsChanged}*/}
-                                {/*    fromDate={fromDate} onChangeFromDate={setFromDate}*/}
-                                {/*    toDate={toDate} onChangeToDate={setToDate}*/}
-                                {/*/>*/}
+                                <TotalPerformanceExtraHeader
+                                    setItemsChanged={setItemsChanged}
+                                    itemsChanged={itemsChanged}
+                                    date={date} setDate={setDate}
+                                />
                             </CardHeader>
                             <CardBody>
                                 <React.Fragment >
                                     <CustomTableContainer
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
-                                        loadItemsApi="/statistics-information/total-performance/"
+                                        loadItemsApi={urlToFetch}
+                                        loadMethod={'GET'}
                                         columns={(columns || [])}
-                                        filters={filters}
                                         hasPagination={false}
                                     />
                                 </React.Fragment >

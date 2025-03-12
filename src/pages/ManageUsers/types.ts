@@ -49,3 +49,10 @@ export interface Filters {
     is_active: boolean | undefined;
     role: string | undefined;
 }
+
+export interface Permission {
+    id: number;
+    codename: string;
+    model: string;
+    app_label: string;
+}

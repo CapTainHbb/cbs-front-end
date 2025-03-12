@@ -14,12 +14,6 @@ import { PartyType, partyTypeOptions } from '../SelectPartyType';
 import {CurrencyAccount} from "../../Accounting/types";
 
 
-interface Filters {
-    partyType?: PartyType;
-    currency?: Currency;
-}
-
-
 const CreditorsAndDebtors = () => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const [currency, setCurrency] =
@@ -27,13 +21,6 @@ const CreditorsAndDebtors = () => {
     const [partyType, setPartyType] = useState<PartyType>(partyTypeOptions[0]);
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
-
-    const filters: Filters = useMemo(() => {
-        return {
-            party_type: partyType?.name,
-            currency: currency,
-        }
-    }, [partyType, currency])
 
     const columns = useMemo<ColumnDef<CurrencyAccount>[]>(() => {
         return (
@@ -89,6 +76,10 @@ const CreditorsAndDebtors = () => {
         )
     }, [currencies])
 
+    const urlToFetch = useMemo(() => {
+        return `statistics-information/creditors-and-debtors/?party_type=${partyType.name}&currency=${currency.id}`;
+    }, [currency, partyType]);
+
     return (
         <React.Fragment>
             <div className="page-content">
@@ -104,9 +95,9 @@ const CreditorsAndDebtors = () => {
                             <CardBody>
                                 <React.Fragment >
                                     <CustomTableContainer
-                                        loadItemsApi='statistics-information/creditors-and-debtors/'
+                                        loadItemsApi={urlToFetch}
+                                        loadMethod={'GET'}
                                         columns={(columns || [])}
-                                        filters={filters}
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
                                         hasPagination={false}
