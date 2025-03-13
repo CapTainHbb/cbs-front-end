@@ -6,6 +6,12 @@ import {normalizeDjangoError} from "./error";
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 export const backendResourceApi = process.env.REACT_APP_BACKEND_RESOURCE_API_URL;
 
+
+export const axiosResourceInstance = axios.create({
+    baseURL: backendResourceApi,
+    withCredentials: true,
+})
+
 // Create Axios instance
 const AxiosInstance = axios.create({
     baseURL: baseURL,

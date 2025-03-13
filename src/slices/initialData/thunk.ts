@@ -19,7 +19,6 @@ export const fetchInitialData = () => async (dispatch: any) => {
         axiosInstance.get('/accounts/account-groups/'),
         axiosInstance.get('/accounts/financial-accounts/'),
         axiosInstance.get('/currencies/local-currency/'),
-        axiosInstance.get('/accounts/customers/'),
         axiosInstance.get('/users/'),
     ];
 
@@ -32,7 +31,6 @@ export const fetchInitialData = () => async (dispatch: any) => {
         accountGroups,
         financialAccounts,
         localCurrency,
-        customers,
         users,
     ] = await Promise.all(endpoints);
     dispatch(setUserProfileData(userProfileData.data));
@@ -43,7 +41,6 @@ export const fetchInitialData = () => async (dispatch: any) => {
     dispatch(setAccountGroups(accountGroups.data));
     dispatch(setFinancialAccounts(financialAccounts.data));
     dispatch(setLocalCurrency(localCurrency.data));
-    dispatch(setCustomers(customers.data));
     dispatch(setUsers(users.data.data));
     dispatch(setInitialDataIsLoading(false));
 

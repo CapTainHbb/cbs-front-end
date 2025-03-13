@@ -80,7 +80,7 @@ const UsersList = () => {
       lastName: (activeUserProfile && activeUserProfile.user?.last_name) || '',
       email: (activeUserProfile && activeUserProfile.user?.email) || '',
       isActive: (activeUserProfile && activeUserProfile.user?.is_active) || false,
-      role: (activeUserProfile && activeUserProfile.role) || '',
+      role: (activeUserProfile && activeUserProfile.role) || 'level_1_employee',
       password: '',
       repeatPassword: ''
     },
@@ -121,7 +121,6 @@ const UsersList = () => {
         };
         // @ts-ignore
         handleEditUser(updatedUserProfile);
-        validation.resetForm();
       } else {
         const newUserProfile = {
           role: values['role'],
@@ -153,25 +152,33 @@ const UsersList = () => {
     }, [setItemsChanged, itemsChanged]);
 
   const onClickEditUser = useCallback(async (user: UserProfile) => {
-      console.log(user.user.user_permissions)
       setActiveUserPermissions(user.user.user_permissions);
       setActiveUserProfile(user);
       setIsEdit(true);
       toggle();
   }, [toggle]);
 
+    const createPermissions = useCallback(async (createdUser: UserProfile) => {
+        axiosInstance.post(`/users/permissions/${createdUser.user.id}/`,
+            {ids: Object.values(activeUserPermissions)}
+        ).then(response => {
+            toast.success(t('User Permissions Created Successfully'));
+            validation.resetForm();
+            toggle();
+            setItemsChanged(!itemsChanged);
+        }).catch(error => toast.error(t("Failed to create user permissions")))
+    },  [activeUserPermissions, itemsChanged, toggle, validation])
+
   const handleEditUser = useCallback(async (user: UserProfile) => {
       axiosInstance.put(`/users/${user?.id}/`, user)
           .then(response => {
               toast.success(t("User Edited Successfully"));
-              validation.resetForm();
-              toggle();
-              setItemsChanged(!itemsChanged);
+              createPermissions(response.data);
           })
           .catch(error => {
               toast.error(normalizeDjangoError(error))
           })
-  }, [itemsChanged, toggle, validation]);
+  }, [createPermissions]);
 
   const onClickResetPassword = useCallback(async (user: UserProfile) => {
       setActiveUserProfile(user);
@@ -190,7 +197,7 @@ const UsersList = () => {
       .catch(error => {
           toast.error(normalizeDjangoError(error))
       })
-  }, [itemsChanged, toggle, validation])
+  }, [createPermissions, itemsChanged, toggle, validation])
 
   const onClickDelete = useCallback(async (user: UserProfile) => {
       setActiveUserProfile(user);
@@ -198,20 +205,12 @@ const UsersList = () => {
       setItemsChanged(!itemsChanged);
   }, [itemsChanged]);
 
-  const createPermissions = useCallback(async (createdUser: UserProfile) => {
-      axiosInstance.post(`/users/permissions/${createdUser.user.id}/`,
-          {ids: Object.values(activeUserPermissions)}
-      ).then(response => {
-          toast.success(t('User Permissions Created Successfully'));
-      }).catch(error => toast.error(t("Failed to create user permissions")))
-  },  [activeUserPermissions])
-
   const onClickAddUser = useCallback(async () => {
       setActiveUserPermissions([])
       setActiveUserProfile(null);
       setIsEdit(false);
       setModal(true);
-  }, [])
+  }, []);
 
   const onSelectRoleChange = useCallback((selectedOption: any) => {
       validation.setFieldValue('role', selectedOption?.value);
@@ -350,7 +349,6 @@ const UsersList = () => {
         ]
     )
 }, [onClickDelete, onClickEditUser, onClickResetPassword])
-
 
   return (
     <React.Fragment>

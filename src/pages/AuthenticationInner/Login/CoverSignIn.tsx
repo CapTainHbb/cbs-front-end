@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useMemo, useState } from 'react';
 import {Navigate} from 'react-router-dom';
-import {Card, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Spinner} from 'reactstrap';
+import {Card, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Spinner, FormGroup} from 'reactstrap';
 
 // Formik validation
 import * as Yup from "yup";
@@ -18,20 +18,37 @@ const CoverSignIn = () => {
     const isAuthenticated = useSelector((state: any) => state.Authentication.isAuthenticated)
     const [passwordShow, setPasswordShow] = useState<boolean>(false);
     const [loader, setLoader] = useState<boolean>(false);
+    const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+    const signInRememberedCredentials = useMemo(() => {
+        return {
+            username: localStorage.getItem('rememberedUsername'),
+            password: localStorage.getItem('rememberedPassword'),
+        }
+    }, [])
 
     const validation: any = useFormik({
         // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
 
         initialValues: {
-            username: '',
-            password: '',
+            username: signInRememberedCredentials?.username || '',
+            password: signInRememberedCredentials?.password || '',
         },
         validationSchema: Yup.object({
             username: Yup.string().required(t("Please Enter Your Username")),
             password: Yup.string().required(t("Please Enter Your Password")),
         }),
         onSubmit: (values) => {
+            if (rememberMe) {
+                // Save username and password to localStorage or cookies
+                localStorage.setItem('rememberedUsername', values.username);
+                localStorage.setItem('rememberedPassword', values.password);
+            } else {
+                // Clear saved credentials if "Remember Me" is not checked
+                localStorage.removeItem('rememberedUsername');
+                localStorage.removeItem('rememberedPassword');
+            }
             dispatch(loginUser(values));
             setLoader(true)
             setTimeout(() => {setLoader(false)}, 5000)
@@ -73,13 +90,13 @@ const CoverSignIn = () => {
                                                         <div className="mb-3">
                                                             <Label htmlFor="username" className="form-label">{t("Username")}</Label>
                                                             <Input type="text" className="form-control" id="username" placeholder={t("Enter username")}
-                                                                name="username"
-                                                                onChange={validation.handleChange}
-                                                                onBlur={validation.handleBlur}
-                                                                value={validation.values.username || ""}
-                                                                invalid={
-                                                                    !!(validation.touched.username && validation.errors.username)
-                                                                }
+                                                                   name="username"
+                                                                   onChange={validation.handleChange}
+                                                                   onBlur={validation.handleBlur}
+                                                                   value={validation.values.username || ""}
+                                                                   invalid={
+                                                                       !!(validation.touched.username && validation.errors.username)
+                                                                   }
                                                             />
                                                             {validation.touched.username && validation.errors.username ? (
                                                                 <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
@@ -90,13 +107,13 @@ const CoverSignIn = () => {
                                                             <Label className="form-label" htmlFor="password-input">{t("Password")}</Label>
                                                             <div className="position-relative auth-pass-inputgroup mb-3">
                                                                 <Input type={passwordShow ? "text" : "password"} className="form-control pe-5 password-input" placeholder={t("Enter password")} id="password-input"
-                                                                    name="password"
-                                                                    value={validation.values.password || ""}
-                                                                    onChange={validation.handleChange}
-                                                                    onBlur={validation.handleBlur}
-                                                                    invalid={
-                                                                        !!(validation.touched.password && validation.errors.password)
-                                                                    }
+                                                                       name="password"
+                                                                       value={validation.values.password || ""}
+                                                                       onChange={validation.handleChange}
+                                                                       onBlur={validation.handleBlur}
+                                                                       invalid={
+                                                                           !!(validation.touched.password && validation.errors.password)
+                                                                       }
                                                                 />
                                                                 {validation.touched.password && validation.errors.password ? (
                                                                     <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
@@ -104,6 +121,12 @@ const CoverSignIn = () => {
                                                                 <button className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon" onClick={() => setPasswordShow(!passwordShow)}><i className="ri-eye-fill align-middle"></i></button>
                                                             </div>
                                                         </div>
+
+                                                        <FormGroup check className="mb-3">
+                                                            <Input type="checkbox" id="rememberMe" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                                                            <Label check htmlFor="rememberMe">{t("Remember Me")}</Label>
+                                                        </FormGroup>
+
                                                         <div className="mt-4">
                                                             <Button color="success"
                                                                     disabled={loader && true}

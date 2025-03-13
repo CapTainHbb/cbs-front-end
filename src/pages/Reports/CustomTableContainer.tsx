@@ -161,7 +161,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
-                    <div className="d-flex align-items-center p-1 text-center text-sm-start gap-1">
+                    <div className="d-flex align-items-center p-1 text-center text-sm-start gap-1" style={{minHeight: 70}}>
                         <div className="col-sm">
                             <div className="text-muted">
                                 {t("Showing")}
@@ -173,6 +173,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     </div>
                     <div
                         style={{
+                            minHeight: 350,
                             maxHeight: '550px',
                             overflowY: 'auto',
                             overflowX: 'auto',
