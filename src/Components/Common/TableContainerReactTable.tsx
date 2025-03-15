@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { CardBody, Col, Row, Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -43,31 +43,56 @@ const Filter = ({
 
 // Global Filter
 export const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
+                                 value: initialValue,
+                                 onChange,
+                                 debounce = 500,
+                                 ...props
+                               }: {
   value: string | number;
   onChange: (value: string | number) => void;
   debounce?: number;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
   const [value, setValue] = useState(initialValue);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const previousValue = useRef(initialValue);
 
+  // Handle controlled component updates
   useEffect(() => {
-    setValue(initialValue);
+    if (initialValue !== previousValue.current) {
+      setValue(initialValue);
+      previousValue.current = initialValue;
+    }
   }, [initialValue]);
 
+  // Debounce the onChange
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    // Skip if value matches initialValue on mount
+    if (value === previousValue.current) return;
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
       onChange(value);
+      previousValue.current = value;
     }, debounce);
 
-    return () => clearTimeout(timeout);
-  }, [debounce, onChange, value]);
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [value, debounce, onChange]);
 
   return (
-    <input {...props} value={value} id="search-bar-0" className="form-control border-0 search" onChange={e => setValue(e.target.value)} />
+      <input
+          {...props}
+          value={value}
+          id="search-bar-0"
+          className="form-control border-0 search"
+          onChange={(e) => setValue(e.target.value)}
+      />
   );
 };
 

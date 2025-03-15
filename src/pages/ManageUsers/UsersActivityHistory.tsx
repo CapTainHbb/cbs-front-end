@@ -49,7 +49,6 @@ const UsersActivityHistory = () => {
     const [fromTime, setFromTime] = useState<any>();
     const [toTime, setToTime] = useState<any>();
     const [methodType, setMethodType] = useState<any>();
-
     const filters: Filters = useMemo(() => {
         return {
             user: user?.id,
@@ -59,8 +58,17 @@ const UsersActivityHistory = () => {
             to_time: toTime === ""? undefined : toTime,
             method_type: methodType,
         }
-    }, [fromDate, fromTime, methodType, toDate, toTime, user?.id])
-
+    }, [user, fromDate, fromTime, methodType, toDate, toTime])
+    
+    const userOptions = useMemo(() => {
+        return users?.map((user: UserProfile) => {
+            return {
+                label: user.user.username,
+                value: user.user,
+            }
+        })
+    }, [users])
+    
     const defaultColumns = useMemo<ColumnDef<UserActivity>[]>(() => {
         return [
             {
@@ -96,15 +104,12 @@ const UsersActivityHistory = () => {
                     <div className='header-item-container'>
                         <span className={'header-item-title'}>{t("Username")}</span>
                         <Select isClearable
-                                value={users?.find((option: any) => option.value === user)?.username}
+                                value={userOptions?.find((option: any) => {
+                                    return option.value.username === user?.username;
+                                }) || undefined}
                                 onChange={(item: any) => setUser(item?.value)}
                                 className="mb-0"
-                                options={users?.map((user: UserProfile) => {
-                                    return {
-                                        label: user.user.username,
-                                        value: user,
-                                    }
-                                })}
+                                options={userOptions}
                                 id="statusinput-choices"
                         />
                     </div>,

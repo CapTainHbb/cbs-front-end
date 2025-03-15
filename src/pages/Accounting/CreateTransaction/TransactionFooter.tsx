@@ -48,6 +48,18 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                     {formik.values?.isEditing ? t("Cancel Edit") : t("Edit")}
                 </Button>
             </Col>
+            <Col md={2} sm={12}>
+                <Button
+                    type="button"
+                    color={'primary'}
+                    className="btn w-100"
+                    disabled={!formik.handlePrintTransaction}
+                    onClick={(e: any) => formik?.handlePrintTransaction()}
+                >
+                    <i className="ri-printer-fill" />{" "}
+                    {t("Print")}
+                </Button>
+            </Col>
 
             <Col md={2} sm={12}>
                 {!formik.values.isDeleting && (
@@ -63,7 +75,7 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                 {formik.values.isDeleting && <Spinner color="danger" />}
             </Col>
 
-            <Col md={2} sm={12}>
+            <Col md={1} sm={12}>
                 <Button
                     type='button'
                     color='primary'
@@ -75,7 +87,7 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                 </Button>
             </Col>
 
-            <Col md={2} sm={12}>
+            <Col md={1} sm={12}>
                 <Button
                     type='button'
                     color='primary'
@@ -87,7 +99,6 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                 </Button>
             </Col>
 
-            <Col md={2} sm={12}></Col>
 
             <DeleteModal
                 show={isConfirmModalOpen}

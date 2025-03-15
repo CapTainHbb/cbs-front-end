@@ -161,7 +161,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
-                    <div className="d-flex align-items-center p-1 text-center text-sm-start gap-1" style={{minHeight: 70}}>
+                    <div className="d-flex align-items-center px-1 text-center text-sm-start gap-1" style={{minHeight: 70}}>
                         <div className="col-sm">
                             <div className="text-muted">
                                 {t("Showing")}
@@ -251,7 +251,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                                style={{
                                                    userSelect: 'none',
                                                    position: 'sticky',
-                                                   top: `${theadHeight}px`,
+                                                   top: `${0}px`,
                                                    zIndex: 0, /* Ensure it stays above other rows */
                                                    backgroundColor: 'inherit', /* Ensure background doesn't look out of place */
                                                }}
@@ -268,7 +268,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                     <tr key={row.id}
                                     style={{
                                         cursor: onDoubleClickRow !== undefined? 'pointer': '',
-                                        userSelect: 'none'
+                                        userSelect: 'none',
+                                        padding: 0,
                                     }}
                                     className={`${rowSelection[row.id]? 'table-primary' : ''}`}
                                     onClick={(e: any) => {handleRowClick(row, e)}}
@@ -278,8 +279,13 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                             <td
                                                 key={cell.id}
                                                 style={{
-                                                    padding: '2px',
+                                                    paddingTop: '0px',
+                                                    paddingBottom: '0px',
+                                                    paddingLeft: '1px',
+                                                    paddingRight: '1px',
                                                     width: cell.column.getSize(),
+                                                    margin: 0,
+                                                    verticalAlign: 'top'
                                                 }}
                                             >
                                                 {flexRender(

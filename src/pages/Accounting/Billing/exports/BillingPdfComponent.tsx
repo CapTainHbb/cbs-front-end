@@ -2,16 +2,13 @@ import React, {useMemo} from 'react';
 import {Document, Page, Text, View} from '@react-pdf/renderer';
 
 import  {t} from "i18next";
-import {columnsForExport, getRowsForExport, PartyForExport} from "../utils";
+import {columnsForExport, getRowsForExport} from "../utils";
 import {FinancialAccount, Party} from "../../types";
 import {usePDFStyles} from "../hooks/usePdfStyles";
 import {CompanyProfile} from "../../../CompanyProfile/types";
 import {Currency} from "../../../Reports/utils";
-import {abs} from "mathjs";
 import PdfHeader from "./PdfHeader";
-import { customFormatNumber } from 'pages/Accounting/utils';
 import BillingTransactionChunk from "./BillingTransactionChunk";
-import {chunk} from "lodash-es";
 
 
 interface Props {

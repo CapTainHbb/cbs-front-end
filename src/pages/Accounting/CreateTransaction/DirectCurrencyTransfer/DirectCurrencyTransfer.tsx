@@ -23,6 +23,12 @@ import {FinancialAccount} from "../../types";
 import LockInputButton from "../../../../Components/Common/LockInputButton";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import FinancialAccountViewDetail from "../../../ManageFinancialAccounts/FinancialAccountViewDetail";
+import {pdf} from "@react-pdf/renderer";
+import axiosInstance, {backendResourceApi} from "../../../../helpers/axios_instance";
+import DirectCurrencyTransferPdfComponent from './DirectCurrencyTransferPdfComponent';
+import {fetchImageAsBlob} from "../../../../helpers/download_image";
+import { useSelector } from 'react-redux';
+import {createTempoDownloadLink} from "../../Billing/utils";
 
 const initialRestForm = {
     amount: "0",
@@ -47,7 +53,8 @@ interface Props {
 
 const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransactionData }) => {
     const modalRef = useRef(null);
-
+    const {companyProfile, financialAccounts, currencies} = useSelector((state: any) => state.InitialData);
+    
     const getSpecificFormFieldsInitial = useCallback(() => {
         if(activeTransactionData?.transaction_type !== 'direct-currency-transfer') {
             return structuredClone(initialRestForm);
@@ -191,6 +198,24 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
     formik.toggleDebtorFinancialAccountLock = useCallback((e: any) => {
         formik.setFieldValue('isDebtorFinancialAccountLocked', !formik.values.isDebtorFinancialAccountLocked);
     }, [formik.values.isDebtorFinancialAccountLocked]);
+
+    formik.handlePrintTransaction = useCallback(async (e: any) => {
+        let referenceNumber: string = "0";
+        try {
+            const response = await axiosInstance.get('/core/reference-number/')
+            referenceNumber = response.data
+        } catch (error) {
+            console.error(error)
+        }
+        const companyImage = await fetchImageAsBlob(backendResourceApi + companyProfile.profile_photo)
+        const blob = await pdf(<DirectCurrencyTransferPdfComponent referenceNumber={referenceNumber} 
+                                                                   companyImage={companyImage}
+                                                                   companyProfile={companyProfile}
+                                                                   financialAccounts={financialAccounts}
+                                                                   currencies={currencies}
+                                                                   transaction={formik.values} />).toBlob();
+        createTempoDownloadLink(blob, `transfer_receipt_${referenceNumber}.pdf`)
+    }, [companyProfile, currencies, financialAccounts, formik.values])
 
     useEffect(() => {
         if(isOpen) return;
