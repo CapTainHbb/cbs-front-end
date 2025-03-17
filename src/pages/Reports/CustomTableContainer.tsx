@@ -148,7 +148,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     useEffect(() => {
         if (theadRef?.current) {
             // Dynamically measure the height of the <thead>
-            setTheadHeight(theadRef?.current?.offsetHeight + 10);
+            setTheadHeight(theadRef?.current?.offsetHeight);
         }
     }, []);
 
@@ -253,7 +253,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                                style={{
                                                    userSelect: 'none',
                                                    position: 'sticky',
-                                                   top: `${0}px`,
+                                                   top: `${theadHeight}px`,
                                                    zIndex: 0, /* Ensure it stays above other rows */
                                                    backgroundColor: 'inherit', /* Ensure background doesn't look out of place */
                                                }}
