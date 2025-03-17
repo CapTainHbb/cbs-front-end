@@ -5,9 +5,10 @@ import DeleteModal from "../../../Components/Common/DeleteModal";
 
 interface Props {
     formik: any;
+    toggle: any;
 }
 
-const TransactionFooter: React.FC<Props> = ({ formik }) => {
+const TransactionFooter: React.FC<Props> = ({ formik, toggle }) => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
     return (
@@ -61,7 +62,7 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                 </Button>
             </Col>
 
-            <Col md={2} sm={12}>
+            <Col md={1} sm={12}>
                 {!formik.values.isDeleting && (
                     <Button
                         type="button"
@@ -73,6 +74,17 @@ const TransactionFooter: React.FC<Props> = ({ formik }) => {
                     </Button>
                 )}
                 {formik.values.isDeleting && <Spinner color="danger" />}
+            </Col>
+
+            <Col md={1} sm={12}>
+                <Button
+                    type='button'
+                    color={'primary'}
+                    className="w-100"
+                    onClick={(e: any) => toggle()}
+                >
+                    <i className="ri-close-fill" />{t("Close")}
+                </Button>
             </Col>
 
             <Col md={1} sm={12}>

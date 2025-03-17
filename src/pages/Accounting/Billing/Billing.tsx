@@ -165,9 +165,9 @@ const Billing = () => {
                     header: () =>
                             <span className={'fs-12'} >{t("Created By")}</span>,
                     cell: info => <span  className={'fs-11'}>{info.row.original?.created_by}</span>,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    size: 60
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'transaction_type',
@@ -179,9 +179,9 @@ const Billing = () => {
                         <div className={'fs-12'}>
                             <span className={'header-item-title'}>{t("Transaction Type")}</span>
                         </div>,
-                    minSize: 40,
-                    maxSize: 40,
-                    size: 40
+                    minSize: 65,
+                    maxSize: 65,
+                    size: 65
                 },
                 {
                     accessorKey: 'transaction',
@@ -200,17 +200,16 @@ const Billing = () => {
                                             style={{padding: '0px', marginTop: '1px'}}
                             />
                         </div>,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    size: 60
+                    minSize: 40,
+                    maxSize: 40,
+                    size: 40
                 },
                 {
                     accessorKey: 'user_specified_id',
                     cell: info =>
                         <span 
                             style={{WebkitLineClamp: 1, 
-                                width: 80,   
-                                overflow: "hidden", 
+                                overflow: "hidden",
                                 textOverflow: 'ellipsis',
                                 display: "-webkit-inline-flex"
                             }}
@@ -228,9 +227,9 @@ const Billing = () => {
                                             style={{padding: '0px'}}
                             />
                         </div>,
-                    minSize: 80,  
-                    maxSize: 80,  
-                    size: 80
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'date',
@@ -239,9 +238,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Date")}</span>
                         </div>,
-                    minSize: 70,
-                    maxSize: 70,
-                    size: 70
+                    minSize: 45,
+                    maxSize: 45,
+                    size: 45
                 },
                 {
                     accessorKey: 'time',
@@ -250,9 +249,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Time")}</span>
                         </div>,
-                    minSize: 70,
-                    maxSize: 70,
-                    size: 70
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'description',
@@ -281,9 +280,9 @@ const Billing = () => {
                                 style={{padding: '0px'}}
                             />
                         </div>),
-                    minSize: 140,
-                    maxSize: 140,
-                    size: 140
+                    minSize: 70,
+                    maxSize: 70,
+                    size: 70
                 },
                 {
                     accessorKey: 'transaction_brief',
@@ -297,9 +296,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Transaction Brief")}</span>
                         </div>,
-                    minSize: 100,
-                    maxSize: 100,
-                    size: 100
+                    minSize: 375,
+                    maxSize: 375,
+                    size: 375
                 },
                 {
                     accessorKey: 'currency',
@@ -308,9 +307,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Currency Type")}</span>
                         </div>,
-                    minSize: 50,  
-                    maxSize: 50,  
-                    size: 50
+                    minSize: 40,
+                    maxSize: 40,
+                    size: 40
                 },
                 {
                     id: 'debtor_amount',
@@ -333,9 +332,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 100,
-                    maxSize: 100,
-                    size: 100
+                    minSize: 90,
+                    maxSize: 90,
+                    size: 90
                 },
                 {
                     id: 'creditor_amount',
@@ -357,9 +356,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 100,
-                    maxSize: 100,
-                    size: 100
+                    minSize: 90,
+                    maxSize: 90,
+                    size: 90
                 },
                 {
                     accessorKey: 'balance',
@@ -378,9 +377,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 100,
-                    maxSize: 100,
-                    size: 100
+                    minSize: 90,
+                    maxSize: 90,
+                    size: 90
                 },
             ]
         )
@@ -471,6 +470,7 @@ const Billing = () => {
                 </Container>
             </div>
             {isFooterComponentOpen && <DraggableTableFooter
+                                        updateRowColorApi={'/transactions/party/update-highlight-color/'}
                                         onCloseClicked={() => setIsFooterComponentOpen(false)}
                                         selectedRows={selectedRows?.map((row: any) => row.original)}
             />}

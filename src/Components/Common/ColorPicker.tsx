@@ -16,11 +16,11 @@ const ColorPicker : React.FC<Props> = ({ onColorSelected }) => {
     const [selectedColor, setSelectedColor] = useState<Color>();
 
     const colors: Color[] = [
-        { name: t('Red'), colorCode: '#ec9c9c' , colorClassName: 'badge bg-danger-subtle text-danger'},
-        { name: t('Yellow'), colorCode: '#FEF08A', colorClassName: 'badge bg-warning-subtle text-warning'},
-        { name: t('Green'), colorCode: '#acefc6', colorClassName: 'badge bg-success-subtle text-success' },
-        { name: t('Blue'), colorCode: '#97cde4', colorClassName: 'badge bg-info-subtle text-info' },
-        { name: t('Clear'), colorCode: '#ffffff', colorClassName: 'badge bg-light-subtle text-body'}
+        { name: t('Red'), colorCode: '#fde8e4' , colorClassName: 'badge bg-danger-subtle text-danger'},
+        { name: t('Yellow'), colorCode: '#fef4e4', colorClassName: 'badge bg-warning-subtle text-warning'},
+        { name: t('Green'), colorCode: '#daf4f0', colorClassName: 'badge bg-success-subtle text-success' },
+        { name: t('Blue'), colorCode: '#dff0fa', colorClassName: 'badge bg-info-subtle text-info' },
+        { name: t('Clear'), colorCode: null, colorClassName: 'badge bg-light-subtle text-body'}
     ];
 
 

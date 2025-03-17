@@ -230,6 +230,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                                     return (
                                                         <td key={column.id} style={{
                                                             width: column.getSize(),
+                                                            minWidth: `${column.columnDef.minSize}px`,
+                                                            maxWidth: `${column.columnDef.maxSize}px`,
                                                         }}>
                                                             <RectLoader/>
                                                         </td>
@@ -264,11 +266,13 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                                     </tr>
                                 }
+
                                 return (
                                     <tr key={row.id}
                                     style={{
                                         cursor: onDoubleClickRow !== undefined? 'pointer': '',
                                         userSelect: 'none',
+                                        backgroundColor: row.original?.highlight_color? row.original.highlight_color: 'inherit',
                                         padding: 0,
                                     }}
                                     className={`${rowSelection[row.id]? 'table-primary' : ''}`}
@@ -284,6 +288,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                                     paddingLeft: '1px',
                                                     paddingRight: '1px',
                                                     width: cell.column.getSize(),
+                                                    minWidth: `${cell.column.columnDef.minSize}px`,
+                                                    maxWidth: `${cell.column.columnDef.maxSize}px`,
                                                     margin: 0,
                                                     verticalAlign: 'top'
                                                 }}

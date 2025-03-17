@@ -300,7 +300,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                         </PaymentsContainer>
                         
                         <TransactionDetails formik={formik} isParentModalOpen={isOpen} />
-                        <TransactionFooter formik={formik}/>
+                        <TransactionFooter formik={formik} toggle={toggle}/>
                     </Container>
                 </Form>
             </ModalBody>

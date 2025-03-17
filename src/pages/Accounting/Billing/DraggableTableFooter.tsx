@@ -1,23 +1,23 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useCallback} from "react";
 import ColorPicker from "../../../Components/Common/ColorPicker";
-import {Button, Col, DropdownToggle, Label, Row} from "reactstrap";
-import i18n, {t} from "i18next";
+import {Button, Col, Row} from "reactstrap";
+import {t} from "i18next";
 import ReactDOM from "react-dom";
 import SumOfSelectedRows from "../SumOfSelectedRows";
 import {Party} from "../types";
-import num2words from "../../../Components/Common/NumberToWords/utils";
+import axiosInstance from "../../../helpers/axios_instance";
+import { toast } from "react-toastify";
 
 
 interface Props {
     updateRowColorApi?: string;
     footerComponent?: any;
-    onColorSelected?: any;
     onCloseClicked?: any;
     selectedRows?: Party[];
 }
 
 const DraggableTableFooter: React.FC<Props> = ({ updateRowColorApi,
-                                                   footerComponent, onColorSelected,
+                                                   footerComponent,
                                                    onCloseClicked, selectedRows }) => {
     const footerRef = useRef(null);
     const [position, setPosition] = useState({ x: window.innerWidth / 2 - 400, y: window.innerHeight - 60 }); // Initial position centered horizontally & bottom
@@ -56,6 +56,23 @@ const DraggableTableFooter: React.FC<Props> = ({ updateRowColorApi,
         };
     }, [dragging, offset]);
 
+    const handleColorSelected = useCallback((e: any) => {
+        if(!updateRowColorApi || !selectedRows) return;
+        
+        let data = selectedRows?.map((row: Party) => ({
+            color: e?.colorCode,
+            party_id: row.id,
+        }))
+        axiosInstance.put(updateRowColorApi, data)
+            .then(response => {
+                toast.success(t("Successfully updated colors"));
+                for(let i = 0; i < selectedRows?.length; i++) {
+                    // @ts-ignore
+                    selectedRows[i].highlight_color = e.colorCode;
+                }
+            })
+            .catch(error => toast.error(t("Failed to update colors")));
+    }, [selectedRows, updateRowColorApi]);
 
     // Render in a portal to make it fully independent of the parent
     return ReactDOM.createPortal(
@@ -97,7 +114,7 @@ const DraggableTableFooter: React.FC<Props> = ({ updateRowColorApi,
                     <SumOfSelectedRows selectedRows={selectedRows} />
                 </Col>
                 <Col md={4} sm={12}>
-                    <ColorPicker onColorSelected={onColorSelected} />
+                    <ColorPicker onColorSelected={handleColorSelected} />
                 </Col>
             </Row>
         </div>,
