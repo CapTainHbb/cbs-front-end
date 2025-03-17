@@ -238,9 +238,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Date")}</span>
                         </div>,
-                    minSize: 45,
-                    maxSize: 45,
-                    size: 45
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'time',
@@ -249,9 +249,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Time")}</span>
                         </div>,
-                    minSize: 50,
-                    maxSize: 50,
-                    size: 50
+                    minSize: 55,
+                    maxSize: 55,
+                    size: 55
                 },
                 {
                     accessorKey: 'description',
@@ -296,9 +296,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Transaction Brief")}</span>
                         </div>,
-                    minSize: 375,
-                    maxSize: 375,
-                    size: 375
+                    minSize: 300,
+                    maxSize: 300,
+                    size: 300
                 },
                 {
                     accessorKey: 'currency',
@@ -307,9 +307,9 @@ const Billing = () => {
                         <div>
                             <span className={'fs-12'}>{t("Currency Type")}</span>
                         </div>,
-                    minSize: 40,
-                    maxSize: 40,
-                    size: 40
+                    minSize: 45,
+                    maxSize: 45,
+                    size: 45
                 },
                 {
                     id: 'debtor_amount',
@@ -332,9 +332,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 90,
-                    maxSize: 90,
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
                 {
                     id: 'creditor_amount',
@@ -356,9 +356,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 90,
-                    maxSize: 90,
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
                 {
                     accessorKey: 'balance',
@@ -377,9 +377,9 @@ const Billing = () => {
                                             style={{marginTop: '1px', padding: '0px'}}
                             />
                         </div>,
-                    minSize: 90,
-                    maxSize: 90,
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
             ]
         )
