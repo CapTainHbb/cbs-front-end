@@ -51,6 +51,7 @@ import ManageFinancialAccounts from "../pages/ManageFinancialAccounts/ManageFina
 import ManageCompanyProfile from "../pages/ManageCompanyProfile/ManageCompanyProfile";
 import GrossFee from "../pages/Reports/GrossFee/GrossFee";
 import TotalPerformance from "../pages/Reports/TotalPerformance/TotalPerformance";
+import ManageBackup from "pages/ManageBackup/ManageBackup";
 
 
 
@@ -83,6 +84,8 @@ const authProtectedRoutes = [
   { path: "/manage-financial-accounts", component: <ManageFinancialAccounts />, needsAuthorization: true},
 
   { path: "/manage-company-profile", component: <ManageCompanyProfile />, needsAuthorization: true},
+
+  { path: "/manage-backup", component: <ManageBackup />, needsAuthorization: true},
 
   // apps
   { path: "/apps-calendar", component: <Calendar />, needsAuthorization: true },
