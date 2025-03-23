@@ -3,32 +3,22 @@ import { t } from 'i18next';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {Card, CardBody, Col, Container, Row, Input, CardHeader, Label} from 'reactstrap';
+import {Permission} from "./types";
 
-export interface Permission {
-    id: number;
-    codename: string;
-    model: string;
-    app_label: string;
-}
 
 interface Props {
-    setPermissionsId: any;
-    permissionsId: number[];
+    activeUserPermissions:  number[];
+    setActiveUserPermissions: any;
 }
 
-const UsersPermission: React.FC<Props> = ({ setPermissionsId, permissionsId }) => {
+const UsersPermission: React.FC<Props> = ({ activeUserPermissions, setActiveUserPermissions }) => {
     const [permissions, setPermissions] = useState<Permission[]>([]);
     const userProfileData = useSelector((state: any) => state.InitialData.userProfileData);
-    
-    // Store checked permissions
-    const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
 
     useEffect(() => {
         axiosInstance.get("/users/permissions/")
             .then(response => {
                 setPermissions(response?.data?.data);
-                // Initialize selectedPermissions with user's existing permissions
-                setSelectedPermissions(userProfileData?.user?.user_permissions || []);
             })
             .catch(error => {
                 console.error(error);
@@ -47,9 +37,9 @@ const UsersPermission: React.FC<Props> = ({ setPermissionsId, permissionsId }) =
 
     // Handle checkbox toggle
     const handlePermissionToggle = (permissionId: number) => {
-        setSelectedPermissions((prev) => 
+        setActiveUserPermissions((prev: any) =>
             prev.includes(permissionId) 
-                ? prev.filter(id => id !== permissionId)  // Remove if already selected
+                ? prev.filter((id: number) => id !== permissionId)  // Remove if already selected
                 : [...prev, permissionId]                // Add if not selected
         );
     };
@@ -72,7 +62,7 @@ const UsersPermission: React.FC<Props> = ({ setPermissionsId, permissionsId }) =
                                         <Col xs="auto">
                                             <Input
                                                 type="checkbox"
-                                                checked={selectedPermissions.includes(perm.id)}
+                                                checked={activeUserPermissions.includes(perm.id)}
                                                 onChange={() => handlePermissionToggle(perm.id)}
                                             />
                                         </Col>

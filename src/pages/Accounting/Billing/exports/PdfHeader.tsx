@@ -8,7 +8,7 @@ import {CompanyProfile} from "../../../CompanyProfile/types";
 
 
 interface Props {
-    companyImage?: Blob;
+    companyImage?: Blob | null;
     companyProfile?: CompanyProfile;
     title: string;
     referenceNumber: string;

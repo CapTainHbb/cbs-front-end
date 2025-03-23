@@ -45,6 +45,7 @@ const Navdata = () => {
     const [isManageCurrencies, setIsManageCurrencies] = useState<boolean>(false);
     const [isManageFinancialAccounts, setIsManageFinancialAccounts] = useState<boolean>(false);
     const [isManageCompanyProfile, setIsManageCompanyProfile] = useState<boolean>(false);
+    const [isManageBackup, setIsManageBackup] = useState<boolean>(false);
 
     // Pages
     const [isProfile, setIsProfile] = useState<boolean>(false);
@@ -288,6 +289,19 @@ const Navdata = () => {
                 },
                 stateVariables: isManageCompanyProfile,
             },
+            {
+                id: "manage-backup",
+                label: "Manage Backup",
+                link: "/manage-backup",
+                icon: "ri-archive-2-fill",
+                click: function (e: any) {
+                    e.preventDefault();
+                    setIsManageBackup(!isManageBackup);
+                    setIscurrentState('Manage Backup');
+                    updateIconSidebar(e);
+                },
+                stateVariables: isManageBackup,
+            }
         ]
 
     const unAuthorizedMenuItems =

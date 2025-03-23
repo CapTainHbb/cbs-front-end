@@ -148,7 +148,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     useEffect(() => {
         if (theadRef?.current) {
             // Dynamically measure the height of the <thead>
-            setTheadHeight(theadRef?.current?.offsetHeight + 10);
+            setTheadHeight(theadRef?.current?.offsetHeight);
         }
     }, []);
 
@@ -161,7 +161,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     <TableExtraHeaderContainer>
                         {headerExtraComponent}
                     </TableExtraHeaderContainer>
-                    <div className="d-flex align-items-center p-1 text-center text-sm-start gap-1">
+                    <div className="d-flex align-items-center px-1 text-center text-sm-start gap-1" style={{minHeight: 70}}>
                         <div className="col-sm">
                             <div className="text-muted">
                                 {t("Showing")}
@@ -173,6 +173,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                     </div>
                     <div
                         style={{
+                            minHeight: 350,
                             maxHeight: '550px',
                             overflowY: 'auto',
                             overflowX: 'auto',
@@ -229,6 +230,8 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                                     return (
                                                         <td key={column.id} style={{
                                                             width: column.getSize(),
+                                                            minWidth: `${column.columnDef.minSize}px`,
+                                                            maxWidth: `${column.columnDef.maxSize}px`,
                                                         }}>
                                                             <RectLoader/>
                                                         </td>
@@ -263,11 +266,14 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
 
                                     </tr>
                                 }
+
                                 return (
                                     <tr key={row.id}
                                     style={{
                                         cursor: onDoubleClickRow !== undefined? 'pointer': '',
-                                        userSelect: 'none'
+                                        userSelect: 'none',
+                                        backgroundColor: row.original?.highlight_color? row.original.highlight_color: 'inherit',
+                                        padding: 0,
                                     }}
                                     className={`${rowSelection[row.id]? 'table-primary' : ''}`}
                                     onClick={(e: any) => {handleRowClick(row, e)}}
@@ -277,8 +283,15 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                             <td
                                                 key={cell.id}
                                                 style={{
-                                                    padding: '2px',
+                                                    paddingTop: '0px',
+                                                    paddingBottom: '0px',
+                                                    paddingLeft: '1px',
+                                                    paddingRight: '1px',
                                                     width: cell.column.getSize(),
+                                                    minWidth: `${cell.column.columnDef.minSize}px`,
+                                                    maxWidth: `${cell.column.columnDef.maxSize}px`,
+                                                    margin: 0,
+                                                    verticalAlign: 'top'
                                                 }}
                                             >
                                                 {flexRender(

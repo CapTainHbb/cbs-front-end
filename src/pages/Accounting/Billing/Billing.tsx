@@ -19,6 +19,7 @@ import LocalPayments from '../CreateTransaction/LocalPayments/LocalPayments';
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpers/date";
 import DraggableTableFooter from "./DraggableTableFooter";
+import {DebouncedInput} from "../../../Components/Common/TableContainerReactTable";
 
 
 const Billing = () => {
@@ -28,32 +29,30 @@ const Billing = () => {
     const [isFooterComponentOpen, setIsFooterComponentOpen] = useState<boolean>(false);
     const [searchParams] = useSearchParams();
     const [selectedRows, setSelectedRows] = useState<any>([]);
-    const {updateFilter, resetFilters} = useBillingFilters();
+    const {filters, updateFilter} = useBillingFilters();
     useEffect(() => {
         if(Number(searchParams.get("financial_account")) === 0) return
         updateFilter("financial_account", Number(searchParams.get("financial_account")))
     }, [searchParams]);
 
-    const { filters } = useBillingFilters();
-
     const getTransactionBriefCell = useCallback((info: any) => {
         const { document_type, transaction_type } = info.row.original;
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span className={'badge bg-success-subtle text-success fs-6'}>{t(String(info.getValue()))}</span>;
+                return <span className={'badge bg-success-subtle text-success fs-11'}>{t(String(info.getValue()))}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span className={"badge bg-danger-subtle text-danger fs-6"}>{t(String(info.getValue()))}</span>;
+                return <span className={"badge bg-danger-subtle text-danger fs-11"}>{t(String(info.getValue()))}</span>;
             }
         } else {
             switch (transaction_type) {
                 case 'direct-currency-transfer':
-                    return <p className="badge bg-primary-subtle text-primary fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-primary-subtle text-primary fs-11">{t(String(info.getValue()))}</p>;
                 case 'sell-cash':
-                    return <p className="badge bg-secondary-subtle text-secondary fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-secondary-subtle text-secondary fs-11">{t(String(info.getValue()))}</p>;
                 case 'buy-cash':
-                    return <p className="badge bg-warning-subtle text-warning fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-warning-subtle text-warning fs-11">{t(String(info.getValue()))}</p>;
                 case 'local-payments':
-                    return <p className="badge bg-info-subtle text-info fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-info-subtle text-info fs-11">{t(String(info.getValue()))}</p>;
                 default:
                     return null;
             }
@@ -67,20 +66,20 @@ const Billing = () => {
 
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span className={'badge bg-success-subtle text-success fs-6'}>{t("Received Fee")}</span>;
+                return <span className={'badge bg-success-subtle text-success fs-11'}>{t("Received Fee")}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span className={'badge bg-danger-subtle text-danger fs-6'}>{t("Paid Fee")}</span>;
+                return <span className={'badge bg-danger-subtle text-danger fs-11'}>{t("Paid Fee")}</span>;
             }
         } else {
             switch (transaction_type) {
                 case 'direct-currency-transfer':
-                    return <p className="badge bg-primary-subtle text-primary fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-primary-subtle text-primary fs-11">{t(String(info.getValue()))}</p>;
                 case 'sell-cash':
-                    return <p className="badge bg-secondary-subtle text-secondary fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-secondary-subtle text-secondary fs-11">{t(String(info.getValue()))}</p>;
                 case 'buy-cash':
-                    return <p className="badge bg-warning-subtle text-warning fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-warning-subtle text-warning fs-11">{t(String(info.getValue()))}</p>;
                 case 'local-payments':
-                    return <p className="badge bg-info-subtle text-info fs-6">{t(String(info.getValue()))}</p>;
+                    return <p className="badge bg-info-subtle text-info fs-11">{t(String(info.getValue()))}</p>;
                 default:
                     return null;
             }
@@ -164,11 +163,11 @@ const Billing = () => {
                 {
                     id: 'created_by',
                     header: () =>
-                            <span>{t("Created By")}</span>,
-                    cell: info => info.row.original?.created_by,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    size: 60
+                            <span className={'fs-12'} >{t("Created By")}</span>,
+                    cell: info => <span  className={'fs-11'}>{info.row.original?.created_by}</span>,
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'transaction_type',
@@ -177,31 +176,40 @@ const Billing = () => {
                             {getTransactionTypeCell(info)}
                         </div>,
                     header: () =>
-                        <div>
+                        <div className={'fs-12'}>
                             <span className={'header-item-title'}>{t("Transaction Type")}</span>
                         </div>,
-                    minSize: 50,  
-                    maxSize: 50,  
-                    size: 50
+                    minSize: 65,
+                    maxSize: 65,
+                    size: 65
                 },
                 {
                     accessorKey: 'transaction',
                     cell: info => info.getValue(),
                     header: () =>
                         <div>
-                            <span className={'header-item-title'}>{t("Document Number")}</span>
+                            <span className={'fs-12'}>{t("Document Number")}</span>
+                            <DebouncedInput value={filters.transaction_id_from}
+                                            placeholder={t("From")}
+                                            onChange={(value: any) => updateFilter('transaction_id_from', value === ""? undefined : value)}
+                                            style={{padding: '0px'}}
+                            />
+                            <DebouncedInput value={filters.transaction_id_to}
+                                            placeholder={t("To")}
+                                            onChange={(value: any) => updateFilter('transaction_id_to', value === ""? undefined : value)}
+                                            style={{padding: '0px', marginTop: '1px'}}
+                            />
                         </div>,
-                    minSize: 60,  
-                    maxSize: 60,  
-                    size: 60
+                    minSize: 40,
+                    maxSize: 40,
+                    size: 40
                 },
                 {
                     accessorKey: 'user_specified_id',
                     cell: info =>
                         <span 
                             style={{WebkitLineClamp: 1, 
-                                width: 80,   
-                                overflow: "hidden", 
+                                overflow: "hidden",
                                 textOverflow: 'ellipsis',
                                 display: "-webkit-inline-flex"
                             }}
@@ -213,33 +221,37 @@ const Billing = () => {
                         </span>,
                     header: () =>
                         <div>
-                            <span className={'header-item-title'}>{t("Transaction Id")}</span>
+                            <span className={'fs-12'}>{t("Transaction Id")}</span>
+                            <DebouncedInput value={filters.user_specified_id}
+                                            onChange={(value: any) => updateFilter('user_specified_id', value === ""? undefined : value)}
+                                            style={{padding: '0px'}}
+                            />
                         </div>,
-                    minSize: 80,  
-                    maxSize: 80,  
-                    size: 80
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'date',
                     cell: info => <span className={'fw-medium'}>{getLocalizedFormattedDateTime(createLocalizedDate(info.row.original.date, info.row.original.time)).date }</span>,
                     header: () =>
                         <div>
-                            <span className={'header-item-title'}>{t("Date")}</span>
+                            <span className={'fs-12'}>{t("Date")}</span>
                         </div>,
-                    minSize: 70,
-                    maxSize: 70,
-                    size: 70
+                    minSize: 50,
+                    maxSize: 50,
+                    size: 50
                 },
                 {
                     accessorKey: 'time',
                     cell: info => <span className={'fw-medium'}>{getLocalizedFormattedDateTime(createLocalizedDate(info.row.original.date, info.row.original.time)).time}</span>,
                     header: () =>
                         <div>
-                            <span className={'header-item-title'}>{t("Time")}</span>
+                            <span className={'fs-12'}>{t("Time")}</span>
                         </div>,
-                    minSize: 70,
-                    maxSize: 70,
-                    size: 70
+                    minSize: 55,
+                    maxSize: 55,
+                    size: 55
                 },
                 {
                     accessorKey: 'description',
@@ -258,9 +270,18 @@ const Billing = () => {
                             {info.row.original.description}
                         </p>,
                     header: () =>
-                            <span>{t("Description")}</span>,
-                    minSize: 70,  
-                    maxSize: 70,  
+                        (<div>
+                            <span className={'fs-12'}>{t("Description")}</span>
+                            <DebouncedInput
+                                type="text"
+                                value={filters.description}
+                                onChange={value => updateFilter('description', value === ""? undefined : value)}
+                                className="border shadow rounded"
+                                style={{padding: '0px'}}
+                            />
+                        </div>),
+                    minSize: 70,
+                    maxSize: 70,
                     size: 70
                 },
                 {
@@ -273,22 +294,22 @@ const Billing = () => {
                         </span>,
                     header: () =>
                         <div>
-                            <span className={'header-item-title'} >{t("Transaction Brief")}</span>
+                            <span className={'fs-12'}>{t("Transaction Brief")}</span>
                         </div>,
-                    minSize: 100,
-                    maxSize: 100,
-                    size: 100
+                    minSize: 300,
+                    maxSize: 300,
+                    size: 300
                 },
                 {
                     accessorKey: 'currency',
                     cell: info => <CurrencyNameAndFlag currencyId={info.row.original.currency} />,
                     header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Currency Type")}</span>
+                        <div>
+                            <span className={'fs-12'}>{t("Currency Type")}</span>
                         </div>,
-                    minSize: 50,  
-                    maxSize: 50,  
-                    size: 50
+                    minSize: 45,
+                    maxSize: 45,
+                    size: 45
                 },
                 {
                     id: 'debtor_amount',
@@ -298,12 +319,22 @@ const Billing = () => {
                         amount={info.row.original.amount}
                     />,
                     header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Debtor")}</span>
+                        <div>
+                            <span className={'fs-12'}>{t("Debtor")}</span>
+                            <DebouncedInput value={filters.debtor_from_value}
+                                            placeholder={t("From")}
+                                            onChange={(value: any) => updateFilter('debtor_from_value', value === ""? undefined : value)}
+                                            style={{padding: '0px'}}
+                            />
+                            <DebouncedInput value={filters.debtor_to_value}
+                                            placeholder={t("To")}
+                                            onChange={(value: any) => updateFilter('debtor_to_value', value === ""? undefined : value)}
+                                            style={{marginTop: '1px', padding: '0px'}}
+                            />
                         </div>,
-                    minSize: 90,  
-                    maxSize: 90,  
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
                 {
                     id: 'creditor_amount',
@@ -312,31 +343,43 @@ const Billing = () => {
                                                         amount={info.row.original.amount}
                     />,
                     header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Creditor")}</span>
+                        <div>
+                            <span className={'fs-12'}>{t("Creditor")}</span>
+                            <DebouncedInput value={filters.creditor_from_value}
+                                            placeholder={t("From")}
+                                            onChange={(value: any) => updateFilter('creditor_from_value', value === ""? undefined : value)}
+                                            style={{padding: '0px'}}
+                            />
+                            <DebouncedInput value={filters.creditor_to_value}
+                                            placeholder={t("To")}
+                                            onChange={(value: any) => updateFilter('creditor_to_value', value === ""? undefined : value)}
+                                            style={{marginTop: '1px', padding: '0px'}}
+                            />
                         </div>,
-                    minSize: 90,  
-                    maxSize: 90,  
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
                 {
                     accessorKey: 'balance',
                     cell: info => <BalanceAmount amount={Number(info.getValue())} />,
                     header: () =>
-                        <div className='header-item-container'>
-                            <span className={'header-item-title'}>{t("Balance")}</span>
-                            {/*<RangeFilter type="number"*/}
-                            {/*             fromName={'balance_from_value'}*/}
-                            {/*             toName={'balance_to_value'}*/}
-                            {/*             onFromChange={handleFilterValueChange}*/}
-                            {/*             onToChange={handleFilterValueChange}*/}
-                            {/*             fromValue={filters.balance_from_value}*/}
-                            {/*             toValue={filters.balance_to_value}*/}
-                            {/*/>*/}
+                        <div>
+                            <span className={'fs-12'}>{t("Balance")}</span>
+                            <DebouncedInput value={filters.balance_from_value}
+                                            placeholder={t("From")}
+                                            onChange={(value: any) => updateFilter('balance_from_value', value === ""? undefined : value)}
+                                            style={{padding: '0px'}}
+                            />
+                            <DebouncedInput value={filters.balance_to_value}
+                                            placeholder={t("To")}
+                                            onChange={(value: any) => updateFilter('balance_to_value', value === ""? undefined : value)}
+                                            style={{marginTop: '1px', padding: '0px'}}
+                            />
                         </div>,
-                    minSize: 90,  
-                    maxSize: 90,  
-                    size: 90
+                    minSize: 95,
+                    maxSize: 95,
+                    size: 95
                 },
             ]
         )
@@ -427,6 +470,7 @@ const Billing = () => {
                 </Container>
             </div>
             {isFooterComponentOpen && <DraggableTableFooter
+                                        updateRowColorApi={'/transactions/party/update-highlight-color/'}
                                         onCloseClicked={() => setIsFooterComponentOpen(false)}
                                         selectedRows={selectedRows?.map((row: any) => row.original)}
             />}

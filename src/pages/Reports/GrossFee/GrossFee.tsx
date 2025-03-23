@@ -22,10 +22,6 @@ const GrossFee = () => {
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
     const [fromDate, setFromDate] = useState<string>(getFormattedToday());
     const [toDate, setToDate] = useState<string>(getFormattedToday());
-    const filters = useMemo(() => ({
-        from_date: fromDate,
-        to_date: toDate,
-    }), [fromDate, toDate]);
 
     const {referenceCurrencies, referenceCurrency} = useSelector((info: any) => info.InitialData);
 
@@ -75,6 +71,10 @@ const GrossFee = () => {
         [referenceCurrencies, referenceCurrency]
     );
 
+    const urlToFetch = useMemo(() => {
+        return `/statistics-information/gross-fee/?from_date=${fromDate}&to_date=${toDate}`;
+    }, [fromDate, toDate])
+
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -95,9 +95,9 @@ const GrossFee = () => {
                                     <CustomTableContainer
                                         itemsChanged={itemsChanged}
                                         setItemsChanged={setItemsChanged}
-                                        loadItemsApi='/statistics-information/gross-fee/'
+                                        loadItemsApi={urlToFetch}
+                                        loadMethod={'GET'}
                                         columns={(columns || [])}
-                                        filters={filters}
                                         hasPagination={false}
                                     />
                                 </React.Fragment >

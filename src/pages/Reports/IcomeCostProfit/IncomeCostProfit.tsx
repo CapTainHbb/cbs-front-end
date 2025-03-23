@@ -13,11 +13,6 @@ import { currencyColumns } from '../utils';
 import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
 
-export interface Filters {
-  from_date: string;
-  to_date: string;
-}
-
 const IncomeCostProfit = () => {
   const [fromDate, setFromDate] = useState<string>(getFormattedToday());
   const [toDate, setToDate] = useState<string>(getFormattedToday());
@@ -26,13 +21,6 @@ const IncomeCostProfit = () => {
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false)
-
-  const filters: Filters = useMemo(() => {
-        return {
-            from_date: fromDate,
-            to_date: toDate,
-        }
-    }, [fromDate, toDate])
 
     const columns = useMemo<ColumnDef<ReportItemType>[]>(
     () => [
@@ -82,6 +70,10 @@ const IncomeCostProfit = () => {
     [referenceCurrencies, referenceCurrency]
   );
 
+  const urlToFetch = useMemo(() => {
+        return `statistics-information/income-cost-profit/?from_date=${fromDate}&to_date=${toDate}`;
+  }, [fromDate, toDate])
+
   return (
     <React.Fragment>
       <div className='page-content'>
@@ -100,10 +92,10 @@ const IncomeCostProfit = () => {
                     <React.Fragment >
                         <CustomTableContainer
                             itemsChanged={itemsChanged}
+                            loadMethod={'GET'}
                             setItemsChanged={setItemsChanged}
-                            loadItemsApi='statistics-information/income-cost-profit/'
+                            loadItemsApi={urlToFetch}
                             columns={(columns || [])}
-                            filters={filters}
                             hasPagination={false}
                         />
                     </React.Fragment >

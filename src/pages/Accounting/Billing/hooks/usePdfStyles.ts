@@ -70,20 +70,20 @@ export const usePDFStyles = () => {
                 objectFit: 'contain', // Ensures the image fits within its container without being cropped
             },
             companyName: {
-                color: '#1c63a0',
+                color: '#405189',
                 fontSize: 14,
                 alignSelf: 'center',
             },
             verticalLine: {
                 width: 1,               // Line width
                 height: '80%',          // Line height
-                backgroundColor: '#0175ad', // Line color
+                backgroundColor: '#405189', // Line color
                 marginHorizontal: 10,   // Space around the line
             },
             horizontalLine: {
                 height: 10,
                 width: '100%',
-                backgroundColor: '#1c63a0',
+                backgroundColor: '#405189',
                 paddingVertical: 1,
                 marginVertical: 2,
             },
@@ -166,6 +166,11 @@ export const usePDFStyles = () => {
                 padding: 1,
                 width: 200
             },
+            labelValueContainerLong: {
+                justifyContent: 'space-evenly',
+                padding: 1,
+                width: 400,
+            },
             value: {
                 backgroundColor: "#F3F3F3",
                 minWidth: 100,
@@ -206,7 +211,7 @@ export const usePDFStyles = () => {
                 flexDirection: 'column',
                 alignItems: isRtl? 'flex-end': 'flex-start',
                 padding: 4,
-                width: 200,
+                width: 400,
                 height: 80,
             },
             transactionInfoItemLabel: {
@@ -218,13 +223,16 @@ export const usePDFStyles = () => {
             mt40: {
                 marginTop: 40,
             },
+            mt60: {
+                marginTop: 60,
+            },
             horizontalItemSeparator: {
                 height: 6,
-                width: 200,
+                width: 400,
                 backgroundColor: "#F3F3F3",
             },
             totalAmount: {
-
+                color: "#405189"
             }
         });
     }, [isRtl]);
