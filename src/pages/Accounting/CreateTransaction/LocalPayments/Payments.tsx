@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {PaymentDataType} from './types';
 import {Button, Col, FormFeedback, FormGroup, Input, Label, Row} from 'reactstrap';
 import {t} from 'i18next';
@@ -39,6 +39,13 @@ const Payments: React.FC<Props> = ({ formik }) => {
     const remainedPaidAmount = useMemo(() => {
         return Number(removeNonNumberChars(formik.values.totalAmount) - totalPaidAmount);
     }, [totalPaidAmount, formik.values.totalAmount]);
+
+    const onKeyDownTransactionId = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            // Handle Enter key press here
+            handleAddPayment();
+        }
+    }, [handleAddPayment]);
 
     return (
         <Row style={{margin: '1px'}}>
@@ -89,6 +96,7 @@ const Payments: React.FC<Props> = ({ formik }) => {
                             type="text"
                             onChange={formik.handleChange}
                             value={payment.payment_transaction_id}
+                            onKeyDown={onKeyDownTransactionId}
                             placeholder={t("Transaction Number")}
                             disabled={formik.derivedState.areInputsDisabled}
                         />
