@@ -1,7 +1,7 @@
 import {
-    setAccountGroups, setCompanyImage,
+    setAccountGroups,
     setCompanyProfile,
-    setCurrencies, setCustomers,
+    setCurrencies,
     setFinancialAccounts, setInitialDataIsLoading,
     setLocalCurrency,
     setReferenceCurrencies,
