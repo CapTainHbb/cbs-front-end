@@ -22,7 +22,7 @@ const GrossFee = () => {
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
     const [fromDate, setFromDate] = useState<string>(getFormattedToday());
     const [toDate, setToDate] = useState<string>(getFormattedToday());
-
+    const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
     const {referenceCurrencies, referenceCurrency} = useSelector((info: any) => info.InitialData);
 
     const columns = useMemo<ColumnDef<GrossFeeReportType>[]>(
@@ -52,7 +52,9 @@ const GrossFee = () => {
                 id: "fee_type",
                 cell: (info) => t(info.row.original.name),
                 header: () => <span>{t("Fee Type")}</span>,
-                size: 40,
+                minSize: 80,  // Ensure the column doesn't shrink below this size
+                maxSize: 80,  // Prevent resizing beyond this size
+                width: 80      // Explicitly set the width
             },
             {
                 id: 'exchanged_amounts',
@@ -64,7 +66,9 @@ const GrossFee = () => {
                     <p>{t("Exchanged Total Amount")}</p>
                     <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
                 </div>,
-                size: 50,
+                minSize: 120,  // Ensure the column doesn't shrink below this size
+                maxSize: 120,  // Prevent resizing beyond this size
+                width: 120      // Explicitly set the width
             },
             ...currencyColumns(referenceCurrencies),
         ],
@@ -88,6 +92,7 @@ const GrossFee = () => {
                                     itemsChanged={itemsChanged}
                                     fromDate={fromDate} onChangeFromDate={setFromDate}
                                     toDate={toDate} onChangeToDate={setToDate}
+                                    itemsAreLoading={itemsAreLoading}
                                 />
                             </CardHeader>
                             <CardBody>
@@ -99,6 +104,7 @@ const GrossFee = () => {
                                         loadMethod={'GET'}
                                         columns={(columns || [])}
                                         hasPagination={false}
+                                        setItemsAreLoading={setItemsAreLoading}
                                     />
                                 </React.Fragment >
                             </CardBody>

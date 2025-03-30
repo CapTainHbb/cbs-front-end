@@ -19,7 +19,7 @@ const IncomeCostProfit = () => {
 
   const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
-
+    const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false)
     const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
     const columns = useMemo<ColumnDef<ReportItemType>[]>(
@@ -43,15 +43,17 @@ const IncomeCostProfit = () => {
                     />
                 </div>
             ),
-            minSize: 5,  // Ensure the column doesn't shrink below this size
-            maxSize: 5,  // Prevent resizing beyond this size
-            width: 5     // Explicitly set the width
+            minSize: 35,  // Ensure the column doesn't shrink below this size
+            maxSize: 35,  // Prevent resizing beyond this size
+            width: 35      // Explicitly set the width
         },
         {
             id: "type",
             cell: (info) => t(info.row.original.name),
             header: () => <span>{t("Report Type")}</span>,
-            minSize: 40,
+            minSize: 70,  // Ensure the column doesn't shrink below this size
+            maxSize: 70,  // Prevent resizing beyond this size
+            width: 70      // Explicitly set the width
         },
         {
             id: 'exchanged_amounts',
@@ -63,7 +65,9 @@ const IncomeCostProfit = () => {
                 <p>{t("Exchanged Total Amount")}</p>
                 <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
             </Col>,
-            size: 50,
+            minSize: 120,  // Ensure the column doesn't shrink below this size
+            maxSize: 120,  // Prevent resizing beyond this size
+            width: 120      // Explicitly set the width
         },
         ...currencyColumns(referenceCurrencies),
     ],
@@ -86,6 +90,7 @@ const IncomeCostProfit = () => {
                         fromDate={fromDate} onChangeFromDate={setFromDate}
                         toDate={toDate} onChangeToDate={setToDate}
                         itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
+                        itemsAreLoading={itemsAreLoading}
                      />
                 </CardHeader>
                 <CardBody>
@@ -97,6 +102,7 @@ const IncomeCostProfit = () => {
                             loadItemsApi={urlToFetch}
                             columns={(columns || [])}
                             hasPagination={false}
+                            setItemsAreLoading={setItemsAreLoading}
                         />
                     </React.Fragment >
                 </CardBody>

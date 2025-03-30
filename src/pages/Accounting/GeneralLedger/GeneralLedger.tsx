@@ -4,7 +4,7 @@ import { t } from 'i18next'
 import CustomTableContainer from 'pages/Reports/CustomTableContainer'
 import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox'
 import { ReportItemType } from 'pages/Reports/types'
-import { currencyColumns } from 'pages/Reports/utils'
+import {currencyColumns, generalLedgerCurrencyColumns} from 'pages/Reports/utils'
 import React, {useCallback, useMemo, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -74,7 +74,9 @@ const GeneralLedger = () => {
                 accessorKey: 'name',
                 cell: (info) => info.getValue(),
                 header: () => <span>{t("Account Name")}</span>,
-                size: 100
+                minSize: 150,
+                maxSize: 150,
+                width: 150
             },
             {
                 accessorKey: 'code',
@@ -95,9 +97,11 @@ const GeneralLedger = () => {
                 meta: {
                     hideCondition: (row: any) => isSmallAmountAccount(row.original.currency_accounts), // Hide rows where age is less than 25
                 },
-                size: 20,
+                minSize: 120,
+                maxSize: 120,
+                width: 120
             },
-            ...currencyColumns(referenceCurrencies),
+            ...generalLedgerCurrencyColumns(referenceCurrencies),
         ]
     }, [determineGroupLinkText, referenceCurrencies, hideSmallAmounts])
     

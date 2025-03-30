@@ -77,7 +77,7 @@ const CreditorsAndDebtors = () => {
     }, [currencies])
 
     const urlToFetch = useMemo(() => {
-        return `statistics-information/creditors-and-debtors/?party_type=${partyType.name}&currency=${currency.id}`;
+        return `statistics-information/creditors-and-debtors/?party_type=${partyType.name}&currency=${currency?.id}`;
     }, [currency, partyType]);
 
     return (

@@ -1,5 +1,9 @@
-import { CurrencyCell } from "./CurrencyCell";
+import {CurrencyCell} from "./CurrencyCell";
 import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
+import {getBalanceByCurrencyId} from "../../helpers/currency";
+import {ReportItemType} from "./types";
+import {Column} from "@tanstack/react-table";
+import {Row} from "reactstrap";
 
 export const defaultCompanyProfile = {
     name: "",
@@ -64,13 +68,42 @@ export const determinePartyType = (flowType: string) => {
     return flowType === "incoming" ? "creditor" : "debtor";
 }
 
-
-
 export const currencyColumns = (currencies: Currency[]) => {
     return currencies.map((currency) => ({
         id: currency?.name,
         cell: CurrencyCell(currency?.id),
         header: () => <CurrencyNameAndFlag currencyId={currency?.id} />,
-        size: 40,
+        minSize: 120,  // Ensure the column doesn't shrink below this size
+        maxSize: 120,  // Prevent resizing beyond this size
+        width: 120      // Explicitly set the width
     }));
 }
+
+export const generalLedgerCurrencyColumns = (currencies: Currency[]) => {
+    return currencies.map((currency) => ({
+        id: currency?.name,
+        cell: CurrencyCell(currency?.id),
+        header: ({ column }: { column: Column<ReportItemType> }) => (
+            <Row>
+                <CurrencyNameAndFlag currencyId={currency?.id} />
+                <div
+                    onClick={() => column.toggleSorting()}
+                >
+                    {column.getIsSorted() === 'asc' ? <i className={'ri-arrow-up-line'}/> :
+                        column.getIsSorted() === 'desc' ? <i className={'ri-arrow-down-line'}/> :
+                            <i className={'ri-arrow-up-down-line'}/>}
+                </div>
+            </Row>
+        ),
+        minSize: 120,
+        maxSize: 120,
+        width: 120,
+        // Add sorting properties
+        enableSorting: true,
+        sortingFn: 'basic' as const, // or 'alphanumeric' as const
+        accessorFn: (row: ReportItemType) => {
+            const { currency_accounts } = row;
+            return getBalanceByCurrencyId(currency_accounts, currency?.id); // Adjust this based on your actual data structure
+        },
+    }));
+};

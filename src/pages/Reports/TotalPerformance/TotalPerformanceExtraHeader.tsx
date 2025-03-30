@@ -9,9 +9,10 @@ interface Props {
     setDate: any;
     itemsChanged: boolean;
     setItemsChanged: any;
+    itemsAreLoading: boolean;
 }
 
-const TotalPerformanceExtraHeader: React.FC<Props> = ({ date, setDate, itemsChanged, setItemsChanged  }) => {
+const TotalPerformanceExtraHeader: React.FC<Props> = ({ date, setDate, itemsChanged, setItemsChanged, itemsAreLoading  }) => {
 
     return (
         <React.Fragment>
@@ -27,11 +28,15 @@ const TotalPerformanceExtraHeader: React.FC<Props> = ({ date, setDate, itemsChan
                                 dateFormat: "Y-m-d",
                                 defaultDate: ["2022-01-20"],
                             }}
+                            disabled={itemsAreLoading}
                         />
                     </div>
                 </Col>
                 <Col>
-                    <Button type={'button'} color={'primary'} onClick={(e: any) => setItemsChanged(!itemsChanged)} >
+                    <Button type={'button'} color={'primary'}
+                            onClick={(e: any) => setItemsChanged(!itemsChanged)}
+                            disabled={itemsAreLoading}
+                    >
                         <i className='ri-refresh-fill'/> {t("Refresh")}
                     </Button>
                 </Col>

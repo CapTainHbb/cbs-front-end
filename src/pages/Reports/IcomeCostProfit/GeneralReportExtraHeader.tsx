@@ -11,11 +11,12 @@ interface Props {
     onChangeToDate: any;
     itemsChanged: boolean;
     setItemsChanged: any;
+    itemsAreLoading?: boolean;
 }
 
 const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
                                                           toDate, onChangeToDate,
-                                                      itemsChanged, setItemsChanged}) => {
+                                                      itemsChanged, setItemsChanged, itemsAreLoading = false}) => {
 
     return (
     <React.Fragment>
@@ -31,6 +32,7 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
                 dateFormat: "Y-m-d",
                 defaultDate: ["2022-01-20"],
               }}
+              disabled={itemsAreLoading}
             />
           </div>
         </Col>
@@ -46,11 +48,15 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
                 dateFormat: "Y-m-d",
                 defaultDate: ["2022-01-20"],
               }}
+              disabled={itemsAreLoading}
             />
           </div>
         </Col>
         <Col lg={2}>
-            <Button type={'button'} color={'primary'} onClick={(e: any) => setItemsChanged(!itemsChanged)} >
+            <Button type={'button'} color={'primary'}
+                    onClick={(e: any) => setItemsChanged(!itemsChanged)}
+                    disabled={itemsAreLoading}
+            >
                 <i className='ri-refresh-fill'/> {t("Refresh")}
             </Button>
         </Col>

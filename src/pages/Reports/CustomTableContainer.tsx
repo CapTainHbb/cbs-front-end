@@ -3,9 +3,9 @@ import TableExtraHeaderContainer from "./TableExtraHeaderContainer";
 import {
     ColumnDef, ExpandedState,
     flexRender,
-    getCoreRowModel, getExpandedRowModel,
+    getCoreRowModel, getExpandedRowModel, getSortedRowModel,
     PaginationState,
-    RowSelectionState,
+    RowSelectionState, SortingState,
     useReactTable
 } from "@tanstack/react-table";
 
@@ -41,6 +41,7 @@ interface Props<T, F> {
     preProcessData?: any;
     onSelectedRowsChange?: any;
     hasPagination?: boolean;
+    setItemsAreLoading?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -56,6 +57,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                          preProcessData,
                          onSelectedRowsChange,
                          hasPagination = true,
+                         setItemsAreLoading,
                      }: Props<T, F>): JSX.Element => {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -68,6 +70,7 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const [columnVisibility, setColumnVisibility] = useState<any>(initialColumnsVisibility)
     const [expanded, setExpanded] = useState<ExpandedState>(true)
     const [data, setData] = useState<any>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     const onFetchDataSuccess = useCallback((data: any) => {
         setData(preProcessData !== undefined? preProcessData(data?.data): data?.data)
@@ -86,6 +89,10 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});
 
+    useEffect(() => {
+        setItemsAreLoading?.(itemsAreLoading);
+    }, [itemsAreLoading]);
+
     const table = useReactTable({
         data,
         columns,
@@ -100,7 +107,10 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
             rowSelection,
             columnVisibility,
             expanded,
+            sorting
         },
+        onSortingChange: setSorting, // Handle sorting changes
+        getSortedRowModel: getSortedRowModel(), // Enable sorting
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,
         manualPagination: true,
