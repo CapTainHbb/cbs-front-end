@@ -77,7 +77,6 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     }}
                                     onChange={([selectedDate]) => updateFilter("date_from", getUTCFormattedDateTime(selectedDate).date)}
                                     value={filters?.date_from}
-
                                 />
                             </Col>
                             <Col md={2} sm={12}>

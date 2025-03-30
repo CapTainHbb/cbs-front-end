@@ -13,6 +13,7 @@ import GeneralLedgerExtraHeader from "./GeneralLedgerExtraHeader";
 import {CurrencyAccount} from "../types";
 import BalanceAmount from "../../Reports/BalanceAmount";
 import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
+import {getFormattedToday} from "../../../helpers/date";
 
 const GeneralLedger = () => {
 
@@ -21,11 +22,12 @@ const GeneralLedger = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [hideSmallAmounts, setHideSmallAmounts] = useState(true);
+    const [date, setDate] = useState<string>(getFormattedToday());
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
 
     const group_id = useMemo(() => {
-        return Number(searchParams.get("group_id"))
+        return searchParams.get("group_id") || ""
     }, [searchParams])
 
     const isSmallAmountAccount = useCallback((currencyAccounts: CurrencyAccount[]) => {
@@ -117,12 +119,16 @@ const GeneralLedger = () => {
                 <Col lg={12}>
                     <Card>
                         <CardHeader>
-                            <GeneralLedgerExtraHeader checked={hideSmallAmounts} setChecked={setHideSmallAmounts} />
+                            <GeneralLedgerExtraHeader checked={hideSmallAmounts}
+                                                      setChecked={setHideSmallAmounts}
+                                                      date={date} setDate={setDate}
+                                                      itemsChanged={itemsChanged}
+                                                      setItemsChanged={setItemsChanged} />
                         </CardHeader>
                         <CardBody>
                             <React.Fragment >
                                 <CustomTableContainer
-                                    loadItemsApi={`/accounts/general-ledger/${group_id}/`}
+                                    loadItemsApi={`/accounts/general-ledger/?account_group_id=${group_id}&date=${date}`}
                                     loadMethod='GET'
                                     columns={(columns || [])}
                                     onDoubleClickRow={handleDoubleClickRow}
