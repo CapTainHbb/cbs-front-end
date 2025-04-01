@@ -20,17 +20,17 @@ const GeneralLedgerExtraHeader: React.FC<Props> = ({ checked, setChecked,
         <React.Fragment>
             <Row className="d-flex gap-3">
                 <Col md={2}>
-                    <Input type={"checkbox"} className={'form-check-input'}
+                    <Input type={"checkbox"} className={'form-check-input mx-1'}
                        checked={checked}
                        onChange={(e) => setChecked(e.target.checked)} />
                     <Label>{t("Hide Small Amounts")}</Label>
                 </Col>
                 <Col>
-                    <Row>
-                        <Col>
+                    <Row className={'align-items-center'}>
+                        <Col md={1}>
                             <Label>{t("Date")}</Label>
                         </Col>
-                        <Col>
+                        <Col md={3}>
                             <Flatpickr
                                 className="form-control"
                                 options={{
@@ -42,7 +42,7 @@ const GeneralLedgerExtraHeader: React.FC<Props> = ({ checked, setChecked,
                         </Col>
                     </Row>
                 </Col>
-                <Col>
+                <Col md={1}>
                     <Row>
                         <Button color='primary' className={'w-100'}
                                 onClick={() => setItemsChanged(!itemsChanged)}>
