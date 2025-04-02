@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {FinancialAccount} from "../types";
 import {Button, Col, Label, Row} from "reactstrap";
 import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
@@ -10,11 +10,10 @@ import SelectFinancialAccount from "../SelectFinancialAccount";
 import DownloadBillingPdf from "./exports/DownloadBillingPdf";
 import {useBillingFilters} from "./hooks/useBillingFilters";
 import Flatpickr from "react-flatpickr";
-import {getUTCFormattedDateTime} from "../../../helpers/date";
+import {getUTCFormattedDate} from "../../../helpers/date";
 import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
 import Select from "react-select";
-import {Link} from "react-router-dom";
-import ChangePageContainer from "../../Reports/ChangePageContainer";
+
 
 interface Props {
     table: any;
@@ -75,7 +74,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     options={{
                                         dateFormat: "Y-m-d",
                                     }}
-                                    onChange={([selectedDate]) => updateFilter("date_from", getUTCFormattedDateTime(selectedDate).date)}
+                                    onChange={([selectedDate]) => updateFilter("date_from", getUTCFormattedDate(selectedDate))}
                                     value={filters?.date_from}
                                 />
                             </Col>
@@ -87,7 +86,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     options={{
                                         dateFormat: "Y-m-d",
                                     }}
-                                    onChange={([selectedDate]) => updateFilter("date_to", getUTCFormattedDateTime(selectedDate).date)}
+                                    onChange={([selectedDate]) => updateFilter("date_to", getUTCFormattedDate(selectedDate))}
                                     value={filters?.date_to}
                                 />
                             </Col>
