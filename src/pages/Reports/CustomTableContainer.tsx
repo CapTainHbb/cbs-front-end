@@ -42,6 +42,7 @@ interface Props<T, F> {
     onSelectedRowsChange?: any;
     hasPagination?: boolean;
     setItemsAreLoading?: any;
+    preprocessData?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -273,7 +274,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
                                         >
                                             {row.original?.headerContent}
                                         </td>
-
                                     </tr>
                                 }
 

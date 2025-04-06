@@ -12,6 +12,15 @@ import CurrencyNameAndFlag from '../CurrencyNameAndFlag';
 import { currencyColumns } from '../utils';
 import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
+import { CurrencyAccount } from 'pages/Accounting/types';
+
+interface IncomeCostProfieReportItemType {
+    name: string;
+    code: string;
+    type: string;
+    exchanged_amount: number;
+    currency_accounts: CurrencyAccount[];
+}
 
 const IncomeCostProfit = () => {
   const [fromDate, setFromDate] = useState<string | null>(getFormattedToday());
@@ -22,7 +31,7 @@ const IncomeCostProfit = () => {
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false)
     const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
-    const columns = useMemo<ColumnDef<ReportItemType>[]>(
+    const columns = useMemo<ColumnDef<IncomeCostProfieReportItemType>[]>(
     () => [
         {
             id: "select",

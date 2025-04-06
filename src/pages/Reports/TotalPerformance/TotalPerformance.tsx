@@ -1,17 +1,16 @@
-import React, {useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {getFormattedToday} from "../../../helpers/date";
 import {ColumnDef} from "@tanstack/react-table";
 import IndeterminateCheckbox from "../IndetermineCheckbox";
 import {useSelector} from "react-redux";
 import {CurrencyAccount} from "../../Accounting/types";
 import {t} from "i18next";
-import BalanceAmount from "../BalanceAmount";
-import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
 import {currencyColumns} from "../utils";
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
 import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
+import { ReportItemType } from "../types";
 
 
 interface TotalPerformanceRowType {
@@ -27,6 +26,16 @@ const TotalPerformance = () => {
     const [toDate, setToDate] = useState<string | null>(getFormattedToday())
     const {referenceCurrencies, referenceCurrency} = useSelector((state: any) => state.InitialData);
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
+
+    const preprocessData = useCallback((data: ReportItemType) => {
+        let processedData = []
+        processedData.push({
+            balance_exchanged_amount: data?.balance_exchanged_amount,
+            currency_accounts: data?.balance_currency_accounts,
+            type: "balance"
+        })
+        return data
+    }, []);
 
     const columns = useMemo<ColumnDef<TotalPerformanceRowType>[]>(
         () => [

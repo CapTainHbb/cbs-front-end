@@ -1,9 +1,9 @@
-import {CurrencyCell} from "./CurrencyCell";
+import {CurrencyCell, GeneralLedgerCurrencyCell} from "./CurrencyCell";
 import CurrencyNameAndFlag from "./CurrencyNameAndFlag";
 import {getBalanceByCurrencyId} from "../../helpers/currency";
-import {ReportItemType} from "./types";
 import {Column} from "@tanstack/react-table";
 import {Row} from "reactstrap";
+import { GeneralLedgerReportItemType } from "pages/Accounting/GeneralLedger/GeneralLedger";
 
 export const defaultCompanyProfile = {
     name: "",
@@ -82,13 +82,11 @@ export const currencyColumns = (currencies: Currency[]) => {
 export const generalLedgerCurrencyColumns = (currencies: Currency[]) => {
     return currencies.map((currency) => ({
         id: currency?.name,
-        cell: CurrencyCell(currency?.id),
-        header: ({ column }: { column: Column<ReportItemType> }) => (
+        cell: GeneralLedgerCurrencyCell(currency?.id),
+        header: ({ column }: { column: Column<GeneralLedgerReportItemType> }) => (
             <Row>
                 <CurrencyNameAndFlag currencyId={currency?.id} />
-                <div
-                    onClick={() => column.toggleSorting()}
-                >
+                <div onClick={() => column.toggleSorting()}>
                     {column.getIsSorted() === 'asc' ? <i className={'ri-arrow-up-line'}/> :
                         column.getIsSorted() === 'desc' ? <i className={'ri-arrow-down-line'}/> :
                             <i className={'ri-arrow-up-down-line'}/>}
@@ -101,7 +99,7 @@ export const generalLedgerCurrencyColumns = (currencies: Currency[]) => {
         // Add sorting properties
         enableSorting: true,
         sortingFn: 'basic' as const, // or 'alphanumeric' as const
-        accessorFn: (row: ReportItemType) => {
+        accessorFn: (row: GeneralLedgerReportItemType) => {
             const { balance_currency_accounts } = row;
             return getBalanceByCurrencyId(balance_currency_accounts, currency?.id); // Adjust this based on your actual data structure
         },

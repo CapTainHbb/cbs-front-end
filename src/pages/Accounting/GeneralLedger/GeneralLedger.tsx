@@ -3,17 +3,26 @@ import BreadCrumb from 'Components/Common/BreadCrumb'
 import { t } from 'i18next'
 import CustomTableContainer from 'pages/Reports/CustomTableContainer'
 import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox'
-import { ReportItemType } from 'pages/Reports/types'
 import {generalLedgerCurrencyColumns} from 'pages/Reports/utils'
 import React, {useCallback, useMemo, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
-import GeneralLedgerExtraHeader from "./GeneralLedgerExtraHeader";
-import {CurrencyAccount} from "../types";
-import BalanceAmount from "../../Reports/BalanceAmount";
-import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag";
-import {getFormattedToday} from "../../../helpers/date";
+import GeneralLedgerExtraHeader from "./GeneralLedgerExtraHeader"
+import {CurrencyAccount} from "../types"
+import BalanceAmount from "../../Reports/BalanceAmount"
+import CurrencyNameAndFlag from "../../Reports/CurrencyNameAndFlag"
+import {getFormattedToday} from "../../../helpers/date"
+
+export interface GeneralLedgerReportItemType {
+    id: number;
+    name: string;
+    code: string;
+    full_code: string;
+    parent_group: number;
+    currency_accounts: CurrencyAccount[];
+    balance_exchanged_amount: number;
+}
 
 const GeneralLedger = () => {
 
@@ -45,7 +54,7 @@ const GeneralLedger = () => {
         return linkText;
     }, [])
 
-    const columns = useMemo<ColumnDef<ReportItemType>[]>(() => {
+    const columns = useMemo<ColumnDef<GeneralLedgerReportItemType>[]>(() => {
         return [
             {
                 id: 'select',
@@ -87,10 +96,9 @@ const GeneralLedger = () => {
                 size: 20
             },
             {
-                id: 'exchanged_amounts',
+                accessorKey: 'balance_exchanged_amount',
                 cell: (info) =>  <BalanceAmount
-                    amount={info.row.original.exchanged_amount}
-
+                    amount={info.row.original.balance_exchanged_amount}
                 />,
                 header: () => <div className="flex flex-col">
                     <p>{t("Exchanged Total Amount")}</p>
@@ -106,7 +114,7 @@ const GeneralLedger = () => {
             ...generalLedgerCurrencyColumns(referenceCurrencies),
         ]
     }, [determineGroupLinkText, referenceCurrencies, hideSmallAmounts])
-    
+
     const handleDoubleClickRow = useCallback((inp: any) => {
         navigate(determineGroupLinkText(inp));
     }, [determineGroupLinkText, navigate])
