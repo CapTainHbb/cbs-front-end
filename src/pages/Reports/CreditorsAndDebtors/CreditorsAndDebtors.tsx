@@ -63,9 +63,9 @@ const CreditorsAndDebtors = () => {
                 {
                     header: t("Currency Type"),
                     cell: info => <CurrencyNameAndFlag currencyId={info.row.original.currency} />,
-                    minSize: 10,  // Ensure the column doesn't shrink below this size
-                    maxSize: 10,  // Prevent resizing beyond this size
-                    width: 10     // Explicitly set the width
+                    minSize: 20,  // Ensure the column doesn't shrink below this size
+                    maxSize: 20,  // Prevent resizing beyond this size
+                    width: 20     // Explicitly set the width
                 },
                 {
                     header: t("Balance"),

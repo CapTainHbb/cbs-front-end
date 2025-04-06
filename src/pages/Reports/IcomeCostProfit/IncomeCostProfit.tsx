@@ -14,8 +14,8 @@ import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
 
 const IncomeCostProfit = () => {
-  const [fromDate, setFromDate] = useState<string>(getFormattedToday());
-  const [toDate, setToDate] = useState<string>(getFormattedToday());
+  const [fromDate, setFromDate] = useState<string | null>(getFormattedToday());
+  const [toDate, setToDate] = useState<string | null>(getFormattedToday());
 
   const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
@@ -58,7 +58,7 @@ const IncomeCostProfit = () => {
         {
             id: 'exchanged_amounts',
             cell: (info) =>  <BalanceAmount
-                amount={info.row.original.exchanged_amounts}
+                amount={info.row.original.exchanged_amount}
 
             />,
             header: () => <Col lg={12}>

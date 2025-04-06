@@ -25,7 +25,7 @@ toDate, onChangeToDate}) => {
                             value={fromDate}
                             options={{
                                 dateFormat: "Y-m-d",
-                                defaultDate: [getFormattedToday()],
+                                defaultDate: [getFormattedToday() || ""],
                             }}
                         />
                     </div>
@@ -40,7 +40,7 @@ toDate, onChangeToDate}) => {
                             value={toDate}
                             options={{
                                 dateFormat: "Y-m-d",
-                                defaultDate: [getFormattedToday()],
+                                defaultDate: [getFormattedToday() || ""],
                             }}
                         />
                     </div>

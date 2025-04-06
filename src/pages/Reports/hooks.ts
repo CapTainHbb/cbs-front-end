@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import axiosInstance from "../../helpers/axios_instance";
+import {toast} from "react-toastify";
+import {normalizeDjangoError} from "../../helpers/error";
 
 interface AdvancedRowClickProps {
     table: any;
@@ -78,7 +80,7 @@ export const useFetchDataFromApi = ({loadItemsApi, loadMethod, onFetchDataSucces
             onFetchDataSuccess(response.data)
         })
             .catch(error => {
-                console.error(error)
+                toast.error(normalizeDjangoError(error)); // Use toast.error for errors
             }).finally(async () => {
             setItemsAreLoading(false);
         });

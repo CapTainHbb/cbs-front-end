@@ -5,7 +5,7 @@ import {getUTCFormattedDate} from "../../../helpers/date";
 import {t} from "i18next";
 
 interface Props {
-    date: string;
+    date: string | null;
     setDate: any;
     itemsChanged: boolean;
     setItemsChanged: any;
@@ -23,7 +23,7 @@ const TotalPerformanceExtraHeader: React.FC<Props> = ({ date, setDate, itemsChan
                         <Flatpickr
                             className="form-control"
                             onChange={(e: any) => {setDate(getUTCFormattedDate(e?.[0]))}}
-                            value={date}
+                            value={date || ""}
                             options={{
                                 dateFormat: "Y-m-d",
                                 defaultDate: ["2022-01-20"],

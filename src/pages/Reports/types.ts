@@ -4,7 +4,11 @@ export interface ReportItemType {
     code: string;
     full_code: string;
     parent_group: any;
-    currency_accounts: any;
-    exchanged_amounts: number;
+    balance_currency_accounts: any;
+    creditor_currency_accounts: any;
+    debtor_currency_accounts: any;
+    exchanged_amount: number;
     type: string;
+    from_date: any;
+    to_date: any;
 }

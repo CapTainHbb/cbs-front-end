@@ -20,8 +20,8 @@ interface GrossFeeReportType {
 
 const GrossFee = () => {
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
-    const [fromDate, setFromDate] = useState<string>(getFormattedToday());
-    const [toDate, setToDate] = useState<string>(getFormattedToday());
+    const [fromDate, setFromDate] = useState<string | null>(getFormattedToday());
+    const [toDate, setToDate] = useState<string | null>(getFormattedToday());
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
     const {referenceCurrencies, referenceCurrency} = useSelector((info: any) => info.InitialData);
 

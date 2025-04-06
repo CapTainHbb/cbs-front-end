@@ -4,8 +4,8 @@ import { determinePartyType } from "./utils";
 import {getBalanceByCurrencyId} from "../../helpers/currency";
 
 export const CurrencyCell = (currencyId: number | undefined)  => (info: any)  => { // Use JSX.Element for components
-    const { flow_type, currency_accounts } = info.row.original;
-    const amount = getBalanceByCurrencyId(currency_accounts, currencyId);
+    const { flow_type, balance_currency_accounts } = info.row.original;
+    const amount = getBalanceByCurrencyId(balance_currency_accounts, currencyId);
 
     if (flow_type === "balance") {
         return <BalanceAmount amount={amount} />;

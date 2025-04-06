@@ -1,7 +1,7 @@
 import moment from "moment";
 
-export const getUTCFormattedDate = (date: Date): string => {
-    if(!date) return '';
+export const getUTCFormattedDate = (date: Date): string | null => {
+    if(!date) return null;
 
     return date?.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
 };
@@ -17,7 +17,7 @@ export const getToday = (): Date => {
     return new Date();
 }
 
-export const getFormattedToday = (): string => {
+export const getFormattedToday = (): string | null => {
     return getUTCFormattedDate(getToday());
 }
 

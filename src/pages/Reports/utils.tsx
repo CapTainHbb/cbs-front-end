@@ -102,8 +102,8 @@ export const generalLedgerCurrencyColumns = (currencies: Currency[]) => {
         enableSorting: true,
         sortingFn: 'basic' as const, // or 'alphanumeric' as const
         accessorFn: (row: ReportItemType) => {
-            const { currency_accounts } = row;
-            return getBalanceByCurrencyId(currency_accounts, currency?.id); // Adjust this based on your actual data structure
+            const { balance_currency_accounts } = row;
+            return getBalanceByCurrencyId(balance_currency_accounts, currency?.id); // Adjust this based on your actual data structure
         },
     }));
 };

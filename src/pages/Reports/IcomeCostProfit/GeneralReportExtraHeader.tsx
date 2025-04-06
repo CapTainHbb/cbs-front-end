@@ -5,9 +5,9 @@ import {getUTCFormattedDate} from "../../../helpers/date";
 import {t} from "i18next";
 
 interface Props {
-    fromDate: string;
+    fromDate: string | null;
     onChangeFromDate: any;
-    toDate: string;
+    toDate: string | null;
     onChangeToDate: any;
     itemsChanged: boolean;
     setItemsChanged: any;
@@ -27,7 +27,7 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
             <Flatpickr
               className="form-control"
               onChange={(e: any) => {onChangeFromDate(getUTCFormattedDate(e?.[0]))}}
-              value={fromDate}
+              value={fromDate || ""}
               options={{
                 dateFormat: "Y-m-d",
                 defaultDate: ["2022-01-20"],
@@ -43,7 +43,7 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
             <Flatpickr
               className="form-control"
               onChange={(e: any) => onChangeToDate(getUTCFormattedDate(e?.[0]))}
-              value={toDate}
+              value={toDate || ""}
               options={{
                 dateFormat: "Y-m-d",
                 defaultDate: ["2022-01-20"],

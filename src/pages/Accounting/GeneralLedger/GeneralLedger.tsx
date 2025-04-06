@@ -4,7 +4,7 @@ import { t } from 'i18next'
 import CustomTableContainer from 'pages/Reports/CustomTableContainer'
 import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox'
 import { ReportItemType } from 'pages/Reports/types'
-import {currencyColumns, generalLedgerCurrencyColumns} from 'pages/Reports/utils'
+import {generalLedgerCurrencyColumns} from 'pages/Reports/utils'
 import React, {useCallback, useMemo, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -22,7 +22,7 @@ const GeneralLedger = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [hideSmallAmounts, setHideSmallAmounts] = useState(true);
-    const [date, setDate] = useState<string>(getFormattedToday());
+    const [date, setDate] = useState<string | null>(getFormattedToday());
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
 
@@ -89,7 +89,7 @@ const GeneralLedger = () => {
             {
                 id: 'exchanged_amounts',
                 cell: (info) =>  <BalanceAmount
-                    amount={info.row.original.exchanged_amounts}
+                    amount={info.row.original.exchanged_amount}
 
                 />,
                 header: () => <div className="flex flex-col">
@@ -97,7 +97,7 @@ const GeneralLedger = () => {
                     <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
                 </div>,
                 meta: {
-                    hideCondition: (row: any) => isSmallAmountAccount(row.original.currency_accounts), // Hide rows where age is less than 25
+                    hideCondition: (row: any) => isSmallAmountAccount(row.original.balance_currency_accounts), // Hide rows where age is less than 25
                 },
                 minSize: 120,
                 maxSize: 120,

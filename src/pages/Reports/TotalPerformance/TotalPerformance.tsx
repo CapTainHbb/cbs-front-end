@@ -11,7 +11,7 @@ import {currencyColumns} from "../utils";
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
-import TotalPerformanceExtraHeader from "./TotalPerformanceExtraHeader";
+import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
 
 
 interface TotalPerformanceRowType {
@@ -23,7 +23,8 @@ interface TotalPerformanceRowType {
 
 const TotalPerformance = () => {
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
-    const [date, setDate] = useState<string>(getFormattedToday());
+    const [fromDate, setFromDate] = useState<string | null>(getFormattedToday());
+    const [toDate, setToDate] = useState<string | null>(getFormattedToday())
     const {referenceCurrencies, referenceCurrency} = useSelector((state: any) => state.InitialData);
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
 
@@ -58,28 +59,14 @@ const TotalPerformance = () => {
                 maxSize: 70,  // Prevent resizing beyond this size
                 width: 70      // Explicitly set the width
             },
-            {
-                id: 'exchanged_amounts',
-                cell: (info) =>  <BalanceAmount
-                    amount={info.row.original.exchanged_amounts}
-
-                />,
-                header: () => <div className="flex flex-col">
-                    <p>{t("Exchanged Total Amount")}</p>
-                    <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
-                </div>,
-                minSize: 120,  // Ensure the column doesn't shrink below this size
-                maxSize: 120,  // Prevent resizing beyond this size
-                width: 120      // Explicitly set the width
-            },
             ...currencyColumns(referenceCurrencies),
         ],
         [referenceCurrencies, referenceCurrency]
     );
 
     const urlToFetch = useMemo(() => {
-        return `/statistics-information/total-performance/?date=${date}`;
-    }, [date]);
+        return `/statistics-information/total-performance/?from_date=${fromDate}&to_date=${toDate}`;
+    }, [fromDate]);
 
     return (
         <React.Fragment>
@@ -89,10 +76,10 @@ const TotalPerformance = () => {
                     <Col lg={12}>
                         <Card>
                             <CardHeader>
-                                <TotalPerformanceExtraHeader
-                                    setItemsChanged={setItemsChanged}
-                                    itemsChanged={itemsChanged}
-                                    date={date} setDate={setDate}
+                                <GeneralReportExtraHeader
+                                    fromDate={fromDate} onChangeFromDate={setFromDate}
+                                    toDate={toDate} onChangeToDate={setToDate}
+                                    itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
                                     itemsAreLoading={itemsAreLoading}
                                 />
                             </CardHeader>
