@@ -21,7 +21,7 @@ export interface GeneralLedgerReportItemType {
     full_code: string;
     parent_group: number;
     currency_accounts: CurrencyAccount[];
-    balance_exchanged_amount: number;
+    exchanged_amount: number;
 }
 
 const GeneralLedger = () => {
@@ -40,7 +40,7 @@ const GeneralLedger = () => {
     }, [searchParams])
 
     const isSmallAmountAccount = useCallback((currencyAccounts: CurrencyAccount[]) => {
-        const totalAmount = currencyAccounts.reduce((sum, account) => sum + (account?.balance || 0), 0);
+        const totalAmount = currencyAccounts?.reduce((sum, account) => sum + (account?.balance || 0), 0);
         return hideSmallAmounts && !totalAmount;
     }, [hideSmallAmounts]);
 
@@ -98,14 +98,14 @@ const GeneralLedger = () => {
             {
                 accessorKey: 'balance_exchanged_amount',
                 cell: (info) =>  <BalanceAmount
-                    amount={info.row.original.balance_exchanged_amount}
+                    amount={info.row.original.exchanged_amount}
                 />,
                 header: () => <div className="flex flex-col">
                     <p>{t("Exchanged Total Amount")}</p>
                     <CurrencyNameAndFlag currencyId={referenceCurrency?.id} />
                 </div>,
                 meta: {
-                    hideCondition: (row: any) => isSmallAmountAccount(row.original.balance_currency_accounts), // Hide rows where age is less than 25
+                    hideCondition: (row: any) => isSmallAmountAccount(row.original.currency_accounts), // Hide rows where age is less than 25
                 },
                 minSize: 120,
                 maxSize: 120,

@@ -6,18 +6,21 @@ import {useSelector} from "react-redux";
 import {CurrencyAccount} from "../../Accounting/types";
 import {t} from "i18next";
 import {currencyColumns} from "../utils";
-import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
+import {Card, CardBody, CardHeader, Col, Container, Row} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
 import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
 import { ReportItemType } from "../types";
+import CreditorDebtorAmount from "../CreditorsAndDebtors/CreditorDebtorAmount";
+import BalanceAmount from "../BalanceAmount";
+import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
+import {totalPerformanceCurrencyCell} from "./utils";
 
 
 interface TotalPerformanceRowType {
-    exchanged_amounts: number;
+    exchanged_amount: number;
     currency_accounts: CurrencyAccount[];
     flow_type: "incoming" | "outgoing" | "balance";
-    date: string;
 }
 
 const TotalPerformance = () => {
@@ -26,16 +29,6 @@ const TotalPerformance = () => {
     const [toDate, setToDate] = useState<string | null>(getFormattedToday())
     const {referenceCurrencies, referenceCurrency} = useSelector((state: any) => state.InitialData);
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
-
-    const preprocessData = useCallback((data: ReportItemType) => {
-        let processedData = []
-        processedData.push({
-            balance_exchanged_amount: data?.balance_exchanged_amount,
-            currency_accounts: data?.balance_currency_accounts,
-            type: "balance"
-        })
-        return data
-    }, []);
 
     const columns = useMemo<ColumnDef<TotalPerformanceRowType>[]>(
         () => [
@@ -68,14 +61,30 @@ const TotalPerformance = () => {
                 maxSize: 70,  // Prevent resizing beyond this size
                 width: 70      // Explicitly set the width
             },
-            ...currencyColumns(referenceCurrencies),
+            {
+                id: "exchanged_amount",
+                cell: (info) => {
+                    if (info.row.original.flow_type === "incoming") {
+                        return <CreditorDebtorAmount party_type={"creditor"} type={"creditor"} amount={info.row.original.exchanged_amount} />
+                    } else if (info.row.original.flow_type === "outgoing") {
+                        return <CreditorDebtorAmount party_type={'debtor'} type={"debtor"} amount={info.row.original.exchanged_amount} />
+                    } else if (info.row.original.flow_type === 'balance') {
+                        return <BalanceAmount amount={info.row.original.exchanged_amount} />
+                    }
+                },
+                header: () => <Row>{t("Exchanged Amount")} <CurrencyNameAndFlag currencyId={referenceCurrency?.id} /></Row>,
+                minSize: 130,  // Ensure the column doesn't shrink below this size
+                maxSize: 130,  // Prevent resizing beyond this size
+                width: 130      // Explicitly set the width
+            },
+            ...currencyColumns(referenceCurrencies, totalPerformanceCurrencyCell),
         ],
         [referenceCurrencies, referenceCurrency]
     );
 
     const urlToFetch = useMemo(() => {
         return `/statistics-information/total-performance/?from_date=${fromDate}&to_date=${toDate}`;
-    }, [fromDate]);
+    }, [fromDate, toDate]);
 
     return (
         <React.Fragment>

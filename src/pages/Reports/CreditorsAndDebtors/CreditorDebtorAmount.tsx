@@ -10,7 +10,7 @@ interface Props {
 
 const CreditorDebtorAmount : React.FC<Props> = ({ party_type, type, amount }) => {
 
-    if((party_type && party_type !== type) || !amount) {
+    if((party_type && party_type !== type) || !amount || Number(amount) === 0) {
         return <p className='fw-medium'>
             {0}
         </p>

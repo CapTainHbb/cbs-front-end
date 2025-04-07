@@ -7,9 +7,10 @@ interface Props {
 }
 
 const BalanceAmount: React.FC<Props> = ({ amount }) => {
-    if(isNaN(amount) || amount === null || amount === 0) {
+    if(isNaN(amount) || amount === null || Number(amount) === 0) {
         return <p>0</p>
     }
+
     return (
         <p
             className={'fw-medium'}

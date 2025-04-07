@@ -7,7 +7,9 @@ export interface ReportItemType {
     balance_currency_accounts: any;
     creditor_currency_accounts: any;
     debtor_currency_accounts: any;
-    balance_exchanged_amount: number;
+    total_balance_exchanged_amount: number;
+    total_creditor_exchanged_amount: number;
+    total_debtor_exchanged_amount: number;
     exchanged_amount_per_date: any;
     from_date: any;
     to_date: any;

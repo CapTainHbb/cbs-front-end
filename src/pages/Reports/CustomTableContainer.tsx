@@ -42,7 +42,6 @@ interface Props<T, F> {
     onSelectedRowsChange?: any;
     hasPagination?: boolean;
     setItemsAreLoading?: any;
-    preprocessData?: any;
 }
 
 const CustomTableContainer = <T,F,>({ loadItemsApi = "",
@@ -72,7 +71,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
     const [expanded, setExpanded] = useState<ExpandedState>(true)
     const [data, setData] = useState<any>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-
     const onFetchDataSuccess = useCallback((data: any) => {
         setData(preProcessData !== undefined? preProcessData(data?.data): data?.data)
         setRowCount(data?.total_rows);
@@ -85,7 +83,6 @@ const CustomTableContainer = <T,F,>({ loadItemsApi = "",
         }
 
         setTimeout(scrollToBottom, 200);
-
     }, [preProcessData]);
     const {itemsAreLoading, fetchData} =
         useFetchDataFromApi({loadItemsApi, loadMethod, onFetchDataSuccess});

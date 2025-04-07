@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {getFormattedToday} from "../../../helpers/date";
 import {useSelector} from "react-redux";
 import {ColumnDef} from "@tanstack/react-table";
@@ -11,11 +11,12 @@ import CustomTableContainer from "../CustomTableContainer";
 import {Card, CardBody, CardHeader, Col, Container} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
+import {ReportItemType} from "../types";
 
 interface GrossFeeReportType {
-    name: string;
+    fee_type: "received-fee" | "paid-fee" | "balance";
     currency_accounts: any;
-    exchanged_amounts: number;
+    exchanged_amount: number;
 }
 
 const GrossFee = () => {
@@ -50,7 +51,7 @@ const GrossFee = () => {
             },
             {
                 id: "fee_type",
-                cell: (info) => t(info.row.original.name),
+                cell: (info) => t(info.row.original.fee_type),
                 header: () => <span>{t("Fee Type")}</span>,
                 minSize: 80,  // Ensure the column doesn't shrink below this size
                 maxSize: 80,  // Prevent resizing beyond this size
@@ -59,7 +60,7 @@ const GrossFee = () => {
             {
                 id: 'exchanged_amounts',
                 cell: (info) =>  <BalanceAmount
-                    amount={info.row.original.exchanged_amounts}
+                    amount={info.row.original.exchanged_amount}
 
                 />,
                 header: () => <div className="flex flex-col">
@@ -74,6 +75,7 @@ const GrossFee = () => {
         ],
         [referenceCurrencies, referenceCurrency]
     );
+
 
     const urlToFetch = useMemo(() => {
         return `/statistics-information/gross-fee/?from_date=${fromDate}&to_date=${toDate}`;

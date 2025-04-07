@@ -1,5 +1,5 @@
 import BreadCrumb from 'Components/Common/BreadCrumb'
-import React, { useMemo, useState } from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
 import GeneralReportExtraHeader from './GeneralReportExtraHeader';
 import CustomTableContainer from '../CustomTableContainer';
@@ -14,12 +14,10 @@ import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
 import { CurrencyAccount } from 'pages/Accounting/types';
 
-interface IncomeCostProfieReportItemType {
-    name: string;
-    code: string;
-    type: string;
+interface IncomeCostProfitReportItemType {
     exchanged_amount: number;
     currency_accounts: CurrencyAccount[];
+    type: "income" | "gross-cost" | 'benefit-loss'
 }
 
 const IncomeCostProfit = () => {
@@ -28,10 +26,10 @@ const IncomeCostProfit = () => {
 
   const referenceCurrency = useSelector((state: any) => state.InitialData.referenceCurrency);
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
-    const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false)
-    const [itemsChanged, setItemsChanged] = useState<boolean>(false)
+  const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false)
+  const [itemsChanged, setItemsChanged] = useState<boolean>(false)
 
-    const columns = useMemo<ColumnDef<IncomeCostProfieReportItemType>[]>(
+    const columns = useMemo<ColumnDef<IncomeCostProfitReportItemType>[]>(
     () => [
         {
             id: "select",
@@ -58,11 +56,11 @@ const IncomeCostProfit = () => {
         },
         {
             id: "type",
-            cell: (info) => t(info.row.original.name),
+            cell: (info) => t(info.row.original.type),
             header: () => <span>{t("Report Type")}</span>,
-            minSize: 70,  // Ensure the column doesn't shrink below this size
-            maxSize: 70,  // Prevent resizing beyond this size
-            width: 70      // Explicitly set the width
+            minSize: 80,  // Ensure the column doesn't shrink below this size
+            maxSize: 80,  // Prevent resizing beyond this size
+            width: 80      // Explicitly set the width
         },
         {
             id: 'exchanged_amounts',

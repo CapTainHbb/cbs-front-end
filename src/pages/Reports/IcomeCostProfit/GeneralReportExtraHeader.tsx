@@ -20,37 +20,45 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
 
     return (
     <React.Fragment>
-      <Row className={'align-items-center'}>
-        <Col lg={6} >
-          <div className="mt-3">
-            <Label className="form-label mb-0">{t("From Date")}</Label>
-            <Flatpickr
-              className="form-control"
-              onChange={(e: any) => {onChangeFromDate(getUTCFormattedDate(e?.[0]))}}
-              value={fromDate || ""}
-              options={{
-                dateFormat: "Y-m-d",
-                defaultDate: ["2022-01-20"],
-              }}
-              disabled={itemsAreLoading}
-            />
-          </div>
+      <Row className={'align-items-center gap-1'}>
+        <Col lg={3}>
+            <Row className={'align-items-center'}>
+                <Col lg={2} >
+                    <Label className="form-label mb-0">{t("From Date")}</Label>
+                </Col>
+                <Col lg={8} >
+                    <Flatpickr
+                      className="form-control"
+                      onChange={(e: any) => {onChangeFromDate(getUTCFormattedDate(e?.[0]))}}
+                      value={fromDate || ""}
+                      options={{
+                        dateFormat: "Y-m-d",
+                        defaultDate: ["2022-01-20"],
+                      }}
+                      disabled={itemsAreLoading}
+                    />
+                </Col>
+            </Row>
         </Col>
 
-        <Col lg={4} >
-          <div className="mt-3">
-            <Label className="form-label mb-0">{t("To Date")}</Label>
-            <Flatpickr
-              className="form-control"
-              onChange={(e: any) => onChangeToDate(getUTCFormattedDate(e?.[0]))}
-              value={toDate || ""}
-              options={{
-                dateFormat: "Y-m-d",
-                defaultDate: ["2022-01-20"],
-              }}
-              disabled={itemsAreLoading}
-            />
-          </div>
+        <Col lg={3}>
+            <Row className={'align-items-center'}>
+                <Col lg={2}>
+                    <Label className="form-label mb-0">{t("To Date")}</Label>
+                </Col>
+                <Col lg={8}>
+                    <Flatpickr
+                      className="form-control"
+                      onChange={(e: any) => onChangeToDate(getUTCFormattedDate(e?.[0]))}
+                      value={toDate || ""}
+                      options={{
+                        dateFormat: "Y-m-d",
+                        defaultDate: ["2022-01-20"],
+                      }}
+                      disabled={itemsAreLoading}
+                    />
+                </Col>
+            </Row>
         </Col>
         <Col lg={2}>
             <Button type={'button'} color={'primary'}
