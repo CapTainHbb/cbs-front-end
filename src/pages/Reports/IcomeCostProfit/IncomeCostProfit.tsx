@@ -1,23 +1,26 @@
 import BreadCrumb from 'Components/Common/BreadCrumb'
 import React, {useCallback, useMemo, useState} from 'react'
-import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
+import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap'
 import GeneralReportExtraHeader from './GeneralReportExtraHeader';
 import CustomTableContainer from '../CustomTableContainer';
 import { ColumnDef } from '@tanstack/react-table';
 import IndeterminateCheckbox from '../IndetermineCheckbox';
 import { t } from 'i18next';
-import { ReportItemType } from '../types';
 import BalanceAmount from '../BalanceAmount';
 import CurrencyNameAndFlag from '../CurrencyNameAndFlag';
 import { currencyColumns } from '../utils';
 import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
 import { CurrencyAccount } from 'pages/Accounting/types';
+import ReportsTotalPerformanceCharts from '../TotalPerformance/ReportsPerformanceCharts';
+import { abs } from 'mathjs';
+import { loopThroughDates } from '../TotalPerformance/utils';
 
 interface IncomeCostProfitReportItemType {
     exchanged_amount: number;
     currency_accounts: CurrencyAccount[];
-    type: "income" | "gross-cost" | 'benefit-loss'
+    type: "income" | "gross-cost" | 'benefit-loss';
+    exchanged_amount_per_date: any;
 }
 
 const IncomeCostProfit = () => {
@@ -28,6 +31,8 @@ const IncomeCostProfit = () => {
   const referenceCurrencies = useSelector((state: any) => state.InitialData.referenceCurrencies);
   const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false)
   const [itemsChanged, setItemsChanged] = useState<boolean>(false)
+  const [chartData, setChartData] = useState<any>([]);
+  const [chartDatesArray, setChartDatesArray] = useState<string[]>([]);
 
     const columns = useMemo<ColumnDef<IncomeCostProfitReportItemType>[]>(
     () => [
@@ -85,6 +90,54 @@ const IncomeCostProfit = () => {
         return `statistics-information/income-cost-profit/?from_date=${fromDate}&to_date=${toDate}`;
   }, [fromDate, toDate])
 
+
+  const preProcessData = useCallback((data: IncomeCostProfitReportItemType[]) => {
+    if(fromDate === null || toDate === null) return data;
+            
+        let seriesData: any = [
+            {
+                name: t("Income"),
+                type: 'line',
+                data: []
+            },
+            {
+                name: t("Gross Cost"),
+                type: 'line',
+                data: []
+            },
+            {
+                name: t("Benefit Loss"),
+                type: 'line',
+                data: []
+            }
+        ]
+
+        const assignExchangedAmontPerDate = (formattedDate: string) => {
+            for(let i = 0; i < data.length; i++) {
+                const type = data[i]?.type;
+                
+                if(type === 'income') {
+                    const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.balance || 0);
+                    seriesData[0].data.push(exchanged_amount_per_date)
+                } else if(type === 'gross-cost') {
+                    const exchanged_amount_per_date = abs(Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.balance || 0));
+                    seriesData[1].data.push(exchanged_amount_per_date)
+                } else if(type === 'benefit-loss') {
+                    const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.balance || 0);
+                    seriesData[2].data.push(exchanged_amount_per_date)
+                }
+                
+            }
+        }
+            
+        let dates = loopThroughDates(fromDate, toDate, assignExchangedAmontPerDate);
+                
+        setChartDatesArray(dates);
+        setChartData(seriesData);
+    
+        return data;
+  }, [fromDate, toDate])
+
   return (
     <React.Fragment>
       <div className='page-content'>
@@ -99,6 +152,24 @@ const IncomeCostProfit = () => {
                         itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
                         itemsAreLoading={itemsAreLoading}
                      />
+                     <Row>
+                        <Col xxl={12}>
+                            <Card>
+                                <CardHeader>
+                                    <h4 className="card-title mb-0 flex-grow-1">{t("Income Cost Profit Over Time")}</h4>
+                                </CardHeader>
+                                <CardBody>
+                                    <div  dir="ltr">
+                                        <ReportsTotalPerformanceCharts 
+                                            datesArray={chartDatesArray}
+                                            series={chartData} 
+                                            dataColors='["--vz-success", "--vz-danger", "--vz-warning"]'
+                                        />
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
                 </CardHeader>
                 <CardBody>
                     <React.Fragment >
@@ -110,15 +181,17 @@ const IncomeCostProfit = () => {
                             columns={(columns || [])}
                             hasPagination={false}
                             setItemsAreLoading={setItemsAreLoading}
+                            preProcessData={preProcessData}
                         />
                     </React.Fragment >
                 </CardBody>
             </Card>
           </Col>
         </Container>
+        
       </div>
     </React.Fragment>
   )
 }
 
-export default IncomeCostProfit
+export default IncomeCostProfit;

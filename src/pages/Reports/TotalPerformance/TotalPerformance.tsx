@@ -10,17 +10,18 @@ import {Card, CardBody, CardHeader, Col, Container, Row} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
 import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
-import { ReportItemType } from "../types";
 import CreditorDebtorAmount from "../CreditorsAndDebtors/CreditorDebtorAmount";
 import BalanceAmount from "../BalanceAmount";
 import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
-import {totalPerformanceCurrencyCell} from "./utils";
+import {loopThroughDates, totalPerformanceCurrencyCell} from "./utils";
+import ReportsTotalPerformanceCharts from "./ReportsPerformanceCharts";
 
 
 interface TotalPerformanceRowType {
     exchanged_amount: number;
     currency_accounts: CurrencyAccount[];
     flow_type: "incoming" | "outgoing" | "balance";
+    exchanged_amount_per_date: any;
 }
 
 const TotalPerformance = () => {
@@ -29,6 +30,8 @@ const TotalPerformance = () => {
     const [toDate, setToDate] = useState<string | null>(getFormattedToday())
     const {referenceCurrencies, referenceCurrency} = useSelector((state: any) => state.InitialData);
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
+    const [chartData, setChartData] = useState<any>([]);
+    const [chartDatesArray, setChartDatesArray] = useState<string[]>([]);
 
     const columns = useMemo<ColumnDef<TotalPerformanceRowType>[]>(
         () => [
@@ -86,6 +89,53 @@ const TotalPerformance = () => {
         return `/statistics-information/total-performance/?from_date=${fromDate}&to_date=${toDate}`;
     }, [fromDate, toDate]);
 
+    const preProcessData = useCallback((data: TotalPerformanceRowType[]) => {
+        if(fromDate === null || toDate === null) return data;
+        
+        let seriesData: any = [
+            {
+                name: t("incoming"),
+                type: 'line',
+                data: []
+            },
+            {
+                name: t("outgoing"),
+                type: 'line',
+                data: []
+            },
+            {
+                name: t("balance"),
+                type: 'line',
+                data: []
+            }
+        ]
+
+        const assignExchangedAmontPerDate = (formattedDate: string) => {
+            for(let i = 0; i < data.length; i++) {
+                const flow_type = data[i]['flow_type'];
+                
+                if(flow_type === 'incoming') {
+                    const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.creditor || 0);
+                    seriesData[0].data.push(exchanged_amount_per_date)
+                } else if(flow_type === 'outgoing') {
+                    const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.debtor || 0);
+                    seriesData[1].data.push(exchanged_amount_per_date)
+                } else if(flow_type === 'balance') {
+                    const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.balance || 0);
+                    seriesData[2].data.push(exchanged_amount_per_date)
+                }
+                
+            }
+        }
+        
+        
+        let dates = loopThroughDates(fromDate, toDate, assignExchangedAmontPerDate)
+        setChartDatesArray(dates);
+        setChartData(seriesData);
+
+        return data;
+    }, [fromDate, toDate])
+
     return (
         <React.Fragment>
             <div className='page-content'>
@@ -100,6 +150,24 @@ const TotalPerformance = () => {
                                     itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
                                     itemsAreLoading={itemsAreLoading}
                                 />
+                                <Row>
+                                    <Col xxl={12}>
+                                        <Card>
+                                            <CardHeader>
+                                                <h4 className="card-title mb-0 flex-grow-1">{t("Total Performance Over Time")}</h4>
+                                            </CardHeader>
+                                            <CardBody>
+                                                <div  dir="ltr">
+                                                    <ReportsTotalPerformanceCharts 
+                                                        datesArray={chartDatesArray}
+                                                        series={chartData} 
+                                                        dataColors='["--vz-success", "--vz-danger", "--vz-warning"]'
+                                                    />
+                                                </div>
+                                            </CardBody>
+                                        </Card>
+                                    </Col>
+                                </Row>
                             </CardHeader>
                             <CardBody>
                                 <React.Fragment >
@@ -111,6 +179,7 @@ const TotalPerformance = () => {
                                         columns={(columns || [])}
                                         hasPagination={false}
                                         setItemsAreLoading={setItemsAreLoading}
+                                        preProcessData={preProcessData}
                                     />
                                 </React.Fragment >
                             </CardBody>

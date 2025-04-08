@@ -14,3 +14,26 @@ export const totalPerformanceCurrencyCell = (currencyId: number | undefined) => 
         return <BalanceAmount amount={amount} />
     }
 }
+
+
+export const loopThroughDates = (fromDate: string, toDate: string, callback: any) => {
+    const startDate = new Date(fromDate);
+    const endDate = new Date(toDate);
+    
+    // Validate dates
+    if (startDate > endDate) {
+        console.error("From date cannot be after to date");
+        return [];
+    }
+
+    let dates = []
+    const currentDate = new Date(startDate);
+    while(currentDate <= endDate) {
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        dates.push(formattedDate)
+        currentDate.setDate(currentDate.getDate() + 1);
+        callback(formattedDate);
+    }
+
+    return dates;
+}
