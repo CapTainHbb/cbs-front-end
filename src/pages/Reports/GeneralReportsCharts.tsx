@@ -2,7 +2,7 @@ import getChartColorsArray from 'Components/Common/ChartsDynamicColor';
 import ReactApexChart from "react-apexcharts";
 import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux';
-import { formatNumber } from '../utils';
+import { formatNumber } from './utils';
 
 interface Props {
     dataColors: any;
@@ -10,7 +10,7 @@ interface Props {
     datesArray: any;
 }
 
-const ReportsTotalPerformanceCharts: React.FC<Props> = ({ dataColors, series, datesArray }) => {
+const GeneralReportCharts: React.FC<Props> = ({ dataColors, series, datesArray }) => {
     var revenueExpensesChartsColors = getChartColorsArray(dataColors);
 
     const {referenceCurrency} = useSelector((state: any) => state.InitialData);
@@ -105,4 +105,4 @@ const ReportsTotalPerformanceCharts: React.FC<Props> = ({ dataColors, series, da
         );
 }
 
-export default ReportsTotalPerformanceCharts
+export default GeneralReportCharts

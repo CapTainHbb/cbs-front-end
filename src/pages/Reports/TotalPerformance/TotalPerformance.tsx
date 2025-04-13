@@ -5,16 +5,16 @@ import IndeterminateCheckbox from "../IndetermineCheckbox";
 import {useSelector} from "react-redux";
 import {CurrencyAccount} from "../../Accounting/types";
 import {t} from "i18next";
-import {currencyColumns} from "../utils";
+import {currencyColumns, loopThroughDates} from "../utils";
 import {Card, CardBody, CardHeader, Col, Container, Row} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import CustomTableContainer from "../CustomTableContainer";
-import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
+import GeneralReportExtraHeader from "../GeneralReportExtraHeader";
 import CreditorDebtorAmount from "../CreditorsAndDebtors/CreditorDebtorAmount";
 import BalanceAmount from "../BalanceAmount";
 import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
-import {loopThroughDates, totalPerformanceCurrencyCell} from "./utils";
-import ReportsTotalPerformanceCharts from "./ReportsPerformanceCharts";
+import {totalPerformanceCurrencyCell} from "./utils";
+import GeneralReportCharts from "../GeneralReportsCharts";
 
 
 interface TotalPerformanceRowType {
@@ -158,7 +158,7 @@ const TotalPerformance = () => {
                                             </CardHeader>
                                             <CardBody>
                                                 <div  dir="ltr">
-                                                    <ReportsTotalPerformanceCharts 
+                                                    <GeneralReportCharts 
                                                         datesArray={chartDatesArray}
                                                         series={chartData} 
                                                         dataColors='["--vz-success", "--vz-danger", "--vz-warning"]'

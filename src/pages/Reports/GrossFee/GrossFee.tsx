@@ -6,14 +6,13 @@ import IndeterminateCheckbox from "../IndetermineCheckbox";
 import {t} from "i18next";
 import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
 import BalanceAmount from "../BalanceAmount";
-import {currencyColumns} from "../utils";
+import {currencyColumns, loopThroughDates} from "../utils";
 import CustomTableContainer from "../CustomTableContainer";
 import {Card, CardBody, CardHeader, Col, Container, Row} from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
-import GeneralReportExtraHeader from "../IcomeCostProfit/GeneralReportExtraHeader";
-import ReportsTotalPerformanceCharts from "../TotalPerformance/ReportsPerformanceCharts";
+import GeneralReportExtraHeader from "../GeneralReportExtraHeader";
+import GeneralReportsCharts from "../GeneralReportsCharts";
 import { abs } from "mathjs";
-import { loopThroughDates } from "../TotalPerformance/utils";
 
 interface GrossFeeReportType {
     fee_type: "received-fee" | "paid-fee" | "balance";
@@ -154,7 +153,7 @@ const GrossFee = () => {
                                             </CardHeader>
                                             <CardBody>
                                                 <div  dir="ltr">
-                                                    <ReportsTotalPerformanceCharts 
+                                                    <GeneralReportsCharts 
                                                         datesArray={chartDatesArray}
                                                         series={chartData} 
                                                         dataColors='["--vz-success", "--vz-danger", "--vz-warning"]'

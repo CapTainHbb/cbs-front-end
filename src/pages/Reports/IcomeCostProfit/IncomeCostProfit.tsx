@@ -1,20 +1,19 @@
 import BreadCrumb from 'Components/Common/BreadCrumb'
 import React, {useCallback, useMemo, useState} from 'react'
 import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap'
-import GeneralReportExtraHeader from './GeneralReportExtraHeader';
+import GeneralReportExtraHeader from '../GeneralReportExtraHeader';
 import CustomTableContainer from '../CustomTableContainer';
 import { ColumnDef } from '@tanstack/react-table';
 import IndeterminateCheckbox from '../IndetermineCheckbox';
 import { t } from 'i18next';
 import BalanceAmount from '../BalanceAmount';
 import CurrencyNameAndFlag from '../CurrencyNameAndFlag';
-import { currencyColumns } from '../utils';
+import { currencyColumns, loopThroughDates } from '../utils';
 import { useSelector } from 'react-redux';
 import {getFormattedToday} from "../../../helpers/date";
 import { CurrencyAccount } from 'pages/Accounting/types';
-import ReportsTotalPerformanceCharts from '../TotalPerformance/ReportsPerformanceCharts';
+import GeneralReportCharts from '../GeneralReportsCharts';
 import { abs } from 'mathjs';
-import { loopThroughDates } from '../TotalPerformance/utils';
 
 interface IncomeCostProfitReportItemType {
     exchanged_amount: number;
@@ -160,7 +159,7 @@ const IncomeCostProfit = () => {
                                 </CardHeader>
                                 <CardBody>
                                     <div  dir="ltr">
-                                        <ReportsTotalPerformanceCharts 
+                                        <GeneralReportCharts 
                                             datesArray={chartDatesArray}
                                             series={chartData} 
                                             dataColors='["--vz-success", "--vz-danger", "--vz-warning"]'

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, Col, Label, Row} from 'reactstrap';
 import Flatpickr from "react-flatpickr";
-import {getUTCFormattedDate} from "../../../helpers/date";
+import {getUTCFormattedDate} from "../../helpers/date";
 import {t} from "i18next";
 
 interface Props {

@@ -217,7 +217,12 @@ const Navdata = () => {
                         link: "/reports-total-performance",
                         parentId: "dashboard",
                     },
-
+                    {
+                        id: "system-state",
+                        label: "System State",
+                        link: "/reports-system-state",
+                        parentId: "dashboard",
+                    }
                 ],
             },
             {
