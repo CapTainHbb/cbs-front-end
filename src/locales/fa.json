@@ -98,6 +98,8 @@
     "Currency Type": "نوع ارز",
     "Currency Name": "نام ارز",
     "Currencies List": "لیست ارزها",
+    "Customers Balance": "تراز مشتریان",
+    "Customers Balance Over Time": "تراز مشتریان در بازه زمانی",
     "Customer Statement": "صورت حساب مشتری",
     "Date": "تاریخ",
     "date": "تاریخ",
@@ -329,6 +331,7 @@
 
     "Taskboard": "تابلوی وظایف",
     "The exchange rate must be consistent with the buy and sell values.": "مقدار نرخ تبدیل باید با مقادیر خرید و فروش همخوانی داشته باشد",
+    "Total Exchanged Amount": "مقدار کلی تسعیریافته",
     "Total Performance": "عملکرد کلی",
     "Total Performance Over Time": "عملکرد کلی در بازه ی زمانی",
     "Trade Type": "نوع معامله",

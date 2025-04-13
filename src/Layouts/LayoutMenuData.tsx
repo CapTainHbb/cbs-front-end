@@ -218,9 +218,9 @@ const Navdata = () => {
                         parentId: "dashboard",
                     },
                     {
-                        id: "system-state",
-                        label: "System State",
-                        link: "/reports-system-state",
+                        id: "customers-balance",
+                        label: "Customers Balance",
+                        link: "/reports-customers-balance",
                         parentId: "dashboard",
                     }
                 ],

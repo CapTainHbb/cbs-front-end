@@ -1,7 +1,7 @@
 import BreadCrumb from 'Components/Common/BreadCrumb'
 import { t } from 'i18next'
 import React, { useCallback, useMemo, useState } from 'react'
-import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap'
+import {Button, Card, CardBody, CardHeader, Col, Container, Modal, ModalBody, ModalHeader, Row} from 'reactstrap'
 import CustomTableContainer from '../CustomTableContainer'
 import { CurrencyAccount } from 'pages/Accounting/types'
 import { ColumnDef } from '@tanstack/react-table'
@@ -14,6 +14,7 @@ import GeneralReportExtraHeader from '../GeneralReportExtraHeader'
 import { getFormattedToday } from 'helpers/date'
 import GeneralReportCharts from '../GeneralReportsCharts'
 import { abs } from 'mathjs'
+import CloseAllPositions from "./CloseAllPositions";
 
 interface SystemStateRowType {
     exchanged_amount: number;
@@ -22,7 +23,7 @@ interface SystemStateRowType {
     type: 'creditor' | 'debtor' | 'balance';
 }
 
-const SystemState = () => {
+const CustomersBalance = () => {
 
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
     const [fromDate, setFromDate] = useState<string | null>(getFormattedToday());
@@ -34,6 +35,8 @@ const SystemState = () => {
     const [itemsAreLoading, setItemsAreLoading] = useState<boolean>(false);
     const [chartData, setChartData] = useState<any>([]);
     const [chartDatesArray, setChartDatesArray] = useState<string[]>([]);
+    const [capModalIsOpen, setCapModalIsOpen] = useState<boolean>(false);
+    const [balanceCurrencyAccounts, setBalanceCurrencyAccounts] = useState<CurrencyAccount[]>([])
 
     const columns = useMemo<ColumnDef<SystemStateRowType>[]>(
         () => [
@@ -100,7 +103,7 @@ const SystemState = () => {
                 }
             ]
     
-            const assignExchangedAmontPerDate = (formattedDate: string) => {
+            const assignExchangedAmountPerDate = (formattedDate: string) => {
                 for(let i = 0; i < data.length; i++) {
                     const type = data?.[i]?.type;
                     if(type === 'creditor') {
@@ -110,6 +113,7 @@ const SystemState = () => {
                         const exchanged_amount_per_date = abs(Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.debtor || 0));
                         seriesData[1].data.push(exchanged_amount_per_date)
                     } else if(type === 'balance') {
+                        setBalanceCurrencyAccounts(data?.[i]?.currency_accounts)
                         const exchanged_amount_per_date = Number(data?.[i]?.["exchanged_amount_per_date"]?.[formattedDate]?.balance || 0);
                         seriesData[2].data.push(exchanged_amount_per_date)
                     }
@@ -118,7 +122,7 @@ const SystemState = () => {
             }
             
             
-            let dates = loopThroughDates(fromDate, toDate, assignExchangedAmontPerDate)
+            let dates = loopThroughDates(fromDate, toDate, assignExchangedAmountPerDate)
             setChartDatesArray(dates);
             setChartData(seriesData);
     
@@ -129,21 +133,42 @@ const SystemState = () => {
     <React.Fragment>
         <div className='page-content'>
             <Container fluid>
-                <BreadCrumb  title={t('System State')} pageTitle={t("Reports")}/>
+                <Modal isOpen={capModalIsOpen}
+                       toggle={() => setCapModalIsOpen(false)} backdrop={"static"}
+                       className={'modal-lg'}
+                       centered={true}>
+                    <ModalHeader className="bg-primary-subtle p-3"
+                                 toggle={() => setCapModalIsOpen(false)}>
+                        {t("CAP (Close All Positions)")}
+                    </ModalHeader>
+                    <ModalBody>
+                        <CloseAllPositions currencyAccounts={balanceCurrencyAccounts} />
+                    </ModalBody>
+                </Modal>
+                <BreadCrumb  title={t('Customers Balance')} pageTitle={t("Reports")}/>
                 <Col lg={12}>
                     <Card>
                         <CardHeader>
-                            <GeneralReportExtraHeader
-                                        fromDate={fromDate} onChangeFromDate={setFromDate}
-                                        toDate={toDate} onChangeToDate={setToDate}
-                                        itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
-                                        itemsAreLoading={itemsAreLoading}
-                                    />
+                            <Row className={'gap-1'}>
+                                <Col md={9}>
+                                    <GeneralReportExtraHeader
+                                                fromDate={fromDate} onChangeFromDate={setFromDate}
+                                                toDate={toDate} onChangeToDate={setToDate}
+                                                itemsChanged={itemsChanged} setItemsChanged={setItemsChanged}
+                                                itemsAreLoading={itemsAreLoading}
+                                            />
+                                </Col>
+                                <Col md={2}>
+                                    <Button color={'primary'} onClick={() => setCapModalIsOpen(true)}>
+                                        {t("CAP (Close All Positions)")}
+                                    </Button>
+                                </Col>
+                            </Row>
                             <Row>
                                 <Col xxl={12}>
                                     <Card>
                                         <CardHeader>
-                                            <h4 className="card-title mb-0 flex-grow-1">{t("Total Performance Over Time")}</h4>
+                                            <h4 className="card-title mb-0 flex-grow-1">{t("Customers Balance Over Time")}</h4>
                                         </CardHeader>
                                         <CardBody>
                                             <div dir='ltr'>
@@ -180,4 +205,4 @@ const SystemState = () => {
   )
 }
 
-export default SystemState
+export default CustomersBalance

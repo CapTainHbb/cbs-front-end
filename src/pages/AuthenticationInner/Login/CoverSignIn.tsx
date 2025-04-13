@@ -1,4 +1,4 @@
-import React, {useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {Card, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Spinner, FormGroup} from 'reactstrap';
 
@@ -27,6 +27,11 @@ const CoverSignIn = () => {
         }
     }, [])
 
+    useEffect(() => {
+        const rememberLoginData = localStorage.getItem('rememberLoginData');
+        setRememberMe(rememberLoginData === "true")
+    }, [])
+
     const validation: any = useFormik({
         // enableReinitialize : use this flag when initial values needs to be changed
         enableReinitialize: true,
@@ -49,6 +54,8 @@ const CoverSignIn = () => {
                 localStorage.removeItem('rememberedUsername');
                 localStorage.removeItem('rememberedPassword');
             }
+            localStorage.setItem('rememberLoginData', String(rememberMe));
+
             dispatch(loginUser(values));
             setLoader(true)
             setTimeout(() => {setLoader(false)}, 5000)

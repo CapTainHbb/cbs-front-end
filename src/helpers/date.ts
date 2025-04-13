@@ -26,7 +26,7 @@ export const getUTCFormattedTodayDateTime = (): any => {
 }
 
 export const handleValidDate = (date: any) => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
+    const date1 = moment(new Date(date)).format("DD/MM/Y");
     return date1;
 };
 

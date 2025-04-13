@@ -21,12 +21,12 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
     return (
     <React.Fragment>
       <Row className={'align-items-center gap-1'}>
-        <Col lg={3}>
+        <Col md={4}>
             <Row className={'align-items-center'}>
-                <Col lg={2} >
+                <Col md={2} >
                     <Label className="form-label mb-0">{t("From Date")}</Label>
                 </Col>
-                <Col lg={8} >
+                <Col md={5} >
                     <Flatpickr
                       className="form-control"
                       onChange={(e: any) => {onChangeFromDate(getUTCFormattedDate(e?.[0]))}}
@@ -41,12 +41,12 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
             </Row>
         </Col>
 
-        <Col lg={3}>
+        <Col md={4}>
             <Row className={'align-items-center'}>
-                <Col lg={2}>
+                <Col md={2}>
                     <Label className="form-label mb-0">{t("To Date")}</Label>
                 </Col>
-                <Col lg={8}>
+                <Col md={5}>
                     <Flatpickr
                       className="form-control"
                       onChange={(e: any) => onChangeToDate(getUTCFormattedDate(e?.[0]))}
@@ -60,7 +60,7 @@ const GeneralReportExtraHeader: React.FC<Props> = ({ fromDate, onChangeFromDate,
                 </Col>
             </Row>
         </Col>
-        <Col lg={2}>
+        <Col md={2}>
             <Button type={'button'} color={'primary'}
                     onClick={(e: any) => setItemsChanged(!itemsChanged)}
                     disabled={itemsAreLoading}

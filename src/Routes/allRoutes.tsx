@@ -52,7 +52,7 @@ import ManageCompanyProfile from "../pages/ManageCompanyProfile/ManageCompanyPro
 import GrossFee from "../pages/Reports/GrossFee/GrossFee";
 import TotalPerformance from "../pages/Reports/TotalPerformance/TotalPerformance";
 import ManageBackup from "pages/ManageBackup/ManageBackup";
-import SystemState from "pages/Reports/SystemState/SystemState";
+import CustomersBalance from "pages/Reports/CustomersBalance/CustomersBalance";
 
 
 
@@ -69,7 +69,7 @@ const authProtectedRoutes = [
   { path: "/reports-income-cost-profit", component: <IncomeCostProfit />, needsAuthorization: true},
   { path: "/reports-gross-fee", component: <GrossFee />, needsAuthorization: true },
   { path: "/reports-total-performance", component: <TotalPerformance />, needsAuthorization: true },
-  { path: "/reports-system-state", component: <SystemState />, needsAuthorization: true },
+  { path: "/reports-customers-balance", component: <CustomersBalance />, needsAuthorization: true },
 
   // accounting
   { path: '/accounting-billing', component: <Billing />},

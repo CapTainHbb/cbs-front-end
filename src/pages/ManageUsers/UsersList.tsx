@@ -202,7 +202,6 @@ const UsersList = () => {
   const onClickDelete = useCallback(async (user: UserProfile) => {
       setActiveUserProfile(user);
       setDeleteModal(true);
-      setItemsChanged(!itemsChanged);
   }, [itemsChanged]);
 
   const onClickAddUser = useCallback(async () => {
