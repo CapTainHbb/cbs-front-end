@@ -14,6 +14,7 @@ export const roleOptions = [
     {label: t("Level1Employee"), value: 'level_1_employee'},
     {label: t("Level2Employee"), value: 'Level_2_employee'},
     {label: t("Level3Employee"), value: 'level_3_employee'},
+    {label: t("Customer"), value: 'customer'},
 ]
 
 export interface User {
