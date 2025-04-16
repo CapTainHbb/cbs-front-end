@@ -5,7 +5,6 @@ import SelectCurrency from "../../Reports/SelectCurrency/SelectCurrency";
 import {Currency} from "../../Reports/utils";
 import SelectTransactionType from "../SelectTransactionType";
 import {t} from "i18next";
-import FinancialAccountViewDetail from "../../ManageFinancialAccounts/FinancialAccountViewDetail";
 import SelectFinancialAccount from "../SelectFinancialAccount";
 import DownloadBillingPdf from "./exports/DownloadBillingPdf";
 import {useBillingFilters} from "./hooks/useBillingFilters";
@@ -13,16 +12,20 @@ import Flatpickr from "react-flatpickr";
 import {getUTCFormattedDate} from "../../../helpers/date";
 import DownloadBillingXlsx from "./exports/DownloadBillingXlsx";
 import Select from "react-select";
+import FinancialAccountViewDetail from "../../ManageFinancialAccounts/FinancialAccountViewDetail";
 
 
 interface Props {
     table: any;
     itemsChanged?: boolean;
     setItemsChanged: any;
+    hasFinancialAccount: boolean;
+    hasFinancialAccountViewDetail: boolean;
 }
 
 const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
-                                             itemsChanged}) => {
+                                             itemsChanged, hasFinancialAccount,
+                                                 hasFinancialAccountViewDetail}) => {
 
     const { filters, updateFilter } = useBillingFilters();
     const [pageSize, setPageSize] = useState<number>(table?.getState().pagination.pageSize);
@@ -43,15 +46,15 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
 
     return (
         <Row>
-            <Col md={9} sm={12}>
+            <Col md={hasFinancialAccountViewDetail? 9: 12} sm={12}>
                 <Row>
-                    <Col md={9} sm={12}>
+                    <Col md={hasFinancialAccount? 9: 10} sm={12}>
                         <Row>
-                            <Col md={6} sm={12}>
+                            {hasFinancialAccount && <Col md={6} sm={12}>
                                 <Label>{t("Financial Account")}</Label>
                                 <SelectFinancialAccount onSelectFinancialAccount={onChangeFinancialAccount}
                                                         selectedFinancialAccountId={filters?.financial_account} />
-                            </Col>
+                            </Col>}
                             <Col md={3} sm={12}>
                                 <Label>{t("Currency Type")}</Label>
                                 <SelectCurrency currencyId={filters?.currency}
@@ -64,8 +67,6 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     onTransactionTypeChange={(e: any) => updateFilter('transaction_type', e)}
                                 />
                             </Col>
-                        </Row>
-                        <Row>
                             <Col md={2} sm={12}>
                                 <Label>{t("From Date")}</Label>
                                 <Flatpickr
@@ -90,7 +91,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     value={filters?.date_to}
                                 />
                             </Col>
-                            <Col md={3} sm={12}>
+                            <Col md={hasFinancialAccount? 3: 2} sm={12}>
                                 <Label>{t("Number of Last Transactions Per Page")}</Label>
                                 <Select
                                     options={pageSizeOptions}
@@ -104,7 +105,7 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                         </Row>
                     </Col>
 
-                    <Col md={3} sm={12}>
+                    <Col md={hasFinancialAccount? 3: 2} sm={12}>
                         <Row>
                             <Row>
                                 <Button color='primary' className={'w-100'}
@@ -112,20 +113,20 @@ const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
                                     <i className='ri-refresh-fill'/> {t("Refresh")}
                                 </Button>
                             </Row>
-                            <Row>
+                            {hasFinancialAccount &&<Row>
                                 <DownloadBillingPdf/>
-                            </Row>
-                            <Row>
+                            </Row>}
+                            {hasFinancialAccount && <Row>
                                 <DownloadBillingXlsx/>
-                            </Row>
+                            </Row>}
                         </Row>
                     </Col>
                 </Row>
             </Col>
 
-            <Col style={{maxHeight: "250px", overflowY: "auto"}} md={3} sm={12}>
+            {hasFinancialAccountViewDetail && <Col style={{maxHeight: "250px", overflowY: "auto"}} md={3} sm={12}>
                 <FinancialAccountViewDetail financialAccountId={filters?.financial_account} forceUpdate={itemsChanged}/>
-            </Col>
+            </Col>}
         </Row>
 
     );

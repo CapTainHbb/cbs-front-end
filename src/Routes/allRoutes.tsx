@@ -53,6 +53,7 @@ import GrossFee from "../pages/Reports/GrossFee/GrossFee";
 import TotalPerformance from "../pages/Reports/TotalPerformance/TotalPerformance";
 import ManageBackup from "pages/ManageBackup/ManageBackup";
 import CustomersBalance from "pages/Reports/CustomersBalance/CustomersBalance";
+import AllTransactions from "../pages/Accounting/AllTransactions/AllTransactions";
 
 
 
@@ -73,6 +74,7 @@ const authProtectedRoutes = [
 
   // accounting
   { path: '/accounting-billing', component: <Billing />},
+  { path: '/accounting-all-transactions', component: <AllTransactions />},
   { path: '/accounting-general-ledger', component: <GeneralLedger />},
 
   // manage users

@@ -10,6 +10,7 @@ import Select from "react-select";
 import UsersActivityHistoryExtraHeader from "./UsersActivityHistoryExtraHeader";
 import {useSelector} from "react-redux";
 import {User, UserProfile} from "./types";
+import {ToastContainer} from "react-toastify";
 
 export const methodTypes =  [
     {label: t('LOGOUT'), value: 'LOGOUT'},
@@ -207,6 +208,7 @@ const UsersActivityHistory = () => {
 
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <div className='page-content'>
                 <Container fluid>
                     <BreadCrumb title={t("Users Activity History")}

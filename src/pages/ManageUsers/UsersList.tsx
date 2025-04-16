@@ -55,8 +55,6 @@ const UsersList = () => {
     }
   }, [modal]);
 
-  
-
   const handleDeleteUserProfile = useCallback(async (id: number | undefined) => {
       axiosInstance.delete(`/users/${id}/`).then(response => {
           toast.success(t('UserDeleteSuccess'));
@@ -74,14 +72,10 @@ const UsersList = () => {
       toggle();
   }, [toggle]);
 
-    
-
   const onClickResetPassword = useCallback(async (user: UserProfile) => {
       setActiveUserProfile(user);
       setResetPasswordModal(true);
   }, [])
-
-  
 
   const onClickDelete = useCallback(async (user: UserProfile) => {
       setActiveUserProfile(user);
@@ -95,7 +89,6 @@ const UsersList = () => {
       setModal(true);
   }, []);
 
-  
 
   // SideBar Contact Deatail
   const [info, setInfo] = useState<UserProfile | null>(null);
@@ -176,7 +169,7 @@ const UsersList = () => {
             header: t("Action"),
             cell: (cellProps: any) => {
               return (
-                <ul className="list-inline hstack gap-2 mb-0">
+                <ul className="list-inline hstack gap-2 m-1">
                   <li className="list-inline-item">
                     <UncontrolledDropdown>
                       <DropdownToggle

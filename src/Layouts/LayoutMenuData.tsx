@@ -34,6 +34,7 @@ const Navdata = () => {
 
     // Accounting
     const [isBilling, setIsBilling] = useState<boolean>(false);
+    const [isAllTransactions, setIsAllTransactions] = useState<boolean>(false);
     const [isGeneralLedger, setIsGeneralLedger] = useState<boolean>(false);
     const [isCreateNewDocument, setIsCreateNewDocument] = useState<boolean>(false);
     const [directCurrencyTransferModal, setDirectCurrencyTransferModal] = useState<boolean>(false);
@@ -435,6 +436,19 @@ const Navdata = () => {
                      updateIconSidebar(e);
                  },
                  stateVariables: isBilling,
+             },
+             {
+                 id: "all-transactions",
+                 label: "All Transactions",
+                 icon: "ri-file-paper-2-fill",
+                 link: '/accounting-all-transactions',
+                 click: function (e: any) {
+                     e.preventDefault();
+                     setIsAllTransactions(!isAllTransactions);
+                     setIscurrentState('All Transactions');
+                     updateIconSidebar(e);
+                 },
+                 stateVariables: isAllTransactions,
              },
             {
                  id: "create-new-document",

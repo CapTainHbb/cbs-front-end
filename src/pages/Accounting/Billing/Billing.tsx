@@ -20,9 +20,18 @@ import {useBillingFilters} from "./hooks/useBillingFilters";
 import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpers/date";
 import DraggableTableFooter from "./DraggableTableFooter";
 import {DebouncedInput} from "../../../Components/Common/TableContainerReactTable";
+import {ToastContainer} from "react-toastify";
 
+interface Props {
+    loadItemsApi?: string;
+    hasFinancialAccount?: boolean;
+    hasFinancialAccountViewDetail?: boolean;
+    pageName?: string;
+}
 
-const Billing = () => {
+const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
+                                      hasFinancialAccountViewDetail = true,
+                                      hasFinancialAccount = true, pageName = t("Billing") }) => {
     const currencies = useSelector((state: any) => state.InitialData.currencies);
     const [table, setTable] = useState<any>(undefined);
     const [itemsChanged, setItemsChanged] = useState<boolean>(false);
@@ -390,6 +399,8 @@ const Billing = () => {
         getTransactionTypeCell, t])
 
     const preProcessData = useCallback((parties: Party[]): (Party | { headerContent: any; isHeader: true })[] => {
+        if(!parties) return []
+
         const processedList: (Party | { headerContent: any; isHeader: true })[] = [];
         let lastDate: string | null = null;
     
@@ -409,13 +420,14 @@ const Billing = () => {
     }, [selectedRows]);
 
 
-    document.title = "Billing | ZALEX - Financial Software";
+    document.title = `${pageName} | ZALEX - Financial Software`;
 
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <div className='page-content'>
                 <Container fluid>
-                    <BreadCrumb title={t("Billing")} pageTitle={t("Billing")} />
+                    <BreadCrumb title={pageName} pageTitle={pageName} />
                     <Col lg={12}>
                         <Card key="direct-currency-transfer-card">
                             <CardHeader>
@@ -423,12 +435,14 @@ const Billing = () => {
                                     table={table}
                                     itemsChanged={itemsChanged}
                                     setItemsChanged={setItemsChanged}
+                                    hasFinancialAccount={hasFinancialAccount}
+                                    hasFinancialAccountViewDetail={hasFinancialAccountViewDetail}
                                 />
                             </CardHeader>
                             <CardBody>
                                 <React.Fragment >
                                     <CustomTableContainer
-                                        loadItemsApi='/transactions/'
+                                        loadItemsApi={loadItemsApi}
                                         columns={(columns || [])}
                                         filters={filters}
                                         itemsChanged={itemsChanged}
