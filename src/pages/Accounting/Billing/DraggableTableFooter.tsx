@@ -105,17 +105,17 @@ const DraggableTableFooter: React.FC<Props> = ({ updateRowColorApi,
                         <i className="ri-close-circle-fill"></i>
                     </Button>
                 </Col>
-                <Col md={3} sm={12}>
+                <Col md={updateRowColorApi? 3: 4} sm={12}>
                     <Button type={'button'} color={'primary'} className={'w-xl'} >
                         {selectedRows?.length} {t("Rows Selected")}
                     </Button>
                 </Col>
-                <Col md={3} sm={12}>
+                <Col md={updateRowColorApi? 3: 4} sm={12}>
                     <SumOfSelectedRows selectedRows={selectedRows} />
                 </Col>
-                <Col md={4} sm={12}>
+                {updateRowColorApi && <Col md={4} sm={12}>
                     <ColorPicker onColorSelected={handleColorSelected} />
-                </Col>
+                </Col>}
             </Row>
         </div>,
         document.body

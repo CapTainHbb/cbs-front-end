@@ -19,13 +19,13 @@ interface Props {
     table: any;
     itemsChanged?: boolean;
     setItemsChanged: any;
-    hasFinancialAccount: boolean;
-    hasFinancialAccountViewDetail: boolean;
+    hasFinancialAccount?: boolean;
+    hasFinancialAccountViewDetail?: boolean;
 }
 
 const BillingExtraHeader: React.FC<Props> = ({ table, setItemsChanged,
-                                             itemsChanged, hasFinancialAccount,
-                                                 hasFinancialAccountViewDetail}) => {
+                                             itemsChanged, hasFinancialAccount = true,
+                                                 hasFinancialAccountViewDetail = true}) => {
 
     const { filters, updateFilter } = useBillingFilters();
     const [pageSize, setPageSize] = useState<number>(table?.getState().pagination.pageSize);

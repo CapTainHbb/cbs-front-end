@@ -21,6 +21,7 @@ import {createLocalizedDate, getLocalizedFormattedDateTime} from "../../../helpe
 import DraggableTableFooter from "./DraggableTableFooter";
 import {DebouncedInput} from "../../../Components/Common/TableContainerReactTable";
 import {ToastContainer} from "react-toastify";
+import { getTransactionTypeCell, groupPartiesByDate } from './utils';
 
 interface Props {
     loadItemsApi?: string;
@@ -70,32 +71,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
         return null;
     }, [])
 
-    const getTransactionTypeCell = useCallback((info: any) => {
-        const { document_type, transaction_type } = info.row.original;
-
-        if (document_type !== "main") {
-            if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span className={'badge bg-success-subtle text-success fs-11'}>{t("Received Fee")}</span>;
-            } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span className={'badge bg-danger-subtle text-danger fs-11'}>{t("Paid Fee")}</span>;
-            }
-        } else {
-            switch (transaction_type) {
-                case 'direct-currency-transfer':
-                    return <p className="badge bg-primary-subtle text-primary fs-11">{t(String(info.getValue()))}</p>;
-                case 'sell-cash':
-                    return <p className="badge bg-secondary-subtle text-secondary fs-11">{t(String(info.getValue()))}</p>;
-                case 'buy-cash':
-                    return <p className="badge bg-warning-subtle text-warning fs-11">{t(String(info.getValue()))}</p>;
-                case 'local-payments':
-                    return <p className="badge bg-info-subtle text-info fs-11">{t(String(info.getValue()))}</p>;
-                default:
-                    return null;
-            }
-        }
-
-        return null;
-    }, [t]);
+    
 
     const [activeTransactionData, setActiveTransactionData] = useState<any>(undefined)
     const [isDirectCurrencyTransferModalOpen, setIsDirectCurrencyTransferModalOpen] = useState<boolean>(false);
@@ -398,23 +374,6 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
         filters.transaction_id_to, filters?.transaction_type, filters.user_specified_id,
         getTransactionTypeCell, t])
 
-    const preProcessData = useCallback((parties: Party[]): (Party | { headerContent: any; isHeader: true })[] => {
-        if(!parties) return []
-
-        const processedList: (Party | { headerContent: any; isHeader: true })[] = [];
-        let lastDate: string | null = null;
-    
-        for (const party of parties) {
-            if (party.date !== lastDate) {
-                processedList.push({ headerContent: (new Date(party.date)).toLocaleDateString(), isHeader: true }); // Insert header
-                lastDate = party.date;
-            }
-            processedList.push(party); // Insert actual item
-        }
-
-        return processedList;
-    }, [])
-
     useEffect(() => {
         setIsFooterComponentOpen(selectedRows?.length !== 0)
     }, [selectedRows]);
@@ -449,7 +408,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                                         setItemsChanged={setItemsChanged}
                                         onDoubleClickRow={handleEditTransaction}
                                         setTable={setTable}
-                                        preProcessData={preProcessData}
+                                        preProcessData={groupPartiesByDate}
                                         onSelectedRowsChange={(rows: any) => setSelectedRows(rows)}
                                     />
                                     <DirectCurrencyTransfer isOpen={isDirectCurrencyTransferModalOpen}

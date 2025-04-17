@@ -98,7 +98,7 @@ const DownloadBillingPDF = () => {
         setIsGenerating(true);
         const generate = async () => {
             try {
-                const response = await axiosInstance.post('/transactions/', {
+                const response = await axiosInstance.post('/transactions/customer-billing/', {
                     filters: filters,
                     make_paginated: false,
                     pagination: {}

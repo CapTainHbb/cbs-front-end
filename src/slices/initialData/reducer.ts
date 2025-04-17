@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import { defineAbilitiesFor } from "helpers/casl_utils";
 
 export interface UserProfileData {
     id: number;
@@ -54,6 +55,7 @@ export const initialState = {
     users: [],
     companyImage: undefined,
     initialDataIsLoading: true,
+    abilityRules: undefined,
 }
 
 const InitialDataSlice = createSlice({
@@ -62,6 +64,8 @@ const InitialDataSlice = createSlice({
     reducers: {
         setUserProfileData(state, action) {
             state.userProfileData = action.payload;
+            // @ts-ignore
+            state.abilityRules = defineAbilitiesFor(action.payload.user);
         },
         setCurrencies(state, action) {
             state.currencies = action.payload;

@@ -110,6 +110,10 @@ export const defaultParty : Party = {
     currency: undefined,
 }
 
+export type CustomerParty = Pick<Party, 'id' | 'financial_account' | 
+                                'type' | 'currency' | 'date' | 'time' | 'transaction_type' | 'balance' |
+                                'is_buy' | 'amount' | 'transaction'>;
+
 export interface Transaction {
     id?: number;
     transaction_type: string;

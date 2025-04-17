@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Routes, Route } from "react-router-dom";
 
 //Layouts
@@ -42,7 +42,7 @@ const Index = () => {
     if (isAuthenticated === null || initialDataIsLoading) {
         return <Spinners />;
     }
-
+    
     return (
         <React.Fragment>
             <Routes>

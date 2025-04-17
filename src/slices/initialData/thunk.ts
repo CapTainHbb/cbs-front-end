@@ -43,14 +43,4 @@ export const fetchInitialData = () => async (dispatch: any) => {
     dispatch(setLocalCurrency(localCurrency.data));
     dispatch(setUsers(users.data.data));
     dispatch(setInitialDataIsLoading(false));
-
-    // if(!process.env.REACT_APP_BACKEND_RESOURCE_API_URL) {
-    //     return;
-    // }
-
-    // if(companyProfile?.data?.profile_photo) {
-    //     downloadBlobImage(process.env.REACT_APP_BACKEND_RESOURCE_API_URL + companyProfile?.data?.profile_photo)
-    //         .then((imageData: any) => {setCompanyImage(imageData)})
-    //         .catch(error => console.error(error));
-    // }
 };
