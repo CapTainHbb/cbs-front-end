@@ -18,7 +18,7 @@ import CurrencyNameAndFlag from "../Reports/CurrencyNameAndFlag";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import axiosInstance from "../../helpers/axios_instance";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import ReferenceCurrencyModal from "./ReferenceCurrencyModal";
@@ -117,7 +117,7 @@ const ManageCurrencies = () => {
             setItemsChanged(!itemsChanged);
             setDeleteModal(false);
         }).catch(error => {
-            toast.error(t("Currency Delete Failed"))
+            toast.error(normalizeDjangoError(error))
         })
     }, [setItemsChanged, itemsChanged]);
 
@@ -185,6 +185,7 @@ const ManageCurrencies = () => {
     return (
         <React.Fragment>
             <div className='page-content'>
+                <ToastContainer closeButton={false} />
                 <DeleteModal
                     show={deleteModal}
                     onDeleteClick={() => handleDeleteCurrency(activeCurrency?.id)}

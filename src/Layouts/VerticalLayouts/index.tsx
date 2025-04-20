@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, {useEffect, useCallback, useMemo} from 'react';
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Collapse } from 'reactstrap';
@@ -9,6 +9,8 @@ import { withTranslation } from "react-i18next";
 import withRouter from "../../Components/Common/withRouter";
 import { useSelector } from "react-redux";
 import { createSelector } from 'reselect';
+import {createMongoAbility} from "@casl/ability";
+import {sub} from "zrender/lib/core/vector";
 
 const VerticalLayout = (props : any) => {
     const navData = navdata().props.children;
@@ -146,10 +148,17 @@ const VerticalLayout = (props : any) => {
         });
     };
 
+    const abilityRules = useSelector((state: any) => state.InitialData.abilityRules);
+
+    const ability = useMemo(() => {
+        return createMongoAbility(abilityRules);
+    }, [abilityRules]);
+
     return (
         <React.Fragment>
             {/* menu Items */}
-            {(navData || []).map((item : any, key : number) => {
+            {(navData || []).filter((item: any) => ability.can(item?.action, item?.subject) || item["isHeader"])
+                .map((item : any, key : number) => {
                 return (
                     <React.Fragment key={key}>
                         {/* Main Header */}
@@ -176,7 +185,7 @@ const VerticalLayout = (props : any) => {
                                             id="sidebarApps">
                                             <ul className="nav nav-sm flex-column test">
                                                 {/* subItms  */}
-                                                {item.subItems && ((item.subItems || []).map((subItem : any, key : number) => (
+                                                {item.subItems && ((item.subItems || []).filter((item: any) => ability.can(item?.action, item?.subject)).map((subItem : any, key : number) => (
                                                     <React.Fragment key={key}>
                                                         {!subItem.isChildItem ? (
                                                             <li className="nav-item">

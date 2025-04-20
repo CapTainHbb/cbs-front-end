@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {t} from "i18next";
 import {CurrencyAccount} from "../../Accounting/types";
-import {Card, CardBody, Col, Input, Row} from "reactstrap";
+import {Card, Col, Input, Row} from "reactstrap";
 import CurrencyNameAndFlag from "../CurrencyNameAndFlag";
 import BalanceAmount from "../BalanceAmount";
 import {customFormatNumber, removeNonNumberChars} from "../../Accounting/utils";

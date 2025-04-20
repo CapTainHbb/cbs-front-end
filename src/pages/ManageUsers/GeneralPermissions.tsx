@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Card, CardBody, CardHeader, Col, Input, Label, Row} from "reactstrap";
 import {t} from "i18next";
 import {Permission} from "./types";
@@ -35,18 +35,40 @@ const GeneralPermissions: React.FC<Props> = ({ activeUserPermissions, setActiveU
     }, [permissions]);
 
     // Handle checkbox toggle
-    const handlePermissionToggle = (permissionId: number) => {
+    const handlePermissionToggle = useCallback((permissionId: number) => {
         setActiveUserPermissions((prev: any) =>
             prev.includes(permissionId)
                 ? prev.filter((id: number) => id !== permissionId)  // Remove if already selected
                 : [...prev, permissionId]                // Add if not selected
         );
-    };
+    }, [setActiveUserPermissions]);
+
+    const handleCheckAllPermissions = useCallback((e: any) => {
+        if(e.target.checked) {
+            setActiveUserPermissions([...permissions.map((perm) => perm.id)]);
+        } else {
+            setActiveUserPermissions([]);
+        }
+    }, [setActiveUserPermissions, permissions])
 
     return (
         <React.Fragment>
             <Card>
                 <CardBody style={{maxHeight: "300px", overflowY: "scroll", display: "block"}}>
+                    <Row>
+                        <Col md={12} className="mb-3 bg-body-tertiary">
+                            <Row className="ml-3 align-items-center">
+                                <Col xs="auto">
+                                    <Input
+                                        type="checkbox"
+                                        checked={activeUserPermissions?.length === permissions?.length}
+                                        onChange={handleCheckAllPermissions}
+                                    />
+                                </Col>
+                                <Col>{t("All")}</Col>
+                            </Row>
+                        </Col>
+                    </Row>
                     <Row>
                         {Object.entries(groupedPermissions).map(([model, perms]) => (
                             <Col md={12} key={model} className="mb-3 bg-body-tertiary">

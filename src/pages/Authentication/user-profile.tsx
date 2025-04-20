@@ -35,8 +35,6 @@ const UserProfile = () => {
 
   const [userName, setUserName] = useState("Admin");
 
-
-
   const selectLayoutState = (state: any) => state.Profile;
   const userprofileData = createSelector(
     selectLayoutState,

@@ -32,6 +32,7 @@ import ResetPasswordModal from "./ResetPasswordModal";
 import {handleValidDate, handleValidTime} from "../../helpers/date";
 import {UserProfile} from "./types";
 import UserProfileFormModal from './UserProfileForm';
+import {normalizeDjangoError} from "../../helpers/error";
 
 
 
@@ -61,7 +62,7 @@ const UsersList = () => {
           setItemsChanged(!itemsChanged);
           setDeleteModal(false);
       }).catch(error => {
-          toast.error(t("UserDeleteFailed"))
+          toast.error(normalizeDjangoError(error))
       })
     }, [setItemsChanged, itemsChanged]);
 

@@ -8,7 +8,8 @@ import {Currency} from "../Reports/utils";
 import SelectCurrency from "../Reports/SelectCurrency/SelectCurrency";
 import axiosInstance from "../../helpers/axios_instance";
 import {setReferenceCurrency} from "../../slices/initialData/reducer";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import {normalizeDjangoError} from "../../helpers/error";
 
 interface Props {
     show ?: boolean;
@@ -40,7 +41,7 @@ const ReferenceCurrencyModal: React.FC<Props> = ({ show, onCloseClick }) => {
                     toast.success(t("Reference currency was updated successfully"));
                     dispatch(setReferenceCurrency(response.data))
                 })
-                .catch(error => toast.error(t("Set reference currency failed")));
+                .catch(error => toast.error(normalizeDjangoError(error)));
         }
     });
 

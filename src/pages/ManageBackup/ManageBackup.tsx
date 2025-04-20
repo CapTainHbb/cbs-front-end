@@ -19,6 +19,7 @@ import axiosInstance from "../../helpers/axios_instance";
 import {toast} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
 import RectLoader from "../Reports/RectLoader";
+import {nor} from "@ucast/js";
 
 const ManageBackup = () => {
 
@@ -34,7 +35,7 @@ const ManageBackup = () => {
             .then(response => {
                 setBackupList(response.data);
             })
-            .catch(error => toast.error(error))
+            .catch(error => toast.error(normalizeDjangoError(error)))
             .finally(() => {
                 setBackupListIsLoading(false);
             })
@@ -60,7 +61,7 @@ const ManageBackup = () => {
         setIsMakingBackup(true);
         axiosInstance.post(`/backups/trigger/`, {})
             .then(response => {toast.success(t("Backup created successfully."))})
-            .catch(error => toast.error(error))
+            .catch(error => toast.error(normalizeDjangoError(error)))
             .finally(() => {
                 setIsMakingBackup(false);
             })

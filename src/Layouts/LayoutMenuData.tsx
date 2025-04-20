@@ -22,13 +22,6 @@ const Navdata = () => {
     const [isMaps, setIsMaps] = useState<boolean>(false);
     const [isMultiLevel, setIsMultiLevel] = useState<boolean>(false);
 
-
-    // Apps
-    const [isEmail, setEmail] = useState<boolean>(false);
-    const [isSubEmail, setSubEmail] = useState<boolean>(false);
-    const [isTasks, setIsTasks] = useState<boolean>(false);
-    const [isInvoices, setIsInvoices] = useState<boolean>(false);
-
     // Reports
     const [isReports, setIsReports] = useState<boolean>(false);
 
@@ -50,9 +43,7 @@ const Navdata = () => {
     const [isManageBackup, setIsManageBackup] = useState<boolean>(false);
 
     // Pages
-    const [isProfile, setIsProfile] = useState<boolean>(false);
     const [isLanding, setIsLanding] = useState<boolean>(false);
-    const [isBlog, setIsBlog] = useState<boolean>(false);
 
 
     const [iscurrentState, setIscurrentState] = useState('Dashboard');
@@ -139,49 +130,11 @@ const Navdata = () => {
         isLanding,
     ]);
 
-    const role = useSelector((state: any) => state.InitialData.userProfileData.role)
-    const isAuthorized = useMemo(() => {
-        return role === 'admin' || role === 'manager';
-    }, [role])
-
-    const authorizedMenuItems =
+    const menuItems: any =
          [
             {
-                label: t("Menu"),
+                label: t("Reports"),
                 isHeader: true,
-            },
-            {
-                id: "dashboard",
-                label: "Dashboards",
-                icon: "ri-dashboard-2-line",
-                link: "/#",
-                stateVariables: isDashboard,
-                click: function (e: any) {
-                    e.preventDefault();
-                    setIsDashboard(!isDashboard);
-                    setIscurrentState('Dashboard');
-                    updateIconSidebar(e);
-                },
-                subItems: [
-                    {
-                        id: "analytics",
-                        label: "Analytics",
-                        link: "/dashboard-analytics",
-                        parentId: "dashboard",
-                    },
-                    {
-                        id: "crm",
-                        label: "CRM",
-                        link: "/dashboard-crm",
-                        parentId: "dashboard",
-                    },
-                    {
-                        id: "ecommerce",
-                        label: "Ecommerce",
-                        link: "/dashboard",
-                        parentId: "dashboard",
-                    },
-                ],
             },
             {
                 id: "reports",
@@ -194,36 +147,48 @@ const Navdata = () => {
                     setIscurrentState('Reports');
                     updateIconSidebar(e);
                 },
+                action: "view",
+                subject: "reports",
                 subItems: [
                     {
                         id: "creditors-and-debtors",
                         label: "Creditors And Debtors",
                         link: "/reports-creditors-and-debtors",
                         parentId: "dashboard",
+                        action: "view",
+                        subject: "creditorsanddebtors",
                     },
                     {
                         id: "income-cost-profit",
                         label: "Income Cost And Profit",
                         link: "/reports-income-cost-profit",
                         parentId: "dashboard",
+                        action: "view",
+                        subject: "incomecostprofit"
                     },
                     {
                         id: "gross-fee",
                         label: "Gross Fee",
                         link: "/reports-gross-fee",
                         parentId: "dashboard",
+                        action: "view",
+                        subject: "grossfee"
                     },
                     {
                         id: "total-performance",
                         label: "Total Performance",
                         link: "/reports-total-performance",
                         parentId: "dashboard",
+                        action: "view",
+                        subject: "totalperformance"
                     },
                     {
                         id: "customers-balance",
                         label: "Customers Balance",
                         link: "/reports-customers-balance",
                         parentId: "dashboard",
+                        action: "view",
+                        subject: "systemstate"
                     }
                 ],
             },
@@ -242,18 +207,24 @@ const Navdata = () => {
                     updateIconSidebar(e);
                 },
                 stateVariables: isManageUsers,
+                action: "view",
+                subject: "manageusers",
                 subItems: [
                     {
                         id: "user-activity-history",
                         label: "Users Activity History",
                         link: "/manage-users-user-activity-history",
                         parentId: "manage-users",
+                        action: "view",
+                        subject: "useractivityhistory"
                     },
                     {
                         id: "users-list",
                         label: "Users List",
                         link: "/manage-users-users-list",
                         parentId: "manage-users",
+                        action: "view",
+                        subject: "userslist"
                     },
                 ]
             },
@@ -269,6 +240,8 @@ const Navdata = () => {
                     updateIconSidebar(e);
                 },
                 stateVariables: isManageCurrencies,
+                action: "view",
+                subject: "managecurrencies",
             },
             {
                 id: "manage-financial-accounts",
@@ -282,6 +255,8 @@ const Navdata = () => {
                     updateIconSidebar(e);
                 },
                 stateVariables: isManageFinancialAccounts,
+                action: "view",
+                subject: "managefinancialaccounts"
             },
             {
                 id: "manage-company-profile",
@@ -295,6 +270,8 @@ const Navdata = () => {
                     updateIconSidebar(e);
                 },
                 stateVariables: isManageCompanyProfile,
+                action: "view",
+                subject: "managecompanyprofile",
             },
             {
                 id: "manage-backup",
@@ -308,124 +285,14 @@ const Navdata = () => {
                     updateIconSidebar(e);
                 },
                 stateVariables: isManageBackup,
-            }
-        ]
-
-    const unAuthorizedMenuItems =
-         [
-            // {
-            //     label: t("Apps"),
-            //     isHeader: true,
-            // },
-            // {
-            //     id: "apps",
-            //     label: "Apps",
-            //     icon: "ri-apps-2-line",
-            //     link: "/#",
-            //     needsAuthorization: true,
-            //     click: function (e: any) {
-            //         e.preventDefault();
-            //         setIsApps(!isApps);
-            //         setIscurrentState('Apps');
-            //         updateIconSidebar(e);
-            //     },
-            //     stateVariables: isApps,
-            //     subItems: [
-            //         {
-            //             id: "chat",
-            //             label: "Chat",
-            //             link: "/apps-chat",
-            //             parentId: "apps",
-            //         },
-            //         {
-            //             id: "mailbox",
-            //             label: "Email",
-            //             link: "/#",
-            //             parentId: "apps",
-            //             isChildItem: true,
-            //             click: function (e: any) {
-            //                 e.preventDefault();
-            //                 setEmail(!isEmail);
-            //             },
-            //             stateVariables: isEmail,
-            //             childItems: [
-            //                 {
-            //                     id: 1,
-            //                     label: "Mailbox",
-            //                     link: "/apps-mailbox",
-            //                     parentId: "apps"
-            //                 },
-            //                 {
-            //                     id: 2,
-            //                     label: "Email Templates",
-            //                     link: "/#",
-            //                     parentId: "apps",
-            //                     isChildItem: true,
-            //                     stateVariables: isSubEmail,
-            //                     click: function (e: any) {
-            //                         e.preventDefault();
-            //                         setSubEmail(!isSubEmail);
-            //                     },
-            //                     childItems: [
-            //                         { id: 2, label: "Basic Action", link: "/apps-email-basic", parentId: "apps" },
-            //                         { id: 3, label: "Ecommerce Action", link: "/apps-email-ecommerce", parentId: "apps" },
-            //                     ],
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             id: "tasks",
-            //             label: "Tasks",
-            //             link: "/#",
-            //             isChildItem: true,
-            //             click: function (e: any) {
-            //                 e.preventDefault();
-            //                 setIsTasks(!isTasks);
-            //             },
-            //             parentId: "apps",
-            //             stateVariables: isTasks,
-            //             childItems: [
-            //                 { id: 1, label: "Kanban Board", link: "/apps-tasks-kanban", parentId: "apps", },
-            //                 { id: 2, label: "List View", link: "/apps-tasks-list-view", parentId: "apps", },
-            //                 { id: 3, label: "Task Details", link: "/apps-tasks-details", parentId: "apps", },
-            //             ]
-            //         },
-            //         {
-            //             id: "invoices",
-            //             label: "Invoices",
-            //             link: "/#",
-            //             isChildItem: true,
-            //             click: function (e: any) {
-            //                 e.preventDefault();
-            //                 setIsInvoices(!isInvoices);
-            //             },
-            //             parentId: "apps",
-            //             stateVariables: isInvoices,
-            //             childItems: [
-            //                 { id: 1, label: "List View", link: "/apps-invoices-list" },
-            //                 { id: 2, label: "Details", link: "/apps-invoices-details" },
-            //                 { id: 3, label: "Create Invoice", link: "/apps-invoices-create" },
-            //             ]
-            //         },
-            //         {
-            //             id: "filemanager",
-            //             label: "File Manager",
-            //             link: "/apps-file-manager",
-            //             parentId: "apps",
-            //         },
-            //         {
-            //             id: "todo",
-            //             label: "To Do",
-            //             link: "/apps-todo",
-            //             parentId: "apps",
-            //         },
-            //     ],
-            // },
-            {
-                label: t("Accounting"),
-                isHeader: true,
+                action: "view",
+                subject: "managebackup",
             },
-            {
+             {
+                 label: t("Accounting"),
+                 isHeader: true,
+             },
+             {
                  id: "billing",
                  label: "Billing",
                  icon: "ri-file-paper-2-fill",
@@ -437,6 +304,8 @@ const Navdata = () => {
                      updateIconSidebar(e);
                  },
                  stateVariables: isBilling,
+                 action: "view",
+                 subject: "billing"
              },
              {
                  id: "all-transactions",
@@ -450,21 +319,25 @@ const Navdata = () => {
                      updateIconSidebar(e);
                  },
                  stateVariables: isAllTransactions,
+                 action: "view",
+                 subject: "alltransactions",
              },
              {
-                id: 'customer-billing',
-                label: "Customer Billing",
-                icon: "ri-file-paper-2-fill",
-                link: '/accounting-customer-billing',
-                click: function (e: any) {
-                    e.preventDefault();
-                    setIsCustomerBilling(!isCustomerBilling);
-                    setIscurrentState('Customer Billing');
-                    updateIconSidebar(e);
-                },
-                stateVariables: isCustomerBilling,
+                 id: 'customer-billing',
+                 label: "Customer Billing",
+                 icon: "ri-file-paper-2-fill",
+                 link: '/accounting-customer-billing',
+                 click: function (e: any) {
+                     e.preventDefault();
+                     setIsCustomerBilling(!isCustomerBilling);
+                     setIscurrentState('Customer Billing');
+                     updateIconSidebar(e);
+                 },
+                 stateVariables: isCustomerBilling,
+                 action: "view",
+                 subject: "customerbilling"
              },
-            {
+             {
                  id: "create-new-document",
                  label: "Create New Document",
                  icon: "ri-file-add-fill",
@@ -475,6 +348,9 @@ const Navdata = () => {
                      updateIconSidebar(e);
                  },
                  stateVariables: isCreateNewDocument,
+                 action: "view",
+                 subject: "createnewdocument",
+
                  subItems: [
                      {
                          id: "direct-currency-transfer",
@@ -484,6 +360,8 @@ const Navdata = () => {
                          renderModal: () => <DirectCurrencyTransfer isOpen={directCurrencyTransferModal}
                                                                     toggle={() => setDirectCurrencyTransferModal(false)}
                          />,
+                         action: "add",
+                         subject: "directcurrencytransfertransaction"
                      },
                      {
                          id: "buy-and-sell-cash",
@@ -493,6 +371,8 @@ const Navdata = () => {
                          renderModal: () => <BuyAndSellCash isOpen={buyAndSellCashModal}
                                                             toggle={() => setBuyAndSellCashModal(false)}
                          />,
+                         action: "add",
+                         subject: "buyandsellcashtransaction"
                      },
                      {
                          id: "local-payments",
@@ -500,38 +380,30 @@ const Navdata = () => {
                          parentId: "create-new-document",
                          onClick: () => setLocalPaymentsModal(true),
                          renderModal: () => <LocalPayments isOpen={localPaymentsModal}
-                                                           toggle={() => setLocalPaymentsModal(false)} />
+                                                           toggle={() => setLocalPaymentsModal(false)} />,
+                         action: "add",
+                         subject: "localpaymentstransaction"
                      },
-                     {
-                         id: "local-payments",
-                         label: "Local Payments",
-                         parentId: "create-new-document",
-                     }
                  ],
              },
-            {
-                id: "general-ledger",
-                label: "General Ledger",
-                icon: "ri-book-2-fill",
-                link: '/accounting-general-ledger',
-                click: function (e: any) {
-                    e.preventDefault();
-                    setIsGeneralLedger(!isGeneralLedger);
-                    setIscurrentState('General Ledger');
-                    updateIconSidebar(e);
-                },
-                stateVariables: isBilling,
-            },
+             {
+                 id: "general-ledger",
+                 label: "General Ledger",
+                 icon: "ri-book-2-fill",
+                 link: '/accounting-general-ledger',
+                 click: function (e: any) {
+                     e.preventDefault();
+                     setIsGeneralLedger(!isGeneralLedger);
+                     setIscurrentState('General Ledger');
+                     updateIconSidebar(e);
+                 },
+                 stateVariables: isBilling,
+                 action: "view",
+                 subject: "generalledger"
+
+             },
         ]
-    let menuItems: any = []
-    if (isAuthorized) {
-        menuItems = [
-            ...authorizedMenuItems,
-            ...unAuthorizedMenuItems,
-        ]
-    } else {
-        menuItems = [...unAuthorizedMenuItems];
-    }
+
     return <React.Fragment>{menuItems}</React.Fragment>;
 };
 export default Navdata;

@@ -239,9 +239,12 @@ export const useTransactionFormik = ({ modalRef, endPointApi, activeTransactionD
         formik.setFieldValue('isDeleting', true);
         axiosInstance.delete(`${endPointApi}/${formik?.values?.id}/`)
             .then(response => {
+                toast.success(t("Transaction Deleted Successfully"))
                 formik.resetFormValues();
             })
-            .catch(error => {})
+            .catch(error => {
+                toast.error(normalizeDjangoError(error));
+            })
             .finally(() => {formik.setFieldValue('isDeleting', false);});
     };
     formik.handleNumberInputChange = (name: string, value: string) => {

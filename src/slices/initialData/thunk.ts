@@ -9,38 +9,50 @@ import {
     setUserProfileData, setUsers
 } from "./reducer";
 import axiosInstance from '../../helpers/axios_instance';
+import {hasUserThisPermission} from "../../helpers/casl_utils";
 export const fetchInitialData = () => async (dispatch: any) => {
-    const endpoints = [
-        axiosInstance.get("/users/user-profile/"),
-        axiosInstance.get('/currencies/'),
-        axiosInstance.get('/currencies/reference-currency/'),
-        axiosInstance.get('/currencies/reference-currencies/'),
-        axiosInstance.get('/company/company-profile/'),
-        axiosInstance.get('/accounts/account-groups/'),
-        axiosInstance.get('/accounts/financial-accounts/'),
-        axiosInstance.get('/currencies/local-currency/'),
-        axiosInstance.get('/users/'),
-    ];
+    const userProfileData = (await axiosInstance.get("/users/user-profile/"))?.data;
+    dispatch(setUserProfileData(userProfileData));
 
-    const [
-        userProfileData,
-        currencies,
-        referenceCurrency,
-        referenceCurrencies,
-        companyProfile,
-        accountGroups,
-        financialAccounts,
-        localCurrency,
-        users,
-    ] = await Promise.all(endpoints);
-    dispatch(setUserProfileData(userProfileData.data));
-    dispatch(setCurrencies(currencies.data.data));
-    dispatch(setReferenceCurrency(referenceCurrency.data));
-    dispatch(setReferenceCurrencies(referenceCurrencies.data));
-    dispatch(setCompanyProfile(companyProfile.data));
-    dispatch(setAccountGroups(accountGroups.data));
-    dispatch(setFinancialAccounts(financialAccounts.data));
-    dispatch(setLocalCurrency(localCurrency.data));
-    dispatch(setUsers(users.data.data));
+    if(hasUserThisPermission(userProfileData, "view_currencieslist")){
+        const currencies = await axiosInstance.get('/currencies/')
+        dispatch(setCurrencies(currencies.data.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_referencecurrency")){
+        const referenceCurrency = await axiosInstance.get('/currencies/reference-currency/')
+        dispatch(setReferenceCurrency(referenceCurrency.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_referencecurrencies")){
+        const referenceCurrencies = await axiosInstance.get('/currencies/reference-currencies/')
+        dispatch(setReferenceCurrencies(referenceCurrencies.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_companyprofile")){
+        const companyProfile = await axiosInstance.get('/company/company-profile/')
+        dispatch(setCompanyProfile(companyProfile.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_accountgroupslist")){
+        const accountGroups = await axiosInstance.get('/accounts/account-groups/')
+        dispatch(setAccountGroups(accountGroups.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_financialaccountslist")){
+        const financialAccounts = await axiosInstance.get('/accounts/financial-accounts/')
+        dispatch(setFinancialAccounts(financialAccounts.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_localcurrency")){
+        const localCurrency = await axiosInstance.get('/currencies/local-currency/')
+        dispatch(setLocalCurrency(localCurrency.data));
+    }
+
+    if(hasUserThisPermission(userProfileData, "view_userslist")){
+        const users = await axiosInstance.get('/users/')
+        dispatch(setUsers(users.data.data));
+    }
+
     dispatch(setInitialDataIsLoading(false));
 };

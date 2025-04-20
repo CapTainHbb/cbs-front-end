@@ -15,7 +15,8 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
 import axiosInstance, {backendResourceApi} from "../../helpers/axios_instance";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import {normalizeDjangoError} from "../../helpers/error";
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -106,7 +107,7 @@ const ManageCompanyProfile = () => {
                 );
                 toast.success(t("Form submitted successfully"));
             } catch (error: any) {
-                toast.error(error?.response?.data || "Error submitting form");
+                toast.error(normalizeDjangoError(error));
             } finally {
                 setSubmitting(false);
             }
@@ -165,6 +166,7 @@ const ManageCompanyProfile = () => {
     return (
         <React.Fragment>
             <div className="page-content">
+                <ToastContainer closeButton={false} />
                 <Container fluid>
                     <BreadCrumb
                         title={t("Manage Company Profile")}

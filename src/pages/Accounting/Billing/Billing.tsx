@@ -71,8 +71,6 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
         return null;
     }, [])
 
-    
-
     const [activeTransactionData, setActiveTransactionData] = useState<any>(undefined)
     const [isDirectCurrencyTransferModalOpen, setIsDirectCurrencyTransferModalOpen] = useState<boolean>(false);
     const [isBuyAndSellCashModalOpen, setIsBuyAndSellCashModalOpen] = useState<boolean>(false);
@@ -376,8 +374,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
 
     useEffect(() => {
         setIsFooterComponentOpen(selectedRows?.length !== 0)
-    }, [selectedRows]);
-
+    }, [selectedRows])
 
     document.title = `${pageName} | ZALEX - Financial Software`;
 
@@ -399,7 +396,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                                 />
                             </CardHeader>
                             <CardBody>
-                                <React.Fragment >
+                                <React.Fragment>
                                     <CustomTableContainer
                                         loadItemsApi={loadItemsApi}
                                         columns={(columns || [])}
