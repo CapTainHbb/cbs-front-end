@@ -20,7 +20,7 @@ import classnames from "classnames";
 // RangeSlider
 import Nouislider from "nouislider-react";
 import "nouislider/distribute/nouislider.css";
-import DeleteModal from "../../../Components/Common/DeleteModal";
+import DeleteModal from "../../../Components/Common/ConfirmModal";
 
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
@@ -332,12 +332,12 @@ const EcommerceProducts = (props: any) => {
 
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteProduct}
+        onConfirmClick={handleDeleteProduct}
         onCloseClick={() => setDeleteModal(false)}
       />
       <DeleteModal
         show={deleteModalMulti}
-        onDeleteClick={() => {
+        onConfirmClick={() => {
           deleteMultiple();
           setDeleteModalMulti(false);
         }}

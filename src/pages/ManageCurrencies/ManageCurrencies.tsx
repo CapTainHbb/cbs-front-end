@@ -20,7 +20,7 @@ import * as Yup from "yup";
 import axiosInstance from "../../helpers/axios_instance";
 import {toast, ToastContainer} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
-import DeleteModal from "../../Components/Common/DeleteModal";
+import DeleteModal from "../../Components/Common/ConfirmModal";
 import ReferenceCurrencyModal from "./ReferenceCurrencyModal";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
@@ -187,8 +187,9 @@ const ManageCurrencies = () => {
             <div className='page-content'>
                 <ToastContainer closeButton={false} />
                 <DeleteModal
+                    isConfirm={false}
                     show={deleteModal}
-                    onDeleteClick={() => handleDeleteCurrency(activeCurrency?.id)}
+                    onConfirmClick={() => handleDeleteCurrency(activeCurrency?.id)}
                     onCloseClick={() => setDeleteModal(false)}
                 />
                 <ReferenceCurrencyModal show={referenceCurrencyModal} onCloseClick={() => setReferenceCurrencyModal(false)} />

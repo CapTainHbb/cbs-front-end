@@ -4,7 +4,6 @@ import {t} from "i18next";
 import DirectCurrencyTransfer from "../pages/Accounting/CreateTransaction/DirectCurrencyTransfer/DirectCurrencyTransfer";
 import BuyAndSellCash from "../pages/Accounting/CreateTransaction/BuyAndSellCash/BuyAndSellCash";
 import LocalPayments from "../pages/Accounting/CreateTransaction/LocalPayments/LocalPayments";
-import {useSelector} from "react-redux";
 
 const Navdata = () => {
     const history = useNavigate();

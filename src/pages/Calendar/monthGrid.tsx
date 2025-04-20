@@ -34,7 +34,7 @@ import Flatpickr from "react-flatpickr";
 import { useSelector, useDispatch } from "react-redux";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import DeleteModal from "../../Components/Common/DeleteModal";
+import DeleteModal from "../../Components/Common/ConfirmModal";
 
 //Simple bar
 import SimpleBar from "simplebar-react";
@@ -322,7 +322,7 @@ const MonthGridCalender = () => {
         <React.Fragment>
             <DeleteModal
                 show={deleteModal}
-                onDeleteClick={handleDeleteEvent}
+                onConfirmClick={handleDeleteEvent}
                 onCloseClick={() => { setDeleteModal(false); }} recordId={""} />
             <div className="page-content">
                 <Container fluid>

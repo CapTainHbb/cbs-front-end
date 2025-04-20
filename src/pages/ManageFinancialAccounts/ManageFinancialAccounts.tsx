@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import DeleteModal from "../../Components/Common/DeleteModal";
+import DeleteModal from "../../Components/Common/ConfirmModal";
 
 import {
     Card,
@@ -26,7 +26,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useSelector} from "react-redux";
 import SelectAccountGroup from "./SelectAccountGroup";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import axiosInstance from "../../helpers/axios_instance";
 import {normalizeDjangoError} from "../../helpers/error";
 import InitialBalanceForm from "./InitialBalanceForm";
@@ -184,7 +184,7 @@ const ManageFinancialAccounts = () => {
             setDeleteModal(false);
             setItemsChanged(!itemsChanged)
         }).catch(error => {
-            toast.error(error.response?.data?.error);
+            toast.error(normalizeDjangoError(error));
         })
     }, [itemsChanged]);
 
@@ -269,9 +269,11 @@ const ManageFinancialAccounts = () => {
     return (
         <React.Fragment>
             <div className='page-content'>
+                <ToastContainer closeButton={false} />
                 <DeleteModal
+                    isConfirm={false}
                     show={deleteModal}
-                    onDeleteClick={() => handleDeleteFinancialAccount(activeFinancialAccount?.id)}
+                    onConfirmClick={() => handleDeleteFinancialAccount(activeFinancialAccount?.id)}
                     onCloseClick={() => setDeleteModal(false)}
                 />
 

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {LocalPaymentsFormDataType, PaymentDataType, defaultLocalPaymentsFormData} from "./types";
 import {Col, Container, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Row} from "reactstrap";
 import {t} from "i18next";
@@ -18,6 +18,7 @@ import PaymentsContainer from './PaymentsContainer';
 import Payments from './Payments';
 import { useSelector } from 'react-redux';
 import {createLocalizedDate, getToday, getUTCFormattedDateTime, getUTCFormattedTodayDateTime} from 'helpers/date';
+import ConfirmModal from 'Components/Common/ConfirmModal';
 
 
 
@@ -198,10 +199,18 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
         formik.flushFormValues();
     }, [isOpen])
 
+    const [confirmModal, setConfirmModal] = useState<boolean>(false);
+            const handleToggle = useCallback(() => {
+                setConfirmModal(true);
+            }, [toggle]);
 
     return (
-        <Modal ref={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
-            <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
+        <Modal ref={modalRef} isOpen={isOpen} toggle={handleToggle} backdrop={"static"} className={'modal-xl'}>
+            <ConfirmModal show={confirmModal} 
+                          onConfirmClick={() => {toggle(); setConfirmModal(false);}} 
+                          onCloseClick={() => setConfirmModal(false)}
+                          />
+            <ModalHeader className="bg-primary-subtle p-2" toggle={handleToggle}>
                 <h5 className="modal-title">{t("Local Payments")}</h5>
             </ModalHeader>
             <ModalBody>
@@ -300,7 +309,7 @@ const LocalPayments: React.FC<Props> = ({ isOpen, toggle, activeTransactionData 
                         </PaymentsContainer>
                         
                         <TransactionDetails formik={formik} isParentModalOpen={isOpen} />
-                        <TransactionFooter formik={formik} toggle={toggle}/>
+                        <TransactionFooter formik={formik} toggle={handleToggle}/>
                     </Container>
                 </Form>
             </ModalBody>

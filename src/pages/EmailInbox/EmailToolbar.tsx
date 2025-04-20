@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import FeatherIcon from 'feather-icons-react';
-import DeleteModal from '../../Components/Common/DeleteModal';
+import DeleteModal from '../../Components/Common/ConfirmModal';
 //SimpleBar
 import SimpleBar from "simplebar-react";
 
@@ -522,7 +522,7 @@ const EmailToolbar = () => {
             <ToastContainer closeButton={false} limit={1} />
             <DeleteModal
                 show={deleteModal}
-                onDeleteClick={() => {
+                onConfirmClick={() => {
                     removeEmail();
                     setDeleteModal(false);
                 }}

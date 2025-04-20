@@ -62,6 +62,8 @@
     "buy and sell cash transaction": "خرید و فروش ارز",
     "Cancel": "لغو",
     "Cancel Edit": "لغو ویرایش",
+    "Cannot delete financial account because it is associated with one or more transactions. Please delete that transactions first!":
+    "نمی توان این حساب را حذف کرد. ابتدا تراکنش های مرتبط با آن را حذف کنید!",
     "Conversion Operator": "عملگر تبدیل",
     "Company Agent Signature": "مهر و امضای نماینده شرکت",
     "Company Logo": "لوگوی شرکت",
@@ -182,6 +184,7 @@
     "financial account": "حساب مشتری",
     "Financial Account Balance": "مانده حساب",
     "Financial account created successfully": "حساب با موفقیت ایجاد شد",
+    "Financial account updated successfully": "حساب با موفقیت به روزرسانی شد",
     "Financial Account Code": "کد حساب",
     "Financial account delete failed": "حذف حساب کاربری با خطا مواجه شد",
     "Financial account delete success": "حساب کاربری با موفقیت حذف شد",
@@ -425,6 +428,7 @@
     "view_localcurrency": "نمایش ارز محلی",
     "view_managebackup": "نمایش مدیریت پشتیبان گیری",
     "view_managecompanyprofile": "نمایش مدیریت پروفایل شرکت",
+    "view_managefinancialaccounts": "نمایش مدیریت حساب ها",
     "view_manageusers": "نمایش مدیریت کاربران",
     "view_permission": "نمایش دسترسی",
     "view_permissionslist": "نمایش لیست دسترسی ها",
@@ -444,6 +448,7 @@
     "xe currency historical exchange rate": "نرخ گذشته ی xe",
     "Yellow": "زرد",
     "Yes, Delete It": "بله حذف کن",
+    "Yes, Do It": "بله انجام بده",
     "You are Logged Out": "شما از حساب خود خارج شده اید",
     "Your Session Is Expired": "نشست شما منقضی شده است",
     "Zip Code": "کد پستی"

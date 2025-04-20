@@ -16,7 +16,7 @@ import moment from "moment";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
-import DeleteModal from "../../Components/Common/DeleteModal";
+import DeleteModal from "../../Components/Common/ConfirmModal";
 
 //Import Icons
 import FeatherIcon from "feather-icons-react";
@@ -281,12 +281,12 @@ const InvoiceList = () => {
       <div className="page-content">
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={() => handleDeleteInvoice()}
+          onConfirmClick={() => handleDeleteInvoice()}
           onCloseClick={() => setDeleteModal(false)}
         />
         <DeleteModal
           show={deleteModalMulti}
-          onDeleteClick={() => {
+          onConfirmClick={() => {
             deleteMultiple();
             setDeleteModalMulti(false);
           }}

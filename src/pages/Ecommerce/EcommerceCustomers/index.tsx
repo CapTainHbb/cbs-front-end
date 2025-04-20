@@ -26,7 +26,7 @@ import { useFormik } from "formik";
 
 //Import Breadcrumb
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
-import DeleteModal from "../../../Components/Common/DeleteModal";
+import DeleteModal from "../../../Components/Common/ConfirmModal";
 
 import {
   getCustomers as onGetCustomers,
@@ -344,12 +344,12 @@ const EcommerceCustomers = () => {
         />
         <DeleteModal
           show={deleteModal}
-          onDeleteClick={handleDeleteCustomer}
+          onConfirmClick={handleDeleteCustomer}
           onCloseClick={() => setDeleteModal(false)}
         />
         <DeleteModal
           show={deleteModalMulti}
-          onDeleteClick={() => {
+          onConfirmClick={() => {
             deleteMultiple();
             setDeleteModalMulti(false);
           }}

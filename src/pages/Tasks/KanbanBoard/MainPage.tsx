@@ -38,7 +38,7 @@ import SimpleBar from "simplebar-react"
 import { ToastContainer } from "react-toastify"
 import Spinners from "Components/Common/Spinner"
 import { AddTeamMember, headData } from "common/data"
-import DeleteModal from "Components/Common/DeleteModal";
+import DeleteModal from "Components/Common/ConfirmModal";
 import Flatpickr from "react-flatpickr";
 import moment from "moment";
 
@@ -356,7 +356,7 @@ const TasksKanban = () => {
     <React.Fragment>
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteCard}
+        onConfirmClick={handleDeleteCard}
         onCloseClick={() => setDeleteModal(false)}
       />
 

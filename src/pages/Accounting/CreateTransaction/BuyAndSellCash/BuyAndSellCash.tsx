@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Container, Form, Modal, ModalBody, ModalHeader} from "reactstrap";
 import {t} from "i18next";
 import TransactionMetaData from "../TransactionMetaData";
@@ -14,6 +14,7 @@ import ExchangeRateAndConversionType from './ExchangeRateAndConversionType';
 import PartyContainer from "../PartyContainer";
 import ReceivedPaidFeeContainer from "../ReceivedPaidFeeContainer";
 import BuyAndSellAmountAndCurrency from "./BuyAndSellAmountAndCurrency";
+import ConfirmModal from 'Components/Common/ConfirmModal';
 
 const initialResetForm = {
     isBuy: false,
@@ -258,9 +259,18 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
         formik.flushFormValues();
     }, [isOpen])
 
+    const [confirmModal, setConfirmModal] = useState<boolean>(false);
+    const handleToggle = useCallback(() => {
+        setConfirmModal(true);
+    }, [toggle]);
+
     return (
-        <Modal ref={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
-            <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
+        <Modal ref={modalRef} isOpen={isOpen} toggle={handleToggle} backdrop={"static"} className={'modal-xl'}>
+            <ConfirmModal show={confirmModal} 
+                          onConfirmClick={() => {toggle(); setConfirmModal(false);}} 
+                          onCloseClick={() => setConfirmModal(false)}
+                          />
+            <ModalHeader className="bg-primary-subtle p-2" toggle={handleToggle}>
                 <h5 className="modal-title">{t("Buy and Sell Cash")}</h5>
             </ModalHeader>
             <ModalBody>
@@ -298,7 +308,7 @@ const BuyAndSellCash: React.FC<Props> = ({ isOpen, toggle, activeTransactionData
                             />
                         </PartyContainer>
                         <TransactionDetails formik={formik} isParentModalOpen={isOpen} />
-                        <TransactionFooter formik={formik} toggle={toggle} />
+                        <TransactionFooter formik={formik} toggle={handleToggle} />
                     </Container>
                 </Form>
             </ModalBody>

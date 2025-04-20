@@ -7,7 +7,7 @@ import Dragula from 'react-dragula';
 import { ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import taskImg from "../../assets/images/task.png";
-import DeleteModal from '../../Components/Common/DeleteModal';
+import DeleteModal from '../../Components/Common/ConfirmModal';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -387,7 +387,7 @@ const ToDoList = () => {
             <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
-                onDeleteClick={() => handleDeleteTodo()}
+                onConfirmClick={() => handleDeleteTodo()}
                 onCloseClick={() => setDeleteModal(false)}
             />
             <div className="page-content">

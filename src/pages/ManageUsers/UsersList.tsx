@@ -22,7 +22,7 @@ import {
     UncontrolledDropdown
 } from 'reactstrap';
 
-import DeleteModal from 'Components/Common/DeleteModal';
+import DeleteModal from 'Components/Common/ConfirmModal';
 import BreadCrumb from 'Components/Common/BreadCrumb';
 import IndeterminateCheckbox from 'pages/Reports/IndetermineCheckbox';
 
@@ -225,8 +225,9 @@ const UsersList = () => {
     <React.Fragment>
       <div className='page-content'>
         <DeleteModal
+          isConfirm={false}
           show={deleteModal}
-          onDeleteClick={() => handleDeleteUserProfile(activeUserProfile?.id)}
+          onConfirmClick={() => handleDeleteUserProfile(activeUserProfile?.id)}
           onCloseClick={() => setDeleteModal(false)}
         />
 

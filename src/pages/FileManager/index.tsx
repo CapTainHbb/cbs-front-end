@@ -3,7 +3,7 @@ import { Card, CardBody, Col, Container, DropdownItem, DropdownMenu, DropdownTog
 import SimpleBar from 'simplebar-react';
 import { ToastContainer } from 'react-toastify';
 import SimpleDonutCharts from './FileManagerCharts';
-import DeleteModal from '../../Components/Common/DeleteModal';
+import DeleteModal from '../../Components/Common/ConfirmModal';
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -318,7 +318,7 @@ const FileManager = () => {
             <ToastContainer closeButton={false} />
             <DeleteModal
                 show={deleteModal}
-                onDeleteClick={() => handleDeleteFolder()}
+                onConfirmClick={() => handleDeleteFolder()}
                 onCloseClick={() => setDeleteModal(false)}
             />
 

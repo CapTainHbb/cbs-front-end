@@ -22,7 +22,7 @@ import classnames from "classnames";
 import Flatpickr from "react-flatpickr";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
-import DeleteModal from "../../../Components/Common/DeleteModal";
+import DeleteModal from "../../../Components/Common/ConfirmModal";
 import { isEmpty } from "lodash";
 
 // Export Modal
@@ -467,12 +467,12 @@ const EcommerceOrders = () => {
       />
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteOrder}
+        onConfirmClick={handleDeleteOrder}
         onCloseClick={() => setDeleteModal(false)}
       />
       <DeleteModal
         show={deleteModalMulti}
-        onDeleteClick={() => {
+        onConfirmClick={() => {
           deleteMultiple();
           setDeleteModalMulti(false);
         }}

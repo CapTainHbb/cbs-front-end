@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import TableContainer from '../../../Components/Common/TableContainer';
-import DeleteModal from "../../../Components/Common/DeleteModal";
+import DeleteModal from "../../../Components/Common/ConfirmModal";
 
 // Import Scroll Bar - SimpleBar
 import SimpleBar from 'simplebar-react';
@@ -383,12 +383,12 @@ const AllTasks = () => {
     <React.Fragment>
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteTask}
+        onConfirmClick={handleDeleteTask}
         onCloseClick={() => setDeleteModal(false)}
       />
       <DeleteModal
         show={deleteModalMulti}
-        onDeleteClick={() => {
+        onConfirmClick={() => {
           deleteMultiple();
           setDeleteModalMulti(false);
         }}

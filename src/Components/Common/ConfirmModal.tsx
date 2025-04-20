@@ -2,24 +2,24 @@ import React from "react";
 import { Modal, ModalBody } from "reactstrap";
 import {t} from "i18next";
 
-interface DeleteModalProps {
+interface Props {
   show ?: boolean;
-  onDeleteClick ?: () => void;
+  onConfirmClick ?: () => void;
   onCloseClick ?: () => void;
-  recordId ?: string;
+  isConfirm?: boolean;
+  recordId?: string;
 }
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ show, onDeleteClick, onCloseClick, recordId }) => {
+const ConfirmModal: React.FC<Props> = ({ show, onConfirmClick, 
+  isConfirm = true,
+  onCloseClick }) => {
   return (
     <Modal fade={true} isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
         <div className="mt-2 text-center">
-          <i className="ri-delete-bin-line display-5 text-danger"></i>
+          <i className={`${isConfirm? "" : "ri-delete-bin-line"} display-5 text-danger`}></i>
           <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
             <h4>{t("Are you sure?")}</h4>
-            <p className="text-muted mx-4 mb-0">
-              {t("Are you sure you want to remove this record?")} {recordId ? recordId : ''}
-            </p>
           </div>
         </div>
         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
@@ -35,9 +35,9 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ show, onDeleteClick, onCloseC
             type="button"
             className="btn w-sm btn-danger "
             id="delete-record"
-            onClick={onDeleteClick}
+            onClick={onConfirmClick}
           >
-            {t("Yes, Delete It")}!
+            {isConfirm? t("Yes, Do It"): t("Yes, Delete It")}
           </button>
         </div>
       </ModalBody>
@@ -45,4 +45,4 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ show, onDeleteClick, onCloseC
   ) as unknown as JSX.Element;
 };
 
-export default DeleteModal;
+export default ConfirmModal;

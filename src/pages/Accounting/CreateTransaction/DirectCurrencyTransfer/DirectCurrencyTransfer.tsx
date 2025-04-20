@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {
     Col,
     Container,
@@ -29,6 +29,7 @@ import DirectCurrencyTransferPdfComponent from './DirectCurrencyTransferPdfCompo
 import {fetchImageAsBlob} from "../../../../helpers/download_image";
 import { useSelector } from 'react-redux';
 import {createTempoDownloadLink} from "../../Billing/utils";
+import ConfirmModal from 'Components/Common/ConfirmModal';
 
 const initialRestForm = {
     amount: "0",
@@ -222,9 +223,18 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
         formik.flushFormValues();
     }, [isOpen])
 
+    const [confirmModal, setConfirmModal] = useState<boolean>(false);
+        const handleToggle = useCallback(() => {
+            setConfirmModal(true);
+        }, [toggle]);
+
     return (
-        <Modal innerRef={modalRef} isOpen={isOpen} toggle={toggle} backdrop={"static"} className={'modal-xl'}>
-            <ModalHeader className="bg-primary-subtle p-2" toggle={toggle}>
+        <Modal innerRef={modalRef} isOpen={isOpen} toggle={handleToggle} backdrop={"static"} className={'modal-xl'}>
+            <ConfirmModal show={confirmModal} 
+                          onConfirmClick={() => {toggle(); setConfirmModal(false);}} 
+                          onCloseClick={() => setConfirmModal(false)}
+                          />
+            <ModalHeader className="bg-primary-subtle p-2" toggle={handleToggle}>
                 <h5 className="modal-title">{t("Direct Currency Transfer")}</h5>
             </ModalHeader>
             <ModalBody>
@@ -328,7 +338,7 @@ const DirectCurrencyTransfer: React.FC<Props> = ({ isOpen, toggle, activeTransac
                             </Col>
                         </PartyContainer>
                         <TransactionDetails formik={formik} isParentModalOpen={isOpen}/>
-                        <TransactionFooter formik={formik} toggle={toggle} />
+                        <TransactionFooter formik={formik} toggle={handleToggle} />
                     </Container>
                 </Form>
             </ModalBody>

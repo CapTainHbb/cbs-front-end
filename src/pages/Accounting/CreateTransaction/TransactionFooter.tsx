@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Col, Row, Spinner} from "reactstrap";
 import {t} from "i18next";
-import DeleteModal from "../../../Components/Common/DeleteModal";
+import DeleteModal from "../../../Components/Common/ConfirmModal";
 
 interface Props {
     formik: any;
@@ -114,7 +114,7 @@ const TransactionFooter: React.FC<Props> = ({ formik, toggle }) => {
 
             <DeleteModal
                 show={isConfirmModalOpen}
-                onDeleteClick={() => {
+                onConfirmClick={() => {
                     formik.handleDeleteTransaction();
                     setIsConfirmModalOpen(false);
                 }}

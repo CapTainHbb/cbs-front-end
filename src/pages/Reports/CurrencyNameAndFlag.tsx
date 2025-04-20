@@ -12,7 +12,8 @@ const CurrencyNameAndFlag : React.FC<Props> = ({ currencyId }) => {
         return currencies?.find((cur: Currency) => cur.id === currencyId)?.name
     }, [currencyId, currencies]);
     return (
-        <div className="d-flex justify-items-center gap-1 items-center">
+        <div style={{overflowX: "scroll"}} 
+            className="d-flex justify-items-center gap-1 items-center">
             <p>{currencyName && (currencyName)}</p>
             <img style={{ width: '25px', height: '25px' }}
             src={`/flags/${currencyName}.svg`}
