@@ -244,7 +244,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                             display: "-webkit-box",
                             WebkitLineClamp: 1,
                             WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
+                            overflow: "scroll",
                             textOverflow: "ellipsis",
                             width: "70px"
                         }}
@@ -271,7 +271,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                     accessorKey: 'transaction_brief',
                     cell: info =>
                         <span
-                              
+                                style={{overflowX: "scroll"}}
                               data-tooltip-content={info.row.original.transaction_brief}
                               data-tooltip-id="global-tooltip">
                             {getTransactionBriefCell(info)}

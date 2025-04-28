@@ -16,10 +16,9 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { t } from 'i18next';
 import axiosInstance from "../../helpers/axios_instance";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import {normalizeDjangoError} from "../../helpers/error";
 import RectLoader from "../Reports/RectLoader";
-import {nor} from "@ucast/js";
 
 const ManageBackup = () => {
 
@@ -70,6 +69,7 @@ const ManageBackup = () => {
     return (
         <React.Fragment>
             <div className='page-content'>
+                <ToastContainer closeButton={false} />
                 <Container fluid>
                     <BreadCrumb title={t("Manage Backup")} pageTitle={t("Manage Backup")} />
                     <Card>
