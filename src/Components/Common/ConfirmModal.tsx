@@ -29,7 +29,7 @@ const ConfirmModal: React.FC<Props> = ({ show, onConfirmClick,
             data-bs-dismiss="modal"
             onClick={onCloseClick}
           >
-            {t("Close")}
+            {t("No")}
           </button>
           <button
             type="button"
@@ -37,7 +37,7 @@ const ConfirmModal: React.FC<Props> = ({ show, onConfirmClick,
             id="delete-record"
             onClick={onConfirmClick}
           >
-            {isConfirm? t("Yes, Do It"): t("Yes, Delete It")}
+            {isConfirm? t("Yes"): t("Yes, Delete It")}
           </button>
         </div>
       </ModalBody>

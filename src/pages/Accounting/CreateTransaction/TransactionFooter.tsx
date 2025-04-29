@@ -119,6 +119,7 @@ const TransactionFooter: React.FC<Props> = ({ formik, toggle }) => {
                     setIsConfirmModalOpen(false);
                 }}
                 onCloseClick={() => setIsConfirmModalOpen(false)}
+                isConfirm={false}
             />
         </Row>
 

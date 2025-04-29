@@ -49,20 +49,20 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
         const { document_type, transaction_type } = info.row.original;
         if (document_type !== "main") {
             if (document_type === 'interest' || document_type === 'standalone-interest') {
-                return <span style={{overflowX: "scroll"}} className={'badge bg-success-subtle text-success fs-11'}>{t(String(info.getValue()))}</span>;
+                return <span  className={'badge bg-success-subtle text-success fs-11'}>{t(String(info.getValue()))}</span>;
             } else if (document_type === 'cost' || document_type === 'standalone-cost') {
-                return <span style={{overflowX: "scroll"}} className={"badge bg-danger-subtle text-danger fs-11"}>{t(String(info.getValue()))}</span>;
+                return <span  className={"badge bg-danger-subtle text-danger fs-11"}>{t(String(info.getValue()))}</span>;
             }
         } else {
             switch (transaction_type) {
                 case 'direct-currency-transfer':
-                    return <p style={{overflowX: "scroll"}} className="badge bg-primary-subtle text-primary fs-11">{t(String(info.getValue()))}</p>;
+                    return <p  className="badge bg-primary-subtle text-primary fs-11">{t(String(info.getValue()))}</p>;
                 case 'sell-cash':
-                    return <p style={{overflowX: "scroll"}} className="badge bg-secondary-subtle text-secondary fs-11">{t(String(info.getValue()))}</p>;
+                    return <p  className="badge bg-secondary-subtle text-secondary fs-11">{t(String(info.getValue()))}</p>;
                 case 'buy-cash':
-                    return <p style={{overflowX: "scroll"}} className="badge bg-warning-subtle text-warning fs-11">{t(String(info.getValue()))}</p>;
+                    return <p  className="badge bg-warning-subtle text-warning fs-11">{t(String(info.getValue()))}</p>;
                 case 'local-payments':
-                    return <p style={{overflowX: "scroll"}} className="badge bg-info-subtle text-info fs-11">{t(String(info.getValue()))}</p>;
+                    return <p  className="badge bg-info-subtle text-info fs-11">{t(String(info.getValue()))}</p>;
                 default:
                     return null;
             }
@@ -127,8 +127,8 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                             }}
                         />
                     ),
-                    minSize: 15,  
-                    maxSize: 15,  
+                    minSize: 15,
+                    maxSize: 15,
                     size: 15
                 },
                 // {
@@ -162,9 +162,9 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                         <div className={'fs-12'}>
                             <span className={'header-item-title'}>{t("Transaction Type")}</span>
                         </div>,
-                    minSize: 65,
-                    maxSize: 65,
-                    size: 65
+                    minSize: 68,
+                    maxSize: 68,
+                    size: 68
                 },
                 {
                     accessorKey: 'transaction',
@@ -244,8 +244,7 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                             display: "-webkit-box",
                             WebkitLineClamp: 1,
                             WebkitBoxOrient: "vertical",
-                            overflow: "scroll",
-                            textOverflow: "ellipsis",
+                            overflow: "hidden",
                             width: "70px"
                         }}
                               data-tooltip-content={info.row.original.description}
@@ -270,12 +269,15 @@ const Billing: React.FC<Props> = ({ loadItemsApi = '/transactions/billing/',
                 {
                     accessorKey: 'transaction_brief',
                     cell: info =>
-                        <span
-                                style={{overflowX: "scroll"}}
-                              data-tooltip-content={info.row.original.transaction_brief}
-                              data-tooltip-id="global-tooltip">
+                        <div
+                            style={{
+                                overflow: "hidden",
+                            }}
+                            data-tooltip-content={info.row.original.transaction_brief}
+                            data-tooltip-id="tooltip"
+                        >
                             {getTransactionBriefCell(info)}
-                        </span>,
+                        </div>,
                     header: () =>
                         <div>
                             <span className={'fs-12'}>{t("Transaction Brief")}</span>

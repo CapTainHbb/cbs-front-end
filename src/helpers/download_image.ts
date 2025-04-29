@@ -1,14 +1,14 @@
 import axios from 'axios';
 import {AxiosResponse} from "axios";
+import {axiosResourceInstance} from "./axios_instance";
 
 export const fetchImageAsBlob = async (url: string): Promise<Blob | null> => {
     try {
         // Fetch the image with Axios, setting responseType to 'blob'
-        const response: AxiosResponse<Blob> = await axios({
+        const response: AxiosResponse<Blob> = await axiosResourceInstance({
             url,
             method: 'GET',
             responseType: 'blob', // Important for binary data
-            withCredentials: true,
         });
 
         // Create a blob URL from the response data
